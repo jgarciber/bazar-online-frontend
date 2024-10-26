@@ -1,114 +1,34 @@
 <script setup>
 import HelloWorld from './components/HelloWorld.vue'
 import TheWelcome from './components/TheWelcome.vue'
+import CustomHeader from './components/CustomHeader.vue';
 import GenericButton from './components/GenericButton.vue';
 // import CustomHeader from './components/CustomHeader.vue';
 import {ref, onMounted} from 'vue';
+import { productsRepository } from './repositories/ProductsRepository.mjs';
+import { salesRepository } from './repositories/SalesRepository.mjs';
 
 // const message = ref('Hello vue!');
 const products = ref([]);
 const sales = ref([]);
 const productsCart = ref([]);
 
-async function getProductsAPI(){
-    var url = 'http://localhost:3000/products'
-    const response = await fetch(url);
-    return await response.json();
-}
-
-async function getSalesAPI(){
-    var url = 'http://localhost:3000/sales'
-    const response = await fetch(url);
-    return await response.json();
-}
-
-async function postProductAPI(newProduct){
-    var url = 'http://localhost:3000/products'
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      // body: JSON.stringify({a: 1, b: 'Textual content'})
-      body: JSON.stringify({
-        id: 8,
-        name: newProduct.name,
-        price: newProduct.price,
-        stock: newProduct.stock,
-        category: newProduct.category
-      })
-    });
-
-    return await response.json();
-}
-async function postSaleAPI (newProduct, quantity){
-    var url = 'http://localhost:3000/sales'
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      // body: JSON.stringify({a: 1, b: 'Textual content'})
-      body: JSON.stringify({
-        id: newProduct.id,
-        name: newProduct.name,
-        price: newProduct.price,
-        quantity: quantity
-      })
-    });
-
-    return await response.json();
-}
-
-async function putProductAPI(modifiedProduct){
-  var url = `http://localhost:3000/products/${modifiedProduct.id}`
-  const response = await fetch(url, {
-    method: 'PUT',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
-    // body: JSON.stringify({a: 1, b: 'Textual content'})
-    body: JSON.stringify({
-      id: modifiedProduct.id,
-      name: modifiedProduct.name,
-      price: modifiedProduct.price,
-      stock: modifiedProduct.stock,
-      category: modifiedProduct.category
-    })
-  });
-  // return await response.json();
-}
-
-async function deleteProductAPI(productId){
-  var url = `http://localhost:3000/products/${productId}`
-  const response = await fetch(url, {
-    method: 'DELETE',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    }
-  });
-}
-
 function getProducts(){
-  getProductsAPI()
+  productsRepository.getProductsAPI()
   .then(res => {
     products.value = res;
   })
 }
 
 function getSales(){
-  getSalesAPI()
+  salesRepository.getSalesAPI()
   .then(res => {
     sales.value = res;
   })
 }
 
 function postProduct(product){
-  postProductAPI(product)
+  productsRepository.postProductAPI(product)
   .then(res => {
     getProducts();
     isEditingProduct = false;
@@ -116,7 +36,7 @@ function postProduct(product){
 }
 
 function postSale(product, quantity){
-  postSaleAPI(product, quantity)
+  salesRepository.postSaleAPI(product, quantity)
   .then(res => {
     getSales();
     isEditingProduct = false;
@@ -124,7 +44,7 @@ function postSale(product, quantity){
 }
 
 function putProduct(modifiedProduct){
-  putProductAPI(modifiedProduct)
+  productsRepository.putProductAPI(modifiedProduct)
   .then(res => {
     getProducts();
     isEditingProduct = false;
@@ -132,7 +52,7 @@ function putProduct(modifiedProduct){
 } 
 
 function deleteProducts(id){
-  deleteProductAPI(id)
+  productsRepository.deleteProductAPI(id)
   .then(res => {
     getProducts();
   })
@@ -184,7 +104,6 @@ function handleDeleteProductCart(index){
 function handleComprar(){
   for (let product of productsCart.value){
     let cantidadTotalProducto = productsCart.value.reduce((acum, curr) => {return parseInt(curr.quantity) + acum}, 0)
-    console.log(cantidadTotalProducto);
     if (cantidadTotalProducto > product.stock){
       alert ("Tiene más productos en el carrito que disponibles en stock. Por favor borre algunos artículos del carrito");
       return;
