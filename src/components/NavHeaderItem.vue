@@ -5,7 +5,7 @@ defineProps(['href'])
 </script>
 
 <template>
-    <li class="transition-all duration-300 hover:scale-105">
+    <li class="transition-all duration-300 hover:scale-110 hover:font-bold">
         <RouterLink :to="href"><slot/></RouterLink>
     </li>
 </template>

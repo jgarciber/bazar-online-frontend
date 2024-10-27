@@ -19,9 +19,8 @@ onMounted(init);
 </script>
 
 <template>
-  <section>
-    <br>
-    <table v-if="sales.length != 0">
+  <section class="mx-auto">
+    <table v-if="sales.length != 0" class="text-center my-6">
         <thead>
           <tr>
             <th>Nombre</th>
@@ -37,7 +36,7 @@ onMounted(init);
             <td>{{venta.price}}</td>
             <td>{{venta.quantity}}</td>
             <td>{{venta.total}}</td>
-            <td>{{venta.sale_date}}</td>
+            <td>{{new Date(venta.sale_date).toLocaleString()}}</td>
           </tr>
         </tbody>
     </table>
@@ -74,6 +73,9 @@ form label, form input, form textarea{
 }
 table, table td, table th{
   border: solid;
+}
+table td{
+  padding: 5px;
 }
 section{
   /* display: flex; */
