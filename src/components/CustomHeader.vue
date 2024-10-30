@@ -8,6 +8,7 @@ import NavHeaderItem from './NavHeaderItem.vue';
         <nav class="h-full">
             <ul class="flex flex-row gap-4 text-md md:text-xl xl:text-2xl uppercase font-semibold items-center h-full">
                 <NavHeaderItem href="/products">Productos</NavHeaderItem>
+                <NavHeaderItem href="/categories">Categorias</NavHeaderItem>
                 <NavHeaderItem href="/sales">Ventas</NavHeaderItem>
                 <!-- <NavHeaderItem href="/charts-sales">Gráficos de ventas</NavHeaderItem> -->
             </ul>

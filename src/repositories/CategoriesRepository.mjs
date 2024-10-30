@@ -1,12 +1,12 @@
-class ProductsRepository{
-  async getProductsAPI(){
-    var url = 'http://localhost:3000/products'
+class CategoriesRepository{
+  async getCategoriesAPI(){
+    var url = 'http://localhost:3000/categories'
     const response = await fetch(url);
     return await response.json();
   }
   
-  async postProductAPI(newProduct){
-    var url = 'http://localhost:3000/products'
+  async postCategoryAPI(newCategory){
+    var url = 'http://localhost:3000/categories'
     const response = await fetch(url, {
       method: 'POST',
       headers: {
@@ -15,18 +15,17 @@ class ProductsRepository{
       },
       // body: JSON.stringify({a: 1, b: 'Textual content'})
       body: JSON.stringify({
-        name: newProduct.name,
-        price: newProduct.price,
-        stock: newProduct.stock,
-        category: newProduct.category
+        id: 8,
+        name: newCategory.name,
+        description: newCategory.description,
       })
     });
 
     return await response.json();
   }
   
-  async putProductAPI(modifiedProduct){
-    var url = `http://localhost:3000/products/${modifiedProduct.id}`
+  async putCategoryAPI(modifiedCategory){
+    var url = `http://localhost:3000/categories/${modifiedCategory.id}`
     const response = await fetch(url, {
       method: 'PUT',
       headers: {
@@ -34,17 +33,15 @@ class ProductsRepository{
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        id: modifiedProduct.id,
-        name: modifiedProduct.name,
-        price: modifiedProduct.price,
-        stock: modifiedProduct.stock,
-        category: modifiedProduct.category
+        id: modifiedCategory.id,
+        name: modifiedCategory.name,
+        description: modifiedCategory.description,
       })
     });
   }
   
-  async deleteProductAPI(productId){
-    var url = `http://localhost:3000/products/${productId}`
+  async deleteCategoryAPI(categoryId){
+    var url = `http://localhost:3000/categories/${categoryId}`
     const response = await fetch(url, {
       method: 'DELETE',
       headers: {
@@ -55,4 +52,4 @@ class ProductsRepository{
   }
 }
 
-export const productsRepository = new ProductsRepository
+export const categoriesRepository = new CategoriesRepository;

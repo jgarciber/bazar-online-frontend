@@ -1,5 +1,4 @@
 <script setup>
-import GenericButton from '../components/GenericButton.vue';
 import GenericGreenButton from '@/components/GenericGreenButton.vue';
 import GenericBlueButton from '@/components/GenericBlueButton.vue';
 import GenericRedButton from '@/components/GenericRedButton.vue';
@@ -10,8 +9,8 @@ import { salesRepository } from '../repositories/SalesRepository.mjs';
 
 // const message = ref('Hello vue!');
 const products = ref([]);
-const sales = ref([]);
 const productsCart = ref([]);
+const isEditingProduct = ref(false);
 
 function getProducts(){
   productsRepository.getProductsAPI()
@@ -24,7 +23,7 @@ function postProduct(product){
   productsRepository.postProductAPI(product)
   .then(res => {
     getProducts();
-    isEditingProduct = false;
+    isEditingProduct.value = false;
   })
 }
 
@@ -32,7 +31,7 @@ function postSale(product, quantity){
   salesRepository.postSaleAPI(product, quantity)
   .then(res => {
     // getSales();
-    isEditingProduct = false;
+    isEditingProduct.value = false;
   })
 }
 
@@ -40,7 +39,7 @@ function putProduct(modifiedProduct){
   productsRepository.putProductAPI(modifiedProduct)
   .then(res => {
     getProducts();
-    isEditingProduct = false;
+    isEditingProduct.value = false;
   })
 } 
 
@@ -51,20 +50,20 @@ function deleteProducts(id){
   })
 }
 
-let isEditingProduct = false;
+// let isEditingProduct = false;
 
 function handleSubmit(e){
   e.preventDefault();
   const newProduct = Object.fromEntries(new FormData(e.target).entries());
   // console.log(newProduct);
-  isEditingProduct ? putProduct(newProduct) : postProduct(newProduct);
+  isEditingProduct.value ? putProduct(newProduct) : postProduct(newProduct);
   e.target.reset();
   productsCart.value = [];
   mostrarBtnCancelar();
 }
 
 function handleModify(product){
-  isEditingProduct = true;
+  isEditingProduct.value = true;
   // const form = document.getElementById("formProducto");
   document.getElementById("newProductPrice").value = product.price;
   document.getElementById("newProductName").value = product.name;
@@ -141,6 +140,7 @@ function handleVaciarCarrito(){
 
 function cancelarFormularioProducto(){
   document.getElementById("formProducto").reset();
+  isEditingProduct.value = false;
 }
 
 function mostrarBtnCancelar(){
@@ -242,8 +242,9 @@ onMounted(init);
       <!-- <form @submit="handleSubmit" id="formProducto" @keydown="mostrarBtnCancelar" @input="mostrarBtnCancelar"> -->
       <form @submit="handleSubmit" id="formProducto">
         <fieldset class="border-2 border-solid border-black p-3">
-          <legend class="text-lg font-semibold">Modicar producto</legend>
-          <!-- <h3 class="text-lg font-semibold">Modicar producto</h3> -->
+          <legend v-if="isEditingProduct == false" class="text-lg font-semibold">Añadir producto</legend>
+          <legend v-else class="text-lg font-semibold">Modificar producto</legend>
+          <!-- <h3 class="text-lg font-semibold">Modificar producto</h3> -->
           <input type="text" name="id" id="idProduct" style="display:none;">
           <label for="name" class="border border-solid border-black">Nombre</label><input type="text" name="name" id="newProductName" required><br>
           <label for="price">Precio</label><input type="number" name="price" id="newProductPrice" min="0" step="0.01" required><br>

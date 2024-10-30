@@ -4,7 +4,9 @@ import App from './App.vue'
 import { createRouter } from 'vue-router'
 import { createWebHistory } from 'vue-router'
 import ProductsPage from './pages/ProductsPage.vue'
+import CategoriesPage from './pages/CategoriesPage.vue' 
 import SalesPage from './pages/SalesPage.vue'
+import Login from './pages/Login.vue'
 
 const routes = [
     {
@@ -12,8 +14,16 @@ const routes = [
         component : ProductsPage
     },
     {
+        path: '/categories',
+        component : CategoriesPage
+    },
+    {
         path: '/sales',
         component: SalesPage
+    },
+    {
+        path: '/login',
+        component : Login
     }
 ]
 
