@@ -15,7 +15,6 @@ class CategoriesRepository{
       },
       // body: JSON.stringify({a: 1, b: 'Textual content'})
       body: JSON.stringify({
-        id: 8,
         name: newCategory.name,
         description: newCategory.description,
       })

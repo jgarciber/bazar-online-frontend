@@ -1,12 +1,13 @@
 <script setup>
 // import {ref, onMounted} from 'vue';
-import { RouterView } from 'vue-router';
+import { RouterView, useRoute } from 'vue-router';
 import CustomHeader from './components/CustomHeader.vue';
+const route = useRoute();
 
 </script>
 
 <template>
-  <CustomHeader/>
+  <CustomHeader v-if="route.path !== '/login'"/>
   <main class="flex flex-1">
     <RouterView/>
   </main>

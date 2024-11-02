@@ -34,17 +34,17 @@ function handleSubmit(e){
 </script>
 
 <template>
-    <div class="flex flex-col justify-center items-center bg-orange-300 mx-auto my-8">
+    <div class="flex flex-col justify-center items-center m-auto h-screen">
         <!-- <img src="./imagenes/logo-ies2-edit5.png" alt="Imagen_bienvenida_extranet" id="imagen_portada"><br> -->
-        <h3 class="font-bold"Iniciar sesión></h3>
+        <h3 class="font-bold">Iniciar sesión</h3>
         <!-- <form action="http://localhost:3000/login/" method="post"> -->
-        <form @submit="handleSubmit">
+        <form @submit="handleSubmit" class="bg-orange-300">
           <label for="usuario">Usuario: </label><br>
           <input type="text" name="username" v-model="username"/><br>
           <label for="contrasena">Contraseña: </label><br>
           <input type="password" name="password" v-model="password" /><br><br>
           <!-- <input type="submit" name="enviar" value="Entrar" class="border border-solid border-black p-1 rounded-md hover:bg-blue-400" /> -->
-          <input type="submit" id="btnEntrar" value="Entrar" class="border border-solid border-black p-1 rounded-md hover:bg-green-400" />
+          <input type="submit" id="btnEntrar" value="Entrar" class="border border-solid border-black p-1 rounded-md hover:bg-green-400" /><br>
           <input type="submit" id="btnRegistrarse" value="Registrarse" class="border border-solid border-black p-1 rounded-md hover:bg-blue-400" />
         </form>
     </div>

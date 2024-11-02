@@ -4,6 +4,18 @@ class ProductsRepository{
     const response = await fetch(url);
     return await response.json();
   }
+
+  async searchProductsAPI(searchKeyWord){
+    var url = `http://localhost:3000/products?q=${searchKeyWord}`
+    const response = await fetch(url);
+    return await response.json();
+  }
+
+  async searchProductsByCategoryAPI(searchCategoryId){
+    var url = `http://localhost:3000/products?cat=${searchCategoryId}`
+    const response = await fetch(url);
+    return await response.json();
+  }
   
   async postProductAPI(newProduct){
     var url = 'http://localhost:3000/products'
@@ -21,7 +33,6 @@ class ProductsRepository{
         category: newProduct.category
       })
     });
-
     return await response.json();
   }
   

@@ -106,7 +106,8 @@ onMounted(init);
           <!-- <h3 class="text-lg font-semibold">Modificar producto</h3> -->
           <input type="text" name="id" id="idCategory" style="display:none;">
           <label for="name" class="border border-solid border-black">Nombre</label><input type="text" name="name" id="newCategoryName" required><br>
-          <label for="description">Descripción</label><textarea name="description" id="newCategoryDescription" required></textarea><br>
+          <label for="description">Descripción</label><textarea name="description" id="newCategoryDescription" required></textarea>
+          <br><br>
           <input v-if="isEditingCategory==false" type="submit" value="Añadir categoría" class="border border-solid border-black p-1 rounded-md hover:bg-green-400">
           <input v-else type="submit" value="Modificar categoría" class="border border-solid border-black p-1 rounded-md hover:bg-green-400">
           <GenericRedButton @click="cancelarFormularioCategoria" id="btnCancelarFormProducto">Cancelar</GenericRedButton>

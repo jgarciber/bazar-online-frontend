@@ -5,12 +5,20 @@ import GenericRedButton from '@/components/GenericRedButton.vue';
 // import CustomHeader from './components/CustomHeader.vue';
 import {ref, onMounted} from 'vue';
 import { productsRepository } from '../repositories/ProductsRepository.mjs';
+import { categoriesRepository } from '@/repositories/CategoriesRepository.mjs';
 import { salesRepository } from '../repositories/SalesRepository.mjs';
 
 // const message = ref('Hello vue!');
 const products = ref([]);
+const categories = ref([]);
 const productsCart = ref([]);
 const isEditingProduct = ref(false);
+let newProductName = ref();
+let newProductPrice = ref();
+let newProductStock = ref();
+let newProductCategory = ref();
+let searchKeyWord = ref();
+
 
 function getProducts(){
   productsRepository.getProductsAPI()
@@ -18,6 +26,14 @@ function getProducts(){
     products.value = res;
   })
 }
+
+function getCategories(){
+  categoriesRepository.getCategoriesAPI()
+  .then(res => {
+    categories.value = res;
+  })
+}
+
 
 function postProduct(product){
   productsRepository.postProductAPI(product)
@@ -54,8 +70,13 @@ function deleteProducts(id){
 
 function handleSubmit(e){
   e.preventDefault();
+  console.log("ha llamado al submit del formulario")
+  console.log(isEditingProduct.value)
   const newProduct = Object.fromEntries(new FormData(e.target).entries());
-  // console.log(newProduct);
+  // Hay que añadir manualmente el valor del campo select del formulario al objeto newProduct, ya que este no se incluye en el FormData por no ser de tipo input
+  let newProductCategory = document.getElementById('newProductCategory');
+  newProduct.category = newProductCategory.value;
+  // newProduct.category = newProductCategory.options[newProductCategory.selectedIndex].text;
   isEditingProduct.value ? putProduct(newProduct) : postProduct(newProduct);
   e.target.reset();
   productsCart.value = [];
@@ -63,13 +84,20 @@ function handleSubmit(e){
 }
 
 function handleModify(product){
+  formProducto.reset();
   isEditingProduct.value = true;
   // const form = document.getElementById("formProducto");
-  document.getElementById("newProductPrice").value = product.price;
-  document.getElementById("newProductName").value = product.name;
-  document.getElementById("newProductStock").value = product.stock;
-  document.getElementById("newProductCategory").value = product.category;
+  // document.getElementById("newProductPrice").value = product.price;
+  // document.getElementById("newProductName").value = product.name;
+  // document.getElementById("newProductStock").value = product.stock;
+  // document.getElementById("newProductCategory").value = product.category;
+  // document.getElementById("idProduct").value = product.id;
+  newProductName = product.name;
+  newProductPrice = product.price;
+  newProductStock = product.stock;
+  newProductCategory = product.categoryId;
   document.getElementById("idProduct").value = product.id;
+  mostrarBtnCancelar();
 }
 
 function handleDelete(productId){
@@ -139,8 +167,9 @@ function handleVaciarCarrito(){
 }
 
 function cancelarFormularioProducto(){
-  document.getElementById("formProducto").reset();
+  formProducto.reset();
   isEditingProduct.value = false;
+  // mostrarBtnCancelar();
 }
 
 function mostrarBtnCancelar(){
@@ -152,21 +181,62 @@ function mostrarBtnCancelar(){
   //     return;
   //   }
   // } 
-  let formInputs =  document.querySelectorAll("#formProducto input[type=text], #formProducto input[type=number] ");
-  for (let input of formInputs) { 
-    console.log(input.value)
-    if (input.value) {
-      btnCancelarFormProducto.style.display = "inline-block"; 
-      return;
-    }
-  } 
-  btnCancelarFormProducto.style.display = "inline-none";
+
+  
+  // let formInputs =  document.querySelectorAll("#formProducto input[type=text], #formProducto input[type=number] ");
+  // for (let input of formInputs) { 
+  //   console.log(input.value)
+  //   if (input.value) {
+  //     btnCancelarFormProducto.style.display = "inline-block"; 
+  //     return;
+  //   }
+  // } 
+  // btnCancelarFormProducto.style.display = "inline-none";
+
+  console.log("nuevo")
+  // console.log(newProductName.value)
+  // console.log(newProductPrice.value)
+  // console.log(newProductStock.value)
+  // console.log(newProductName.value == '')
+  // console.log(newProductPrice.value == undefined)
+  // console.log(newProductPrice.value == '')
+  // console.log(newProductStock.value == '')
+  
+  if (newProductName.value == '' && newProductPrice.value == '' && newProductStock.value == ''){
+    btnCancelarFormProducto.style.display = "inline-none";
+  }else{
+    btnCancelarFormProducto.style.display = "inline-block";
+  }
+}
+
+function handleSearchProduct(e){
+  e.preventDefault();
+  productsRepository.searchProductsAPI(searchKeyWord.value)
+    .then(res => {
+      products.value = res;
+    })
+}
+
+function handleSearchCategory(e, category){
+  Array.from(e.target.parentNode.children).map(li => li.classList.remove("bg-blue-200"));
+  e.target.classList.add("bg-blue-200");
+  if(category === 'todas') return getProducts();
+  productsRepository.searchProductsByCategoryAPI(category.id)
+    .then(res => {
+      products.value = res;
+    })
+}
+
+function testEmptySearch(){
+  if(searchKeyWord.value == '') getProducts();
 }
 
 function init(){
   getProducts();
-  // let btnCancelarFormProducto = document.getElementById("btnCancelarFormProducto");
-  // btnCancelarFormProducto.style.display = "none";
+  getCategories();
+  let btnCancelarFormProducto = document.getElementById("btnCancelarFormProducto");
+  let formProducto = document.getElementById("formProducto");
+  btnCancelarFormProducto.style.display = "none";
 };
 onMounted(init);
 
@@ -175,36 +245,73 @@ onMounted(init);
 <template>
   <section class="mx-auto">
     <div class="my-6">
-      <table>
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Precio</th>
-            <th>Stock</th>
-            <th>Categoria</th>
-            <th>Acciones</th>
-            <th>Encargar</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="product in products">
-            <td>{{product.name}}</td>
-            <td>{{product.price}}</td>
-            
-            <td>{{product.stock}}</td>
-            <td>{{product.category}}</td>
-            <td>
-              <GenericBlueButton @click="handleModify(product)">Modificar</GenericBlueButton>
-              <GenericRedButton @click="handleDelete(product.id)">Borrar</GenericRedButton>
-            </td>
-            <td><input type="number" name="cantidadAnadir" :id="'cantidadAnadir-'+product.id" min="1" :max="product.stock" value="1"><GenericGreenButton @click="handleAddProduct(product)">Añadir</GenericGreenButton></td>
-          </tr> 
-        </tbody>
-      </table>
+     
+      <!-- <form class="flex items-center max-w-sm mx-auto" @submit="handleSearchProduct" @input="testEmptySearch">   
+        <label for="simple-search" class="sr-only">Search</label>
+        <div class="relative w-full">
+          <input v-model="searchKeyWord" type="text" id="simple-search" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Buscar productos" />
+        </div>
+        <button type="submit" class="p-2.5 ms-2 text-sm font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+            <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+            </svg>
+            <span class="sr-only">Search</span>
+        </button>
+      </form> -->
+
+      <form class="max-w-md mx-auto" @submit="handleSearchProduct" @keydown="testEmptySearch">   
+        <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
+        <div class="relative">
+          <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+            </svg>
+          </div>
+          <input type="search" id="default-search" v-model="searchKeyWord" class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Productos..." required />
+          <button type="submit" class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Search</button>
+        </div>
+      </form>
+      <br>
+
+      <div class="flex flex-row">
+        <ul class="mx-3">
+          <h3 class="font-semibold">CATEGORÍAS:</h3>
+          <li class="mx-2 hover:bg-blue-200 list-none hover:list-disc" @click="handleSearchCategory($event, 'todas')">Todas</li>
+          <li v-for="category in categories" @click="handleSearchCategory($event, category)" class="mx-2 hover:bg-blue-200 list-none hover:list-disc">{{ category.name }}</li>
+        </ul>
+
+        <table v-if="products.length != 0" class="mx-3">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Precio</th>
+              <th>Stock</th>
+              <th>Categoria</th>
+              <th>Acciones</th>
+              <th>Encargar</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="product in products">
+              <td>{{product.name}}</td>
+              <td>{{product.price}}</td>
+              
+              <td>{{product.stock}}</td>
+              <td>{{product.categoryName}}</td>
+              <td>
+                <GenericBlueButton @click="handleModify(product)">Modificar</GenericBlueButton>
+                <GenericRedButton @click="handleDelete(product.id)">Borrar</GenericRedButton>
+              </td>
+              <td><input type="number" name="cantidadAnadir" :id="'cantidadAnadir-'+product.id" min="1" :max="product.stock" value="1"><GenericGreenButton @click="handleAddProduct(product)">Añadir</GenericGreenButton></td>
+            </tr> 
+          </tbody>
+        </table>
+        <h3 v-else class="mx-auto my-auto">No hay ningún resultado</h3>
+      </div>
     </div>
 
     <div>
-      <table v-if="productsCart.length != 0">
+      <table v-if="productsCart.length != 0" class="mx-auto">
         <thead>
           <tr>
             <th>Nombre</th>
@@ -228,7 +335,7 @@ onMounted(init);
         </tbody>
         <tfoot>
           <tr>
-            <td colspan="5" style="text-align: center;">
+            <td colspan="5" class="text-center">
                 <GenericGreenButton @click="handleComprar">Comprar</GenericGreenButton>
                 <GenericBlueButton @click="handleVaciarCarrito">Vaciar</GenericBlueButton>
             </td>
@@ -238,21 +345,29 @@ onMounted(init);
       </table>
     </div>
     <hr>
-    <div class="bg-orange-400 my-6">
-      <!-- <form @submit="handleSubmit" id="formProducto" @keydown="mostrarBtnCancelar" @input="mostrarBtnCancelar"> -->
-      <form @submit="handleSubmit" id="formProducto">
-        <fieldset class="border-2 border-solid border-black p-3">
+    <div class="my-6">
+      <form @submit="handleSubmit" id="formProducto" @input="mostrarBtnCancelar" class="mx-auto w-3/4 py-4">
+      <!-- <form @submit="handleSubmit" id="formProducto"> -->
+        <fieldset class="border-2 border-solid border-black p-3 rounded-lg bg-orange-400 ">
           <legend v-if="isEditingProduct == false" class="text-lg font-semibold">Añadir producto</legend>
           <legend v-else class="text-lg font-semibold">Modificar producto</legend>
           <!-- <h3 class="text-lg font-semibold">Modificar producto</h3> -->
-          <input type="text" name="id" id="idProduct" style="display:none;">
-          <label for="name" class="border border-solid border-black">Nombre</label><input type="text" name="name" id="newProductName" required><br>
-          <label for="price">Precio</label><input type="number" name="price" id="newProductPrice" min="0" step="0.01" required><br>
-          <label for="stock">Stock</label><input type="number" name="stock" id="newProductStock" min="1" required><br>
-          <label for="categoria">Categoria</label><textarea name="category" id="newProductCategory" required></textarea><br>
+          <input type="text" name="id" id="idProduct" hidden>
+          <label for="newProductName" class="border border-solid border-black">Nombre</label>
+          <input v-model="newProductName" type="text" name="name" id="newProductName" required><br>
+          <label for="newProductPrice">Precio</label>
+          <input v-model="newProductPrice" type="number" name="price" id="newProductPrice" min="0" step="0.01" required><br>
+          <label for="newProductStock">Stock</label>
+          <input v-model="newProductStock" type="number" name="stock" id="newProductStock" min="1" required><br>
+          <label for="newProductCategory">Categoria</label>
+          <select id="newProductCategory" style="width: 200px;" v-model="newProductCategory" required>
+            <option value="0" disabled>--</option>
+            <option v-for="category in categories" :value="category.id">{{ category.name }}</option>
+          </select>
+          <br><br>
           <input v-if="isEditingProduct == false" type="submit" value="Añadir producto" class="border border-solid border-black p-1 rounded-md hover:bg-green-400">
           <input v-else type="submit" value="Modificar producto" class="border border-solid border-black p-1 rounded-md hover:bg-green-400">
-          <GenericRedButton @click="cancelarFormularioProducto" id="btnCancelarFormProducto">Cancelar</GenericRedButton>
+          <GenericRedButton type="button" @click="cancelarFormularioProducto" id="btnCancelarFormProducto">Cancelar</GenericRedButton>
         </fieldset>
       </form>
     </div>
