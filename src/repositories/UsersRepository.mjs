@@ -1,7 +1,20 @@
 import { getCookie } from "@/functions.mjs";
-class CategoriesRepository{
-  async getCategoriesAPI(){
-    var url = 'http://localhost:3000/categories'
+class UsersRepository{
+  async getUsersAPI(){
+    var url = 'http://localhost:3000/users'
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization' : `${sessionStorage.getItem('user')} ${getCookie('token')}`
+      }
+    });
+    return await response.json();
+  }
+
+  async searchUsersAPI(searchKeyWord){
+    var url = `http://localhost:3000/users?q=${searchKeyWord}`
     const response = await fetch(url, {
       method: 'GET',
       headers: {
@@ -13,8 +26,8 @@ class CategoriesRepository{
     return await response.json();
   }
   
-  async postCategoryAPI(newCategory){
-    var url = 'http://localhost:3000/categories'
+  async postUserAPI(newUser){
+    var url = 'http://localhost:3000/users'
     const response = await fetch(url, {
       method: 'POST',
       headers: {
@@ -22,19 +35,19 @@ class CategoriesRepository{
         'Content-Type': 'application/json',
         'Authorization' : `${sessionStorage.getItem('user')} ${getCookie('token')}`
       },
-      // body: JSON.stringify({a: 1, b: 'Textual content'})
       body: JSON.stringify({
-        name: newCategory.name,
-        description: newCategory.description,
+        username: newUser.username,
+        password: newUser.password,
+        isAdmin: newUser.isAdmin
       })
     });
-
     if(response.status == 403) alert('Acción no permitida')
-    return await response.json();
+    if(response.ok) return await response.text();
   }
   
-  async putCategoryAPI(modifiedCategory){
-    var url = `http://localhost:3000/categories/${modifiedCategory.id}`
+  async putUserAPI(newUser){
+    console.log(newUser)
+    var url = `http://localhost:3000/users/${newUser.id}`
     const response = await fetch(url, {
       method: 'PUT',
       headers: {
@@ -43,16 +56,17 @@ class CategoriesRepository{
         'Authorization' : `${sessionStorage.getItem('user')} ${getCookie('token')}`
       },
       body: JSON.stringify({
-        id: modifiedCategory.id,
-        name: modifiedCategory.name,
-        description: modifiedCategory.description,
+        password: newUser.password,
+        isAdmin: newUser.isAdmin
       })
     });
     if(response.status == 403) alert('Acción no permitida')
+    if(response.status == 201) alert('Se ha modificado la información del usuario correctamente')
+    if(response.status == 404) alert('No se ha podido modificar la información del usuario')
   }
   
-  async deleteCategoryAPI(categoryId){
-    var url = `http://localhost:3000/categories/${categoryId}`
+  async deleteUserAPI(userId){
+    var url = `http://localhost:3000/users/${userId}`
     const response = await fetch(url, {
       method: 'DELETE',
       headers: {
@@ -65,4 +79,4 @@ class CategoriesRepository{
   }
 }
 
-export const categoriesRepository = new CategoriesRepository;
+export const usersRepository = new UsersRepository

@@ -1,0 +1,536 @@
+SELECT p.id, p.name, p.price, p.stock, c.name FROM products p INNER JOIN categories c on c.id=p.id
+SELECT products.id, products.name, products.price, products.stock, categories.name FROM products INNER JOIN categories ON categories.id=products.id
+
+ALTER TABLE products
+ADD CONSTRAINT FK_Categories
+FOREIGN KEY (category) REFERENCES categories(id);
+
+ALTER TABLE sales
+ADD CONSTRAINT FK_Products
+FOREIGN KEY (product_id) REFERENCES products(id)
+ON DELETE SET NULL;
+
+ALTER TABLE trains 
+DROP CONSTRAINT constraintname;
+
+ALTER TABLE sales AUTO_INCREMENT = 1
+
+
+-- CATEGORIAS GENERADAS POR IA
+-- prompt:Estoy desarrollando una aplicación web llamada BAZAR ONLINE. La aplicación web del Bazar online busca ofrecer una amplia cartelera de productos 
+-- a todo tipo de usuario interesado. No se centra/especializa en una temática concreta, 
+-- sino que pone su enfoque en ofrecer una serie de productos genéricos clasificados. En mi base de datos tengo una tabla llamada categorias, con las siguientes columnas id(primary key, autoincrement), name y description. Quiero que insertes en esta tabla 20 categorías diferentes con la temática que te he explicado antes. El formato debe ser en una sentencia sql
+-- por categoría.
+INSERT INTO categories (name, description) VALUES ('Electrónica', 'Productos electrónicos de última generación');
+INSERT INTO categories (name, description) VALUES ('Moda', 'Ropa y accesorios para hombre, mujer y niños');
+INSERT INTO categories (name, description) VALUES ('Hogar y Jardín', 'Muebles, decoración y utensilios para el hogar y jardín');
+INSERT INTO categories (name, description) VALUES ('Deportes y Fitness', 'Equipo y accesorios para deportes y fitness');
+INSERT INTO categories (name, description) VALUES ('Bebés y Niños', 'Productos para el cuidado y entretenimiento de bebés y niños');
+INSERT INTO categories (name, description) VALUES ('Libros y Música', 'Libros, CDs, DVDs y otros productos de entretenimiento');
+INSERT INTO categories (name, description) VALUES ('Cocina y Comida', 'Utensilios, electrodomésticos y productos gourmet para la cocina');
+INSERT INTO categories (name, description) VALUES ('Salud y Belleza', 'Productos para el cuidado personal y la salud');
+INSERT INTO categories (name, description) VALUES ('Viajes y Turismo', 'Equipaje, accesorios y servicios para viajeros');
+INSERT INTO categories (name, description) VALUES ('Oficina y Escuela', 'Suministros y materiales para la oficina y la escuela');
+INSERT INTO categories (name, description) VALUES ('Juguetes y Juegos', 'Juguetes y juegos para niños y adultos');
+INSERT INTO categories (name, description) VALUES ('Arte y Manualidades', 'Materiales y suministros para arte y manualidades');
+INSERT INTO categories (name, description) VALUES ('Mascotas', 'Productos y accesorios para mascotas');
+INSERT INTO categories (name, description) VALUES ('Cine y Teatro', 'Entradas, merchandising y otros productos relacionados con el cine y el teatro');
+INSERT INTO categories (name, description) VALUES ('Música y Instrumentos', 'Instrumentos musicales y accesorios');
+INSERT INTO categories (name, description) VALUES ('Fotografía', 'Cámaras, accesorios y servicios de fotografía');
+INSERT INTO categories (name, description) VALUES ('Automoción', 'Accesorios y productos para vehículos');
+INSERT INTO categories (name, description) VALUES ('Bricolaje y Herramientas', 'Herramientas y materiales para bricolaje y reparaciones');
+INSERT INTO categories (name, description) VALUES ('Gastronomía', 'Productos gourmet y especialidades culinarias');
+INSERT INTO categories (name, description) VALUES ('Regalos y Novedades', 'Regalos y productos novedosos para ocasiones especiales');
+
+-- Bien, es lo que necesitaba. Ahora tengo una tabla llamada products, con las siguientes columnas (id auto_increment, name, price, stock, category, created_at timestamp). Ten en cuenta que la columna "category" es clave foránea de la tabla categories en la que has insertado las categorias anteriores. Por favor, necesito que insertes en la tabla products, 20 productos de cada categoría con productos genéricos relacionados con la categoría a la que pertencen
+
+
+
+-- Electrónica
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Smartphone', 200.00, 10, 1, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Tableta', 300.00, 5, 1, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Laptop', 800.00, 3, 1, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cámara de seguridad', 100.00, 20, 1, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Altavoces Bluetooth', 50.00, 15, 1, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cargador portátil', 20.00, 25, 1, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Funda para smartphone', 10.00, 30, 1, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Tarjeta de memoria', 15.00, 20, 1, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cable USB', 5.00, 40, 1, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Adaptador de corriente', 10.00, 25, 1, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Batería recargable', 20.00, 15, 1, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Lector de tarjetas', 30.00, 10, 1, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cámara web', 40.00, 5, 1, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Micrófono USB', 25.00, 20, 1, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Auriculares inalámbricos', 60.00, 10, 1, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Disco duro externo', 80.00, 5, 1, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Router Wi-Fi', 50.00, 15, 1, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Switch de red', 30.00, 20, 1, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cable de red', 10.00, 40, 1, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Conector RJ45', 5.00, 50, 1, NOW());
+
+-- Moda
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Camisa de hombre', 20.00, 20, 2, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Vestido de mujer', 30.00, 15, 2, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Pantalones de hombre', 25.00, 20, 2, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Falda de mujer', 20.00, 15, 2, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Chaquetón de hombre', 40.00, 10, 2, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Abrigo de mujer', 50.00, 5, 2, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Zapatos de hombre', 30.00, 20, 2, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Zapatos de mujer', 25.00, 15, 2, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Gorra de hombre', 10.00, 25, 2, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cinturón de hombre', 15.00, 20, 2, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Bolsa de mujer', 20.00, 15, 2, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Reloj de hombre', 30.00, 10, 2, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Reloj de mujer', 25.00, 5, 2, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Gafas de sol', 20.00, 20, 2, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cadena de hombre', 30.00, 10, 2, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Pulsera de mujer', 25.00, 5, 2, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Anillo de hombre', 40.00, 5, 2, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Anillo de mujer', 30.00, 5, 2, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cinturón de mujer', 20.00, 10, 2, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Bolsa de hombre', 30.00, 5, 2, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Gorra de mujer', 15.00, 10, 2, NOW());
+
+-- Hogar y Jardín
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Mesa de comedor', 100.00, 5, 3, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Silla de jardín', 20.00, 10, 3, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Lámpara de mesa', 30.00, 5, 3, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Alfombra de entrada', 40.00, 5, 3, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cortina de baño', 25.00, 10, 3, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Toalla de baño', 15.00, 20, 3, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Juego de sábanas', 50.00, 5, 3, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Colcha de cama', 60.00, 5, 3, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Manta de viaje', 30.00, 10, 3, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Caja de herramientas', 40.00, 5, 3, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Llave inglesa', 20.00, 10, 3, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Taladro eléctrico', 50.00, 5, 3, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Sierra circular', 60.00, 5, 3, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Pala de jardín', 30.00, 10, 3, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Riego de jardín', 40.00, 5, 3, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Maceta de jardín', 25.00, 10, 3, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Sistema de riego', 100.00, 5, 3, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cortacésped', 150.00, 5, 3, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Aspiradora de jardín', 120.00, 5, 3, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Poda de árboles', 80.00, 5, 3, NOW());
+
+-- Deportes y Fitness
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Bicicleta de carretera', 200.00, 5, 4, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Bicicleta de montaña', 250.00, 5, 4, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Pelota de fútbol', 20.00, 10, 4, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Pelota de baloncesto', 25.00, 10, 4, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Pelota de tenis', 15.00, 20, 4, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Raqueta de tenis', 50.00, 5, 4, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Guantes de boxeo', 30.00, 10, 4, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cinta de correr', 40.00, 5, 4, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Bolsa de boxeo', 60.00, 5, 4, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Pesa de mano', 20.00, 10, 4, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Barra de pesas', 50.00, 5, 4, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Mancuerna', 30.00, 10, 4, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cinta de resistencia', 40.00, 5, 4, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Bicicleta estática', 150.00, 5, 4, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Remo de ejercicio', 80.00, 5, 4, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Patin de ejercicio', 100.00, 5, 4, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cinta de correr eléctrica', 250.00, 5, 4, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Bicicleta de ejercicio', 200.00, 5, 4, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Máquina de ejercicio', 300.00, 5, 4, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Pesa de ejercicio', 150.00, 5, 4, NOW());
+
+-- Bebés y Niños
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Juguetes de peluche', 10.00, 20, 5, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Juguetes de madera', 15.00, 15, 5, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Juguetes de plástico', 12.00, 20, 5, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Juguetes de tela', 18.00, 15, 5, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Juguetes de música', 20.00, 10, 5, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Juguetes de luz', 15.00, 15, 5, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Juguetes de sonido', 12.00, 20, 5, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Juguetes de movimiento', 18.00, 15, 5, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Juguetes de agua', 20.00, 10, 5, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Juguetes de arena', 15.00, 15, 5, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Juguetes de nieve', 12.00, 20, 5, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Juguetes de fuego', 18.00, 15, 5, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Juguetes de viento', 20.00, 10, 5, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Juguetes de sol', 15.00, 15, 5, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Juguetes de luna', 12.00, 20, 5, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Juguetes de estrellas', 18.00, 15, 5, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Juguetes de planetas', 20.00, 10, 5, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Juguetes de galaxias', 15.00, 15, 5, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Juguetes de universo', 12.00, 20, 5, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Juguetes de espacio', 18.00, 15, 5, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Juguetes de tiempo', 20.00, 10, 5, NOW());
+
+-- Libros y Música
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Libros de ficción', 10.00, 20, 6, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Libros de no ficción', 15.00, 15, 6, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Libros de poesía', 12.00, 20, 6, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Libros de teatro', 18.00, 15, 6, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Libros de ensayo', 20.00, 10, 6, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Libros de biografía', 15.00, 15, 6, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Libros de historia', 12.00, 20, 6, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Libros de ciencia', 18.00, 15, 6, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Libros de tecnología', 20.00, 10, 6, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Libros de arte', 15.00, 15, 6, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Libros de música', 12.00, 20, 6, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Libros de cine', 18.00, 15, 6, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Libros de televisión', 20.00, 10, 6, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Libros de radio', 15.00, 15, 6, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Libros de prensa', 12.00, 20, 6, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Libros de internet', 18.00, 15, 6, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Libros de redes sociales', 20.00, 10, 6, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Libros de marketing', 15.00, 15, 6, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Libros de publicidad', 12.00, 20, 6, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Libros de relaciones públicas', 18.00, 15, 6, NOW());
+
+-- Cocina y Comida
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Utensilios de cocina', 10.00, 20, 7, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Electrodomésticos', 15.00, 15, 7, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Productos gourmet', 12.00, 20, 7, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Bebidas', 18.00, 15, 7, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Comida preparada', 20.00, 10, 7, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Ingredientes', 15.00, 15, 7, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Recetas', 12.00, 20, 7, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cursos de cocina', 50.00, 10, 7, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Libros de cocina', 30.00, 15, 7, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Utensilios de repostería', 12.00, 20, 7, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Ingredientes para repostería', 15.00, 15, 7, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Recetas de repostería', 18.00, 10, 7, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cursos de repostería', 50.00, 5, 7, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Libros de repostería', 30.00, 10, 7, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Utensilios de bar', 12.00, 20, 7, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Ingredientes para cócteles', 15.00, 15, 7, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Recetas de cócteles', 18.00, 10, 7, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cursos de bar', 50.00, 5, 7, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Libros de bar', 30.00, 10, 7, NOW());
+
+-- Salud y Belleza
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Productos de cuidado personal', 10.00, 20, 8, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Productos de belleza', 15.00, 15, 8, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Suplementos alimenticios', 12.00, 20, 8, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Medicamentos', 18.00, 15, 8, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Equipos de ejercicio', 20.00, 10, 8, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Ropa de ejercicio', 15.00, 15, 8, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Zapatos de ejercicio', 12.00, 20, 8, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Accesorios de ejercicio', 18.00, 15, 8, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cursos de ejercicio', 50.00, 10, 8, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Libros de ejercicio', 30.00, 15, 8, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Utensilios de masaje', 12.00, 20, 8, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Aceites esenciales', 15.00, 15, 8, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cursos de masaje', 50.00, 10, 8, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Libros de masaje', 30.00, 15, 8, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Utensilios de spa', 12.00, 20, 8, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Productos de spa', 15.00, 15, 8, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cursos de spa', 50.00, 10, 8, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Libros de spa', 30.00, 15, 8, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Utensilios de belleza', 12.00, 20, 8, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Productos de belleza', 15.00, 15, 8, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cursos de belleza', 50.00, 10, 8, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Libros de belleza', 30.00, 15, 8, NOW());
+
+-- Viajes y Turismo
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Paquetes de viaje', 100.00, 5, 9, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Boletos de avión', 50.00, 10, 9, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Reservas de hotel', 80.00, 5, 9, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Alquiler de coches', 60.00, 10, 9, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Seguros de viaje', 40.00, 5, 9, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Guías de viaje', 30.00, 10, 9, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Mapas de viaje', 20.00, 5, 9, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Accesorios de viaje', 15.00, 10, 9, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cursos de viaje', 50.00, 5, 9, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Libros de viaje', 30.00, 10, 9, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Utensilios de viaje', 20.00, 5, 9, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Equipos de viaje', 40.00, 10, 9, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Ropa de viaje', 30.00, 5, 9, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Zapatos de viaje', 25.00, 10, 9, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Accesorios de viaje', 20.00, 5, 9, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cursos de viaje', 50.00, 10, 9, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Libros de viaje', 30.00, 5, 9, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Utensilios de viaje', 25.00, 10, 9, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Equipos de viaje', 40.00, 5, 9, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Ropa de viaje', 30.00, 10, 9, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Zapatos de viaje', 25.00, 5, 9, NOW());
+
+-- Oficina y Escuela
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Utensilios de oficina', 10.00, 20, 10, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Muebles de oficina', 50.00, 10, 10, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Equipos de oficina', 30.00, 15, 10, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Suministros de oficina', 20.00, 20, 10, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Libros de texto', 15.00, 15, 10, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cuadernos', 10.00, 20, 10, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Bolígrafos', 5.00, 25, 10, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Lápices', 5.00, 25, 10, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Gomas de borrar', 5.00, 25, 10, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cursos de oficina', 50.00, 10, 10, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Libros de oficina', 30.00, 15, 10, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Utensilios de arte', 20.00, 20, 10, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Materiales de arte', 30.00, 15, 10, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Equipos de arte', 40.00, 10, 10, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Suministros de arte', 25.00, 20, 10, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cursos de arte', 50.00, 10, 10, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Libros de arte', 30.00, 15, 10, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Utensilios de música', 25.00, 20, 10, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Instrumentos musicales', 50.00, 10, 10, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Equipos de música', 40.00, 15, 10, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Suministros de música', 30.00, 20, 10, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cursos de música', 50.00, 10, 10, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Libros de música', 30.00, 15, 10, NOW());
+
+
+-- Juguetes y Juegos
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Juego de mesa de ajedrez', 20.00, 10, 11, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Juego de mesa de damas', 15.00, 15, 11, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Juego de mesa de cartas', 10.00, 20, 11, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Juego de mesa de dados', 12.00, 15, 11, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Juego de mesa de estrategia', 25.00, 10, 11, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Juego de mesa de aventura', 20.00, 15, 11, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Juego de mesa de simulación', 30.00, 10, 11, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Juego de mesa de rol', 25.00, 15, 11, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Juego de mesa de construcción', 20.00, 10, 11, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Juego de mesa de educación', 15.00, 15, 11, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Juego de mesa de fantasía', 12.00, 20, 11, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Juego de mesa de acción', 18.00, 15, 11, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Juego de mesa de deportes', 20.00, 10, 11, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Juego de mesa de carreras', 25.00, 15, 11, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Juego de mesa de aventura en el espacio', 30.00, 10, 11, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Juego de mesa de exploración', 25.00, 15, 11, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Juego de mesa de supervivencia', 20.00, 10, 11, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Juego de mesa de estrategia en tiempo real', 30.00, 15, 11, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Juego de mesa de simulación de vida', 25.00, 10, 11, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Juego de mesa de aventura en el mar', 20.00, 15, 11, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Juego de mesa de exploración en el desierto', 25.00, 10, 11, NOW());
+
+-- Arte y Manualidades
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Kit de pintura al óleo', 20.00, 10, 12, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Kit de pintura acrílica', 15.00, 15, 12, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Kit de dibujo', 10.00, 20, 12, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Kit de manualidades', 12.00, 15, 12, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Kit de costura', 20.00, 10, 12, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Kit de tejido', 25.00, 15, 12, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Kit de cerámica', 30.00, 10, 12, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Kit de escultura', 25.00, 15, 12, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Kit de joyería', 20.00, 10, 12, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Kit de bisutería', 15.00, 15, 12, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Kit de decoración', 12.00, 20, 12, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Kit de restauración', 18.00, 15, 12, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Kit de conservación', 20.00, 10, 12, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Kit de limpieza', 15.00, 15, 12, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Kit de organización', 12.00, 20, 12, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Kit de almacenamiento', 18.00, 15, 12, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Kit de embalaje', 20.00, 10, 12, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Kit de etiquetado', 15.00, 15, 12, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Kit de empaque', 12.00, 20, 12, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Kit de protección', 18.00, 15, 12, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Kit de seguridad', 20.00, 10, 12, NOW());
+
+-- Mascotas
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Alimento para perros', 20.00, 10, 13, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Alimento para gatos', 15.00, 15, 13, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Juguetes para perros', 10.00, 20, 13, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Juguetes para gatos', 12.00, 15, 13, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Accesorios para perros', 20.00, 10, 13, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Accesorios para gatos', 15.00, 15, 13, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Medicamentos para perros', 25.00, 10, 13, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Medicamentos para gatos', 20.00, 15, 13, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Servicios para perros', 30.00, 10, 13, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Servicios para gatos', 25.00, 15, 13, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cursos para perros', 40.00, 10, 13, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cursos para gatos', 35.00, 15, 13, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Libros para perros', 30.00, 10, 13, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Libros para gatos', 25.00, 15, 13, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Utensilios para perros', 20.00, 10, 13, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Utensilios para gatos', 15.00, 15, 13, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Herramientas para perros', 25.00, 10, 13, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Herramientas para gatos', 20.00, 15, 13, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Suministros para perros', 20.00, 10, 13, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Suministros para gatos', 15.00, 15, 13, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cajas para perros', 25.00, 10, 13, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cajas para gatos', 20.00, 15, 13, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Ropa para perros', 30.00, 10, 13, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Ropa para gatos', 25.00, 15, 13, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Zapatos para perros', 20.00, 10, 13, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Zapatos para gatos', 15.00, 15, 13, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Accesorios para perros', 25.00, 10, 13, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Accesorios para gatos', 20.00, 15, 13, NOW());
+
+-- Cine y Teatro
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Entradas de cine', 10.00, 20, 14, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Entradas de teatro', 15.00, 15, 14, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Películas en DVD', 20.00, 10, 14, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Películas en Blu-ray', 25.00, 5, 14, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Libros de cine', 30.00, 10, 14, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Libros de teatro', 30.00, 5, 14, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cursos de cine', 50.00, 10, 14, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cursos de teatro', 50.00, 5, 14, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Utensilios de cine', 25.00, 10, 14, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Utensilios de teatro', 30.00, 5, 14, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Herramientas de cine', 40.00, 10, 14, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Herramientas de teatro', 45.00, 5, 14, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Suministros de cine', 30.00, 10, 14, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Suministros de teatro', 35.00, 5, 14, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cajas para cine', 40.00, 10, 14, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cajas para teatro', 45.00, 5, 14, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Ropa para cine', 35.00, 10, 14, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Ropa para teatro', 40.00, 5, 14, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Zapatos para cine', 30.00, 10, 14, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Zapatos para teatro', 35.00, 5, 14, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Accesorios para cine', 25.00, 10, 14, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Accesorios para teatro', 30.00, 5, 14, NOW());
+
+-- Música y Instrumentos
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Guitarra acústica', 200.00, 5, 15, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Guitarra eléctrica', 250.00, 5, 15, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Bajo eléctrico', 300.00, 5, 15, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Batería', 400.00, 5, 15, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Teclado', 150.00, 5, 15, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Piano', 500.00, 5, 15, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Violín', 200.00, 5, 15, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cello', 300.00, 5, 15, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Flauta', 100.00, 5, 15, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Clarinete', 150.00, 5, 15, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Saxofón', 200.00, 5, 15, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Trompeta', 250.00, 5, 15, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Trombón', 300.00, 5, 15, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Caja de música', 100.00, 5, 15, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Metronomo', 50.00, 5, 15, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Afinador', 20.00, 5, 15, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cuerdas para guitarra', 10.00, 5, 15, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cuerdas para bajo', 15.00, 5, 15, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Parches para guitarra', 5.00, 5, 15, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Parches para bajo', 10.00, 5, 15, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Estuche para guitarra', 20.00, 5, 15, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Estuche para bajo', 25.00, 5, 15, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Correa para guitarra', 10.00, 5, 15, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Correa para bajo', 15.00, 5, 15, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Púa para guitarra', 5.00, 5, 15, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Púa para bajo', 10.00, 5, 15, NOW());
+
+-- Fotografía
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cámara digital', 200.00, 5, 16, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cámara réflex', 300.00, 5, 16, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Lente para cámara', 100.00, 5, 16, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Tripode para cámara', 50.00, 5, 16, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Bolsa para cámara', 20.00, 5, 16, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Filtro para cámara', 10.00, 5, 16, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Objetivo para cámara', 50.00, 5, 16, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Flash para cámara', 20.00, 5, 16, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Batería para cámara', 10.00, 5, 16, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cargador para cámara', 15.00, 5, 16, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Tarjeta de memoria para cámara', 20.00, 5, 16, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Estuche para cámara', 25.00, 5, 16, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Correa para cámara', 10.00, 5, 16, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Púa para cámara', 5.00, 5, 16, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Kit de limpieza para cámara', 20.00, 5, 16, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Kit de mantenimiento para cámara', 30.00, 5, 16, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cursos de fotografía', 50.00, 5, 16, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Libros de fotografía', 30.00, 5, 16, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Utensilios de fotografía', 25.00, 5, 16, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Herramientas de fotografía', 40.00, 5, 16, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Suministros de fotografía', 30.00, 5, 16, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cajas para fotografía', 40.00, 5, 16, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Ropa para fotografía', 35.00, 5, 16, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Zapatos para fotografía', 30.00, 5, 16, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Accesorios para fotografía', 25.00, 5, 16, NOW());
+
+-- Automoción
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Aceite para motor', 20.00, 5, 17, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Filtro de aceite', 10.00, 5, 17, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Filtro de aire', 15.00, 5, 17, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Batería para coche', 50.00, 5, 17, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cargador para batería', 20.00, 5, 17, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Llantas para coche', 100.00, 5, 17, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cubiertas para llantas', 20.00, 5, 17, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Kit de herramientas para coche', 50.00, 5, 17, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Kit de limpieza para coche', 30.00, 5, 17, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Kit de mantenimiento para coche', 40.00, 5, 17, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cursos de automoción', 60.00, 5, 17, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Libros de automoción', 40.00, 5, 17, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Utensilios de automoción', 35.00, 5, 17, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Herramientas de automoción', 50.00, 5, 17, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Suministros de automoción', 40.00, 5, 17, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cajas para automoción', 50.00, 5, 17, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Ropa para automoción', 45.00, 5, 17, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Zapatos para automoción', 40.00, 5, 17, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Accesorios para automoción', 35.00, 5, 17, NOW());
+
+-- Bricolaje y Herramientas
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Herramientas de mano', 20.00, 5, 18, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Herramientas eléctricas', 50.00, 5, 18, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Materiales de construcción', 30.00, 5, 18, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Pinturas y barnices', 25.00, 5, 18, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Adhesivos y selladores', 20.00, 5, 18, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Kit de herramientas para bricolaje', 40.00, 5, 18, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Kit de limpieza para bricolaje', 30.00, 5, 18, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Kit de mantenimiento para bricolaje', 50.00, 5, 18, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cursos de bricolaje', 60.00, 5, 18, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Libros de bricolaje', 40.00, 5, 18, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Utensilios de bricolaje', 35.00, 5, 18, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Herramientas de bricolaje', 50.00, 5, 18, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Suministros de bricolaje', 40.00, 5, 18, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cajas para bricolaje', 50.00, 5, 18, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Ropa para bricolaje', 45.00, 5, 18, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Zapatos para bricolaje', 40.00, 5, 18, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Accesorios para bricolaje', 35.00, 5, 18, NOW());
+
+-- Gastronomía
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Ingredientes para cocina', 20.00, 5, 19, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Utensilios de cocina', 30.00, 5, 19, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Electrodomésticos para cocina', 50.00, 5, 19, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Muebles para cocina', 100.00, 5, 19, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Decoración para cocina', 40.00, 5, 19, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Kit de cocina', 60.00, 5, 19, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Kit de limpieza para cocina', 30.00, 5, 19, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Kit de mantenimiento para cocina', 50.00, 5, 19, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cursos de cocina', 80.00, 5, 19, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Libros de cocina', 50.00, 5, 19, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Utensilios de cocina', 40.00, 5, 19, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Herramientas de cocina', 60.00, 5, 19, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Suministros de cocina', 50.00, 5, 19, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Cajas para cocina', 60.00, 5, 19, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Ropa para cocina', 55.00, 5, 19, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Zapatos para cocina', 50.00, 5, 19, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Accesorios para cocina', 45.00, 5, 19, NOW());
+
+-- Regalos y Novedades
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Regalos para cumpleaños', 20.00, 5, 20, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Regalos para Navidad', 30.00, 5, 20, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Regalos para boda', 40.00, 5, 20, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Regalos para aniversario', 35.00, 5, 20, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Regalos para graduación', 30.00, 5, 20, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Regalos para amigos', 25.00, 5, 20, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Regalos para familiares', 30.00, 5, 20, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Regalos para niños', 20.00, 5, 20, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Regalos para adolescentes', 25.00, 5, 20, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Regalos para adultos', 30.00, 5, 20, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Regalos para ancianos', 25.00, 5, 20, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Regalos para mascotas', 20.00, 5, 20, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Regalos para el hogar', 30.00, 5, 20, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Regalos para la oficina', 25.00, 5, 20, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Regalos para el jardín', 20.00, 5, 20, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Regalos para la cocina', 25.00, 5, 20, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Regalos para el baño', 20.00, 5, 20, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Regalos para el dormitorio', 25.00, 5, 20, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Regalos para la sala', 30.00, 5, 20, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Regalos para el comedor', 25.00, 5, 20, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Regalos para la terraza', 20.00, 5, 20, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Regalos para el patio', 25.00, 5, 20, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Regalos para la piscina', 30.00, 5, 20, NOW());
+ 
+-- Regalos y Novedades 2
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Regalo de cumpleaños', 20.00, 10, 20, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Regalo de Navidad', 30.00, 5, 20, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Regalo de boda', 40.00, 5, 20, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Regalo de aniversario', 25.00, 10, 20, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Regalo de graduación', 30.00, 5, 20, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Regalo de cumpleaños para niños', 20.00, 10, 20, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Regalo de Navidad para niños', 25.00, 5, 20, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Regalo de boda para pareja', 40.00, 5, 20, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Regalo de aniversario para pareja', 30.00, 10, 20, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Regalo de graduación para estudiante', 25.00, 5, 20, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Regalo de cumpleaños para amigo', 20.00, 10, 20, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Regalo de Navidad para amigo', 25.00, 5, 20, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Regalo de boda para amigo', 30.00, 5, 20, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Regalo de aniversario para amigo', 25.00, 10, 20, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Regalo de graduación para amigo', 20.00, 5, 20, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Regalo de cumpleaños para familiar', 25.00, 10, 20, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Regalo de Navidad para familiar', 30.00, 5, 20, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Regalo de boda para familiar', 40.00, 5, 20, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Regalo de aniversario para familiar', 30.00, 10, 20, NOW());
+INSERT INTO products (name, price, stock, category, created_at) VALUES ('Regalo de graduación para familiar', 25.00, 5, 20, NOW());

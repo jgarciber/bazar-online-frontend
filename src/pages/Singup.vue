@@ -4,39 +4,40 @@ import {ref} from 'vue';
 
 const username = ref();
 const password = ref();
+const password2 = ref();
 
-function getUserLogin(userTryingToLog){
-    loginRepository.getUserLoginAPI(userTryingToLog).then(res => {
-      // JSON.parse(data)
-      // if(res[0].username){
-      //   sessionStorage.setItem('user', res[0].username);
-      //   sessionStorage.setItem('is_admin', res[0].is_admin);
-      //   window.location.href = '/products';
-      // }else{
-      //   sessionStorage.setItem('user', '');
-      //   sessionStorage.setItem('is_admin', 0);
-      // }
-      if(res.username != ''){
-        sessionStorage.setItem('user', res.rows[0].username);
-        sessionStorage.setItem('is_admin', res.rows[0].is_admin);
-        // set token in cookie
-        document.cookie = `token=${res.token}`
-        window.location.href = '/products';
-      }else{
-        alert('No se ha encontrado a dicho usuario, por favor inténtelo otra vez');
-        sessionStorage.setItem('user', '');
-        sessionStorage.setItem('is_admin', 0);
-      }
-    }
-  )
+function postUserLogin(userTryingToRegister){
+    loginRepository.postUserLoginAPI(userTryingToRegister).then(res => {
+        // alert(`Se ha registrado al usuario ${userTryingToRegister.username} correctamente`)
+        alert(res);
+        window.location.href = '/login';
+    })
 }
 
 function handleSubmit(e){
   e.preventDefault();
   const userTryingToLog = Object.fromEntries(new FormData(e.target).entries());
-  getUserLogin(userTryingToLog)
+  postUserLogin(userTryingToLog);
 }
 
+function handleTestPass(e){
+  // console.log(password)
+  console.log(password == password2)
+  let btnSingUp = document.getElementById('btnSingUp');
+  if(password.value != password2.value){
+    e.target.classList.remove('border-gray-500')
+    e.target.classList.remove('border-green-500')
+    e.target.classList.add('border-red-500')
+    btnSingUp.disabled = true;
+    // password2.classList.add('border-red-500')
+  }else{
+    e.target.classList.remove('border-gray-500')
+    e.target.classList.remove('border-red-500')
+    e.target.classList.add('border-green-500')
+    btnSingUp.disabled = false;
+    // password2.classList.add('border-green-500')
+  }
+}
 </script>
 
 <template>
@@ -50,9 +51,11 @@ function handleSubmit(e){
           <input type="text" name="username" v-model="username" class="bg-gray-50 border border-gray-500 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 my-4 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required/>
           <label for="contrasena" class="block mb-1 text-md font-medium text-gray-900 dark:text-white">Contraseña: </label>
           <input type="password" name="password" v-model="password" class="bg-gray-50 border border-gray-500 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 my-4 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required/>
-          <input type="submit" id="btnEntrar" value="Entrar" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 my-4 mt-8 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" />
+          <label for="contrasena" class="block mb-1 text-md font-medium text-gray-900 dark:text-white">Repetir contraseña: </label>
+          <input type="password" name="password2" v-model="password2" @input="handleTestPass" class="bg-gray-50 border border-gray-500 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 my-4 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required/>
+          <input type="submit" id="btnSingUp" value="Registrarse" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 my-4 mt-8 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" disabled />
           <div class="text-center m-auto w-full underline">
-            <a href="/singup">Registrarse</a>
+            <a href="/login">Volver al login</a>
           </div>
         </form>
     </div>

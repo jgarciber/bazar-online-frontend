@@ -3,16 +3,18 @@ import GenericGreenButton from '@/components/GenericGreenButton.vue';
 import GenericBlueButton from '@/components/GenericBlueButton.vue';
 import GenericRedButton from '@/components/GenericRedButton.vue';
 // import CustomHeader from './components/CustomHeader.vue';
-import {ref, onMounted} from 'vue';
+import {ref, onMounted, nextTick} from 'vue';
 import { productsRepository } from '../repositories/ProductsRepository.mjs';
 import { categoriesRepository } from '@/repositories/CategoriesRepository.mjs';
 import { salesRepository } from '../repositories/SalesRepository.mjs';
+import { getCookie } from '@/functions.mjs';
 
 // const message = ref('Hello vue!');
 const products = ref([]);
 const categories = ref([]);
 const productsCart = ref([]);
 const isEditingProduct = ref(false);
+const isAdmin = ref();
 let newProductName = ref();
 let newProductPrice = ref();
 let newProductStock = ref();
@@ -46,7 +48,7 @@ function postProduct(product){
 function postSale(product, quantity){
   salesRepository.postSaleAPI(product, quantity)
   .then(res => {
-    // getSales();
+    getProducts();
     isEditingProduct.value = false;
   })
 }
@@ -75,7 +77,7 @@ function handleSubmit(e){
   const newProduct = Object.fromEntries(new FormData(e.target).entries());
   // Hay que añadir manualmente el valor del campo select del formulario al objeto newProduct, ya que este no se incluye en el FormData por no ser de tipo input
   let newProductCategory = document.getElementById('newProductCategory');
-  newProduct.category = newProductCategory.value;
+  newProduct.categoryId = newProductCategory.value;
   // newProduct.category = newProductCategory.options[newProductCategory.selectedIndex].text;
   isEditingProduct.value ? putProduct(newProduct) : postProduct(newProduct);
   e.target.reset();
@@ -100,8 +102,8 @@ function handleModify(product){
   mostrarBtnCancelar();
 }
 
-function handleDelete(productId){
-  deleteProducts(productId);
+function handleDelete(product){
+  if (confirm(`¿Está seguro que quiere borrar el producto "${product.name}"?`)) deleteProducts(product.id);
 }
 
 function handleAddProduct(product){
@@ -146,20 +148,24 @@ function handleComprar(){
     }
   }
 
-  let arrayPromesas = [];
-  for (let product of productsCart.value){
-    arrayPromesas.push(postSale(product, product.quantity));
-  }
+  // let arrayPromesas = [];
+  // for (let product of productsCart.value){
+  //   arrayPromesas.push(postSale(product, product.quantity));
+  // }
 
-  Promise.all(arrayPromesas).then(
-    () => {
-    for (let product of productsCart.value){
-      productsCart.value.forEach((p) => {if(p.id == product.id) product.stock -= product.quantity })
-      putProduct(product);
-    }
-      productsCart.value = []
-    }
-  );
+  // Promise.all(arrayPromesas).then(
+  //   () => {
+  //   for (let product of productsCart.value){
+  //     productsCart.value.forEach((p) => {if(p.id == product.id) product.stock -= product.quantity })
+  //     putProduct(product);
+  //   }
+  //     productsCart.value = []
+  //   }
+  // );
+  for (let product of productsCart.value){
+    postSale(product, product.quantity);
+  }
+  productsCart.value = []
 }
 
 function handleVaciarCarrito(){
@@ -193,7 +199,7 @@ function mostrarBtnCancelar(){
   // } 
   // btnCancelarFormProducto.style.display = "inline-none";
 
-  console.log("nuevo")
+  // console.log("nuevo")
   // console.log(newProductName.value)
   // console.log(newProductPrice.value)
   // console.log(newProductStock.value)
@@ -232,11 +238,21 @@ function testEmptySearch(){
 }
 
 function init(){
-  getProducts();
-  getCategories();
-  let btnCancelarFormProducto = document.getElementById("btnCancelarFormProducto");
-  let formProducto = document.getElementById("formProducto");
-  btnCancelarFormProducto.style.display = "none";
+  if(getCookie('token') == undefined){
+    window.location.href = '/login';
+  }else{
+    getProducts();
+    getCategories();
+    isAdmin.value = sessionStorage.getItem('is_admin') == true ? true : false;
+    //la función nextTick se ejecuta una vez que se ha renderizado el DOM, pudiendo así capturar sus diferentes elementos que de otro modo no existirían, ya que para mostrarlos he utilizado v-if que los mostraban en función de una variable.
+    nextTick(() => {
+      if (isAdmin.value){
+        let btnCancelarFormProducto = document.getElementById("btnCancelarFormProducto");
+        let formProducto = document.getElementById("formProducto");
+        btnCancelarFormProducto.style.display = "none";
+      }
+    });
+  }
 };
 onMounted(init);
 
@@ -273,21 +289,21 @@ onMounted(init);
       </form>
       <br>
 
-      <div class="flex flex-row">
-        <ul class="mx-3">
+      <div class="flex flex-row flex-wrap justify-center">
+        <ul class="mx-3 mb-3">
           <h3 class="font-semibold">CATEGORÍAS:</h3>
-          <li class="mx-2 hover:bg-blue-200 list-none hover:list-disc" @click="handleSearchCategory($event, 'todas')">Todas</li>
+          <li class="mx-2 hover:bg-blue-200 list-none hover:list-disc" @click="handleSearchCategory($event, 'todas')">TODAS</li>
           <li v-for="category in categories" @click="handleSearchCategory($event, category)" class="mx-2 hover:bg-blue-200 list-none hover:list-disc">{{ category.name }}</li>
         </ul>
 
-        <table v-if="products.length != 0" class="mx-3">
+        <!-- <table v-if="products.length != 0" class="mx-3">
           <thead>
             <tr>
               <th>Nombre</th>
               <th>Precio</th>
               <th>Stock</th>
               <th>Categoria</th>
-              <th>Acciones</th>
+              <th v-if="isAdmin">Acciones</th>
               <th>Encargar</th>
             </tr>
           </thead>
@@ -298,14 +314,43 @@ onMounted(init);
               
               <td>{{product.stock}}</td>
               <td>{{product.categoryName}}</td>
-              <td>
+              <td v-if="isAdmin">
                 <GenericBlueButton @click="handleModify(product)">Modificar</GenericBlueButton>
                 <GenericRedButton @click="handleDelete(product.id)">Borrar</GenericRedButton>
               </td>
               <td><input type="number" name="cantidadAnadir" :id="'cantidadAnadir-'+product.id" min="1" :max="product.stock" value="1"><GenericGreenButton @click="handleAddProduct(product)">Añadir</GenericGreenButton></td>
             </tr> 
           </tbody>
-        </table>
+        </table> -->
+
+        <div v-if="products.length != 0" class="relative overflow-x-auto sm:rounded-md">
+          <table class="w-full text-md text-center rtl:text-right shadow-lg text-gray-800 dark:text-gray-400">
+            <thead class="text-sm text-gray-900 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+              <tr>
+                <th>Nombre</th>
+                <th>Precio</th>
+                <th>Stock</th>
+                <th>Categoria</th>
+                <th v-if="isAdmin">Acciones</th>
+                <th>Encargar</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="product in products" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                <td>{{product.name}}</td>
+                <td>{{product.price}}</td>
+                
+                <td>{{product.stock}}</td>
+                <td>{{product.categoryName}}</td>
+                <td v-if="isAdmin">
+                  <GenericBlueButton @click="handleModify(product)">Modificar</GenericBlueButton>
+                  <GenericRedButton @click="handleDelete(product)">Borrar</GenericRedButton>
+                </td>
+                <td><input type="number" name="cantidadAnadir" :id="'cantidadAnadir-'+product.id" min="1" :max="product.stock" value="1"><GenericGreenButton @click="handleAddProduct(product)">Añadir</GenericGreenButton></td>
+              </tr> 
+            </tbody>
+          </table>
+        </div>
         <h3 v-else class="mx-auto my-auto">No hay ningún resultado</h3>
       </div>
     </div>
@@ -345,21 +390,21 @@ onMounted(init);
       </table>
     </div>
     <hr>
-    <div class="my-6">
-      <form @submit="handleSubmit" id="formProducto" @input="mostrarBtnCancelar" class="mx-auto w-3/4 py-4">
+    <div class="my-6" v-if="isAdmin">
+      <form @submit="handleSubmit" id="formProducto" @input="mostrarBtnCancelar" class="mx-auto w-3/4 py-4 anadir-producto">
       <!-- <form @submit="handleSubmit" id="formProducto"> -->
-        <fieldset class="border-2 border-solid border-black p-3 rounded-lg bg-orange-400 ">
-          <legend v-if="isEditingProduct == false" class="text-lg font-semibold">Añadir producto</legend>
-          <legend v-else class="text-lg font-semibold">Modificar producto</legend>
+        <fieldset class="text-center border-2 border-solid border-black p-3 rounded-lg bg-orange-400 ">
+          <legend v-if="isEditingProduct == false" class="text-left text-lg font-semibold">Añadir producto</legend>
+          <legend v-else class="text-left text-lg font-semibold">Modificar producto</legend>
           <!-- <h3 class="text-lg font-semibold">Modificar producto</h3> -->
           <input type="text" name="id" id="idProduct" hidden>
-          <label for="newProductName" class="border border-solid border-black">Nombre</label>
+          <label for="newProductName" class="text-left border border-solid border-black">Nombre</label>
           <input v-model="newProductName" type="text" name="name" id="newProductName" required><br>
-          <label for="newProductPrice">Precio</label>
+          <label for="newProductPrice" class="text-left">Precio</label>
           <input v-model="newProductPrice" type="number" name="price" id="newProductPrice" min="0" step="0.01" required><br>
-          <label for="newProductStock">Stock</label>
+          <label for="newProductStock" class="text-left">Stock</label>
           <input v-model="newProductStock" type="number" name="stock" id="newProductStock" min="1" required><br>
-          <label for="newProductCategory">Categoria</label>
+          <label for="newProductCategory" class="text-left">Categoria</label>
           <select id="newProductCategory" style="width: 200px;" v-model="newProductCategory" required>
             <option value="0" disabled>--</option>
             <option v-for="category in categories" :value="category.id">{{ category.name }}</option>
@@ -398,7 +443,7 @@ nav li{
   text-decoration: none;
   list-style: none;
 }
-form label, form input, form textarea{
+form.anadir-producto label, form.anadir-producto input, form.anadir-producto textarea{
   border: solid;
   border-width: 1px;
   width: 200px;

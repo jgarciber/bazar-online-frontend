@@ -1,5 +1,6 @@
 <script setup>
 import {onMounted, ref} from 'vue';
+import { getCookie } from '@/functions.mjs';
 
 function redireccionLogin(){
   window.location.href = '/login';
@@ -7,7 +8,12 @@ function redireccionLogin(){
 
 onMounted(init);
 function init(){
-  const myTimeout = setTimeout(redireccionLogin, 3000);
+  if(getCookie('token') == undefined){
+    window.location.href = '/login';
+  }else{
+    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    const myTimeout = setTimeout(redireccionLogin, 3000);
+  }
 }
 
 </script>

@@ -12,5 +12,10 @@ export default {
       addVariant('search-cancel', '&::-webkit-search-cancel-button');
     }),
   ],
+  variants: {
+    extend: {
+      opacity: ['disabled'],
+    }
+  },
 }
 

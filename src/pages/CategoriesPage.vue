@@ -2,12 +2,14 @@
 import GenericBlueButton from '@/components/GenericBlueButton.vue';
 import GenericRedButton from '@/components/GenericRedButton.vue';
 // import CustomHeader from './components/CustomHeader.vue';
-import {ref, onMounted} from 'vue';
+import {ref, onMounted, nextTick} from 'vue';
 import { categoriesRepository } from '../repositories/CategoriesRepository.mjs';
+import { getCookie } from '@/functions.mjs';
 
 // const message = ref('Hello vue!');
 const categories = ref([]);
 const isEditingCategory = ref(false);
+const isAdmin = ref();
 
 function getCategories(){
   categoriesRepository.getCategoriesAPI()
@@ -53,19 +55,33 @@ function handleModify(category){
   document.getElementById("newCategoryDescription").value = category.description;
 }
 
-function handleDelete(categoryId){
-  deleteCategory(categoryId);
+function handleDelete(category){
+  if (confirm(`¿Está seguro que quiere borrar la categoría "${category.name}"?`)) deleteCategory(category.id);
 }
 
 function cancelarFormularioCategoria(){
-  document.getElementById("formCategory").reset();
+  formCategory.reset();
   isEditingCategory.value = false;
 }
 
 function init(){
-  getCategories();
-  // let btnCancelarFormProducto = document.getElementById("btnCancelarFormProducto");
-  // btnCancelarFormProducto.style.display = "none";
+  if(getCookie('token') == undefined){
+    window.location.href = '/login';
+  }else{
+    getCategories();
+    // let btnCancelarFormProducto = document.getElementById("btnCancelarFormProducto");
+    // btnCancelarFormProducto.style.display = "none";
+    isAdmin.value = sessionStorage.getItem('is_admin') == true ? true : false;
+    // isAdmin.value =  true;
+    //la función nextTick se ejecuta una vez que se ha renderizado el DOM, pudiendo así capturar sus diferentes elementos que de otro modo no existirían, ya que para mostrarlos he utilizado v-if que los mostraban en función de una variable.
+    nextTick(() => {
+      if (isAdmin.value){
+        let btnCancelarFormCategory = document.getElementById("btnCancelarFormCategory");
+        let formCategory = document.getElementById("formCategory");
+        btnCancelarFormCategory.style.display = "none";
+      }
+    });
+  }
 };
 onMounted(init);
 
@@ -73,22 +89,22 @@ onMounted(init);
 
 <template>
   <section class="mx-auto">
-    <div class="my-6">
-      <table>
-        <thead>
+    <div class="my-6 relative overflow-x-auto sm:rounded-md">
+      <table class="w-full text-md text-center rtl:text-right shadow-lg text-gray-800 dark:text-gray-400">
+        <thead class="text-sm text-gray-900 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
             <th>Nombre</th>
             <th>Descripción</th>
-            <th>Acciones</th>
+            <th v-if="isAdmin">Acciones</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="category in categories">
+          <tr v-for="category in categories" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
             <td>{{category.name}}</td>
             <td>{{category.description}}</td>
-            <td>
+            <td v-if="isAdmin">
               <GenericBlueButton @click="handleModify(category)">Modificar</GenericBlueButton>
-              <GenericRedButton @click="handleDelete(category.id)">Borrar</GenericRedButton>
+              <GenericRedButton @click="handleDelete(category)">Borrar</GenericRedButton>
             </td>
           </tr> 
         </tbody>
@@ -97,20 +113,26 @@ onMounted(init);
 
     <hr>
   
-    <div class="bg-orange-400 my-6">
+    <div class="my-6" v-if="isAdmin">
       <!-- <form @submit="handleSubmit" id="formProducto" @keydown="mostrarBtnCancelar" @input="mostrarBtnCancelar"> -->
       <form @submit="handleSubmit" id="formCategory">
-        <fieldset class="border-2 border-solid border-black p-3">
+        <fieldset class="flex flex-col items-center border-2 border-solid border-black p-3 rounded-lg bg-orange-400">
           <legend v-if="isEditingCategory==false" class="text-lg font-semibold">Añadir categoría</legend>
           <legend v-else class="text-lg font-semibold">Modificar categoría</legend>
           <!-- <h3 class="text-lg font-semibold">Modificar producto</h3> -->
           <input type="text" name="id" id="idCategory" style="display:none;">
-          <label for="name" class="border border-solid border-black">Nombre</label><input type="text" name="name" id="newCategoryName" required><br>
-          <label for="description">Descripción</label><textarea name="description" id="newCategoryDescription" required></textarea>
+          <div class="flex sm:flex-row flex-col flex-wrap">
+            <label for="name" class="border border-solid border-black">Nombre</label>
+            <input type="text" name="name" id="newCategoryName" required>
+          </div>
+          <div class="flex sm:flex-row flex-col flex-wrap">
+            <label for="description" class="border border-solid border-black">Descripción</label>
+            <textarea name="description" id="newCategoryDescription" rows="5" class=""></textarea>
+          </div>
           <br><br>
           <input v-if="isEditingCategory==false" type="submit" value="Añadir categoría" class="border border-solid border-black p-1 rounded-md hover:bg-green-400">
           <input v-else type="submit" value="Modificar categoría" class="border border-solid border-black p-1 rounded-md hover:bg-green-400">
-          <GenericRedButton @click="cancelarFormularioCategoria" id="btnCancelarFormProducto">Cancelar</GenericRedButton>
+          <GenericRedButton type="button" @click="cancelarFormularioCategoria" id="btnCancelarFormCategory">Cancelar</GenericRedButton>
         </fieldset>
       </form>
     </div>

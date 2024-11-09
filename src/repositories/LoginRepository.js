@@ -18,8 +18,7 @@ class LoginRepository{
     }
 
     async postUserLoginAPI(userTryingtoRegister){
-        console.log('2')
-        var url = 'http://localhost:3000/register'
+        var url = 'http://localhost:3000/singup'
         const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -29,10 +28,10 @@ class LoginRepository{
         // body: JSON.stringify({a: 1, b: 'Textual content'})
         body: JSON.stringify({
             username: userTryingtoRegister.username,
-            passoword: userTryingtoRegister.password
+            password: userTryingtoRegister.password
         })
         });
-
+        if(response.ok) return await response.text();
         // return await response.json();
     }
 }

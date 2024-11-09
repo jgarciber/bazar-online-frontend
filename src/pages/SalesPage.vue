@@ -1,6 +1,7 @@
 <script setup>
 import {ref, onMounted} from 'vue';
 import { salesRepository } from '../repositories/SalesRepository.mjs';
+import { getCookie } from '@/functions.mjs';
 
 const sales = ref([]);
 
@@ -12,16 +13,20 @@ function getSales(){
 }
 
 function init(){
-  getSales();
+  if(getCookie('token') == undefined){
+    window.location.href = '/login';
+  }else{
+    getSales();
+  }
 };
 onMounted(init);
 
 </script>
 
 <template>
-  <section class="mx-auto">
-    <table v-if="sales.length != 0" class="text-center my-6">
-        <thead>
+  <section class="mx-auto my-6 relative overflow-x-auto sm:rounded-md">
+    <table v-if="sales.length != 0" class="w-full text-md text-center rtl:text-right shadow-lg text-gray-800 dark:text-gray-400">
+        <thead class="text-sm text-gray-900 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
             <th>Nombre</th>
             <th>Precio</th>
@@ -31,7 +36,7 @@ onMounted(init);
           </tr>
         </thead>
         <tbody>
-          <tr v-for="venta in sales">
+          <tr v-for="venta in sales" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
             <td>{{venta.name}}</td>
             <td>{{venta.price}}</td>
             <td>{{venta.quantity}}</td>
