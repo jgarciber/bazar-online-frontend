@@ -3,7 +3,7 @@ import GenericGreenButton from '@/components/GenericGreenButton.vue';
 import GenericBlueButton from '@/components/GenericBlueButton.vue';
 import GenericRedButton from '@/components/GenericRedButton.vue';
 import {ref, onMounted, nextTick} from 'vue';
-import { getCookie } from '@/functions.mjs';
+import { getCookie, smoothScrollJS } from '@/functions.mjs';
 import { usersRepository } from '@/repositories/UsersRepository.mjs';
 
 const users = ref([]);
@@ -23,7 +23,7 @@ function getUsers(){
 function postUser(newUser){
   usersRepository.postUserAPI(newUser)
   .then(res => {
-    alert(res);
+    if(res != undefined) alert(res);
     getUsers();
     isEditingUser.value = false;
   })
@@ -40,6 +40,8 @@ function putUser(newUser){
 function deleteUser(id){
   usersRepository.deleteUserAPI(id)
   .then(res => {
+    console.log(res)
+    if(res != '') alert(res);
     getUsers();
   })
 }
@@ -63,6 +65,7 @@ function handleModify(user){
   document.getElementById("idUser").value = user.id;
   newAdminUser.checked = user.isAdmin ? true : false;
   mostrarBtnCancelar();
+  smoothScrollJS('formUsuario')
 }
 
 function mostrarBtnCancelar(){ 
@@ -109,6 +112,8 @@ function init(){
         let formUsuario = document.getElementById("formUsuario");
         let newAdminUser = document.getElementById("newAdminUser");
         btnCancelarFormUsuario.style.display = "none";
+      }else{
+        isEditingUser.value = true;
       }
     });
   }
@@ -118,10 +123,10 @@ onMounted(init);
 </script>
 
 <template>
-  <section class="mx-auto">
+  <section class="mx-auto overflow-auto">
     <div class="my-6">
 
-      <form class="max-w-md mx-auto" @submit="handleSearchUser" @keydown="testEmptySearch">   
+      <form v-if="isAdmin" class="max-w-md mx-auto mb-6" @submit="handleSearchUser" @keydown="testEmptySearch">   
         <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
         <div class="relative">
           <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
@@ -133,7 +138,6 @@ onMounted(init);
           <button type="submit" class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Search</button>
         </div>
       </form>
-      <br>
 
       <div class="flex flex-row flex-wrap justify-center my-6">
       
@@ -150,9 +154,9 @@ onMounted(init);
               <tr v-for="user in users" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                 <td>{{user.username}}</td>
                 <td>{{user.isAdmin}}</td>
-                <td v-if="isAdmin">
+                <td>
                   <GenericBlueButton @click="handleModify(user)">Modificar</GenericBlueButton>
-                  <GenericRedButton @click="handleDelete(user)">Borrar</GenericRedButton>
+                  <GenericRedButton v-if="isAdmin" @click="handleDelete(user)">Borrar</GenericRedButton>
                 </td>
               </tr> 
             </tbody>
@@ -163,31 +167,33 @@ onMounted(init);
 
     </div>
     <hr>
-    <div class="my-6" v-if="isAdmin">
+    <div class="my-6">
       <form @submit="handleSubmit" id="formUsuario" @input="mostrarBtnCancelar" class="mx-auto w-full py-6 anadir-usuario">
       <!-- <form @submit="handleSubmit" id="formProducto"> -->
-        <fieldset class="flex flex-col items-center border-2 border-solid border-black p-3 rounded-lg bg-orange-400">
-          <legend v-if="isEditingUser == false" class="text-left text-lg font-semibold">Registrar Usuario</legend>
+        <fieldset class="flex flex-col items-center border-2 border-solid border-black p-6 rounded-lg bg-orange-400 gap-1">
+          <legend v-if="isEditingUser == false && isAdmin==true" class="text-left text-lg font-semibold">Registrar Usuario</legend>
           <legend v-else class="text-left text-lg font-semibold">Modificar usuario</legend>
           <!-- <h3 class="text-lg font-semibold">Modificar producto</h3> -->
           <input type="text" name="id" id="idUser" hidden>
-          <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center">
+          <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
             <label for="newUsername" class="text-left border border-solid border-black">Nombre</label>
-            <input v-model="newUsername" type="text" name="username" id="newUsername" required>
+            <input v-model="newUsername" type="text" name="username" id="newUsername" placeholder="Seleccione 'modificar'" oninvalid="this.setCustomValidity('Seleccione \'modificar\' un usuario para rellenar el formulario')" onkeypress="return false;" required>
           </div>
-          <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center">
+          <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
             <label for="newUserPassword" class="text-left">Contraseña</label>
             <input v-model="newUserPassword" type="password" name="password" id="newUserPassword" required>
           </div>
-          <div class="flex items-center flex-wrap">
+          <div class="flex items-center justify-start flex-wrap w-full">
             <!-- <input v-model="newAdminUser" type="checkbox" name="isAdmin" id="newAdminUser" required> -->
-            <input id="newAdminUser" type="checkbox" name="isAdmin" class="!w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
             <label for="newAdminUser" class="text-left">Es usuario administrador</label>
+            <input id="newAdminUser" type="checkbox" name="isAdmin" class="!w-4 h-4 ml-2 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
           </div>
-          <br><br>
-          <input v-if="isEditingUser == false" type="submit" value="Registrar usuario" class="border border-solid border-black p-1 rounded-md hover:bg-green-400">
-          <input v-else type="submit" value="Modificar usuario" class="border border-solid border-black p-1 rounded-md hover:bg-green-400">
-          <GenericRedButton type="button" @click="cancelarFormularioUsuario" id="btnCancelarFormUsuario">Cancelar</GenericRedButton>
+          <br>
+          <div class="flex flex-wrap justify-center gap-1">
+            <input v-if="isEditingUser == false && isAdmin==true" type="submit" value="Registrar usuario" class="border border-solid border-black p-1 rounded-md hover:bg-green-400">
+            <input v-else type="submit" value="Modificar usuario" class="border border-solid border-black p-1 rounded-md hover:bg-green-400">
+            <GenericRedButton type="button" @click="cancelarFormularioUsuario" id="btnCancelarFormUsuario">Cancelar</GenericRedButton>
+          </div>
         </fieldset>
       </form>
     </div>
@@ -215,10 +221,11 @@ nav li{
   padding-left: 30px;
 }
 
-form.anadir-usuario label, form.anadir-usuario input, form.anadir-usuario textarea{
+form.anadir-usuario label, form.anadir-usuario input{
   border: solid;
   border-width: 1px;
   width: 200px;
+  padding: 0;
 }
 table td{
   padding: 5px;

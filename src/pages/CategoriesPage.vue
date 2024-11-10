@@ -4,7 +4,7 @@ import GenericRedButton from '@/components/GenericRedButton.vue';
 // import CustomHeader from './components/CustomHeader.vue';
 import {ref, onMounted, nextTick} from 'vue';
 import { categoriesRepository } from '../repositories/CategoriesRepository.mjs';
-import { getCookie } from '@/functions.mjs';
+import { getCookie, smoothScrollJS } from '@/functions.mjs';
 
 // const message = ref('Hello vue!');
 const categories = ref([]);
@@ -53,6 +53,7 @@ function handleModify(category){
   document.getElementById("idCategory").value = category.id;
   document.getElementById("newCategoryName").value = category.name;
   document.getElementById("newCategoryDescription").value = category.description;
+  smoothScrollJS('formCategory');
 }
 
 function handleDelete(category){
@@ -88,7 +89,7 @@ onMounted(init);
 </script>
 
 <template>
-  <section class="mx-auto">
+  <section class="mx-auto overflow-auto">
     <div class="my-6 relative overflow-x-auto sm:rounded-md">
       <table class="w-full text-md text-center rtl:text-right shadow-lg text-gray-800 dark:text-gray-400">
         <thead class="text-sm text-gray-900 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -116,16 +117,16 @@ onMounted(init);
     <div class="my-6" v-if="isAdmin">
       <!-- <form @submit="handleSubmit" id="formProducto" @keydown="mostrarBtnCancelar" @input="mostrarBtnCancelar"> -->
       <form @submit="handleSubmit" id="formCategory">
-        <fieldset class="flex flex-col items-center border-2 border-solid border-black p-3 rounded-lg bg-orange-400">
+        <fieldset class="flex flex-col items-center border-2 border-solid border-black p-3 rounded-lg bg-orange-400 gap-1">
           <legend v-if="isEditingCategory==false" class="text-lg font-semibold">Añadir categoría</legend>
           <legend v-else class="text-lg font-semibold">Modificar categoría</legend>
           <!-- <h3 class="text-lg font-semibold">Modificar producto</h3> -->
           <input type="text" name="id" id="idCategory" style="display:none;">
-          <div class="flex sm:flex-row flex-col flex-wrap">
+          <div class="flex sm:flex-row flex-col flex-wrap gap-1">
             <label for="name" class="border border-solid border-black">Nombre</label>
             <input type="text" name="name" id="newCategoryName" required>
           </div>
-          <div class="flex sm:flex-row flex-col flex-wrap">
+          <div class="flex sm:flex-row flex-col flex-wrap gap-1">
             <label for="description" class="border border-solid border-black">Descripción</label>
             <textarea name="description" id="newCategoryDescription" rows="5" class=""></textarea>
           </div>
@@ -167,6 +168,7 @@ form label, form input, form textarea{
   border: solid;
   border-width: 1px;
   width: 200px;
+  padding: 0;
 }
 table td{
   padding: 5px;

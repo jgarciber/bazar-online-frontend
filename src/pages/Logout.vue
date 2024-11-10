@@ -12,6 +12,7 @@ function init(){
     window.location.href = '/login';
   }else{
     document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    sessionStorage.clear();
     const myTimeout = setTimeout(redireccionLogin, 3000);
   }
 }

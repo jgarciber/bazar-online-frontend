@@ -7,7 +7,7 @@ const route = useRoute();
 </script>
 
 <template>
-  <CustomHeader v-if="route.path !== '/login' && route.path !== '/singup'"/>
+  <CustomHeader v-if="route.path !== '/login' && route.path !== '/signup'"/>
   <main class="flex flex-1">
     <RouterView/>
   </main>

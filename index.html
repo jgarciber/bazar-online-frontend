@@ -7,8 +7,41 @@
     <script type="module" src="./src/main.js" defer></script>
     <title>Vite App</title>
     <link rel="stylesheet" href="index.css">
+    <script src="./node_modules/flowbite/dist/flowbite.min.js" defer></script>
+    <script src="./src/librerias/jquery-3.6.0.min.js"></script>
+    <script>
+      function initButtonScrollTopBottom(){
+        var margenSuperiorBtScrollTop = 150;
+        $(document).ready(function () {
+            $("#bt-scroll-top").click(function(){ 
+              scrollTo(0,$(document).height()) 
+            });
+            $(window).on("scroll", function myFunction() {
+              if (document.body.scrollTop > margenSuperiorBtScrollTop || document.documentElement.scrollTop > margenSuperiorBtScrollTop) {
+                  // $("#bt-scroll-top").css("transform", "rotate(0deg)");
+                  $("#bt-scroll-top").addClass("rotate180");
+                  // $("#bt-scroll-top").removeClass("fa-rotate-180");
+                  $("#bt-scroll-top").off('click');
+                  $("#bt-scroll-top").click(function(){ 
+                    scrollTo(0,0);
+                  });
+              } else {
+                  // $("#bt-scroll-top").css("transform", "rotate(180deg)"); 
+                  $("#bt-scroll-top").removeClass("rotate180");
+                  // $("#bt-scroll-top").addClass("fa-rotate-180");
+                  $("#bt-scroll-top").off('click');
+                  $("#bt-scroll-top").click(function(){ 
+                    scrollTo(0,$(document).height()) 
+                  });
+              }
+            });
+        });
+      }
+      initButtonScrollTopBottom();
+    </script>
   </head>
   <body>
     <div id="app"></div>
+    <!-- <span id="bt-scroll-top" class="fas fa-arrow-circle-down fa-2x"></span> -->
   </body>
 </html>

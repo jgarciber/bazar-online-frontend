@@ -7,7 +7,7 @@ import {ref, onMounted, nextTick} from 'vue';
 import { productsRepository } from '../repositories/ProductsRepository.mjs';
 import { categoriesRepository } from '@/repositories/CategoriesRepository.mjs';
 import { salesRepository } from '../repositories/SalesRepository.mjs';
-import { getCookie } from '@/functions.mjs';
+import { getCookie, mostrarMensajeEnCursor, smoothScrollJS } from '@/functions.mjs';
 
 // const message = ref('Hello vue!');
 const products = ref([]);
@@ -45,10 +45,28 @@ function postProduct(product){
   })
 }
 
-function postSale(product, quantity){
-  salesRepository.postSaleAPI(product, quantity)
-  .then(res => {
-    getProducts();
+// function postSale(product, quantity){
+//   salesRepository.postSaleAPI(product, quantity)
+//   .then(res => {
+//     getProducts();
+//     isEditingProduct.value = false;
+//   })
+// }
+function postSale(carrito){
+  let arrayPromesas = [];
+  for (let product of carrito){
+    arrayPromesas.push(salesRepository.postSaleAPI(sessionStorage.getItem('user_id'), product, product.quantity));
+  }
+
+  Promise.all(arrayPromesas).then(() => {
+    alert("Se ha realizado la compra correctamente");
+    productsCart.value = []
+    //Actualizo el stock de los productos, volviendo a filtrar por la categoría actual
+    productsRepository.searchProductsByCategoryAPI(carrito[0].categoryId)
+    .then(res => {
+      products.value = res;
+    })
+    // getProducts();
     isEditingProduct.value = false;
   })
 }
@@ -72,8 +90,6 @@ function deleteProducts(id){
 
 function handleSubmit(e){
   e.preventDefault();
-  console.log("ha llamado al submit del formulario")
-  console.log(isEditingProduct.value)
   const newProduct = Object.fromEntries(new FormData(e.target).entries());
   // Hay que añadir manualmente el valor del campo select del formulario al objeto newProduct, ya que este no se incluye en el FormData por no ser de tipo input
   let newProductCategory = document.getElementById('newProductCategory');
@@ -100,6 +116,7 @@ function handleModify(product){
   newProductCategory = product.categoryId;
   document.getElementById("idProduct").value = product.id;
   mostrarBtnCancelar();
+  smoothScrollJS('formProducto')
 }
 
 function handleDelete(product){
@@ -122,6 +139,7 @@ function handleAddProduct(product){
   }else{
     productsCart.value.push(newProduct);
   }
+  mostrarMensajeEnCursor(`"${product.name}" añadido al carrito`);
 }
 
 function handleDeleteProductCart(index){
@@ -162,10 +180,15 @@ function handleComprar(){
   //     productsCart.value = []
   //   }
   // );
-  for (let product of productsCart.value){
-    postSale(product, product.quantity);
-  }
-  productsCart.value = []
+
+
+  // for (let product of productsCart.value){
+  //   postSale(product, product.quantity);
+  // }
+  // productsCart.value = []
+
+  if (confirm('¿Quiere finalizar la comprar?')) postSale(productsCart.value);
+
 }
 
 function handleVaciarCarrito(){
@@ -259,7 +282,7 @@ onMounted(init);
 </script>
 
 <template>
-  <section class="mx-auto">
+  <section class="mx-auto overflow-auto">
     <div class="my-6">
      
       <!-- <form class="flex items-center max-w-sm mx-auto" @submit="handleSearchProduct" @input="testEmptySearch">   
@@ -275,7 +298,7 @@ onMounted(init);
         </button>
       </form> -->
 
-      <form class="max-w-md mx-auto" @submit="handleSearchProduct" @keydown="testEmptySearch">   
+      <form class="max-w-sm mx-auto" @submit="handleSearchProduct" @keydown="testEmptySearch">   
         <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
         <div class="relative">
           <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
@@ -338,7 +361,7 @@ onMounted(init);
             <tbody>
               <tr v-for="product in products" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                 <td>{{product.name}}</td>
-                <td>{{product.price}}</td>
+                <td>{{product.price}} &euro;</td>
                 
                 <td>{{product.stock}}</td>
                 <td>{{product.categoryName}}</td>
@@ -346,7 +369,7 @@ onMounted(init);
                   <GenericBlueButton @click="handleModify(product)">Modificar</GenericBlueButton>
                   <GenericRedButton @click="handleDelete(product)">Borrar</GenericRedButton>
                 </td>
-                <td><input type="number" name="cantidadAnadir" :id="'cantidadAnadir-'+product.id" min="1" :max="product.stock" value="1"><GenericGreenButton @click="handleAddProduct(product)">Añadir</GenericGreenButton></td>
+                <td><input type="number" class="p-1" name="cantidadAnadir" :id="'cantidadAnadir-'+product.id" min="1" :max="product.stock" value="1"><GenericGreenButton @click="handleAddProduct(product)">Añadir</GenericGreenButton></td>
               </tr> 
             </tbody>
           </table>
@@ -360,8 +383,8 @@ onMounted(init);
         <thead>
           <tr>
             <th>Nombre</th>
-            <th>Precio</th>
             <th>Cantidad</th>
+            <th>Precio</th>
             <th>Total</th>
             <th>Acciones</th>
           </tr>
@@ -369,9 +392,8 @@ onMounted(init);
         <tbody>
           <tr v-for="(product, index) in productsCart">
             <td>{{product.name}}</td>
-            <td>{{product.price}}</td>
-            
             <td>{{product.quantity}}</td>
+            <td>{{product.price}}</td>
             <td>{{product.price * product.quantity}}</td>
             <td>
               <GenericRedButton @click="handleDeleteProductCart(index)">Borrar</GenericRedButton>
@@ -393,26 +415,34 @@ onMounted(init);
     <div class="my-6" v-if="isAdmin">
       <form @submit="handleSubmit" id="formProducto" @input="mostrarBtnCancelar" class="mx-auto w-3/4 py-4 anadir-producto">
       <!-- <form @submit="handleSubmit" id="formProducto"> -->
-        <fieldset class="text-center border-2 border-solid border-black p-3 rounded-lg bg-orange-400 ">
+        <fieldset class="flex flex-col items-center gap-1 border-2 border-solid border-black p-3 rounded-lg bg-orange-400">
           <legend v-if="isEditingProduct == false" class="text-left text-lg font-semibold">Añadir producto</legend>
-          <legend v-else class="text-left text-lg font-semibold">Modificar producto</legend>
+          <legend v-else class="text-lg font-semibold">Modificar producto</legend>
           <!-- <h3 class="text-lg font-semibold">Modificar producto</h3> -->
           <input type="text" name="id" id="idProduct" hidden>
-          <label for="newProductName" class="text-left border border-solid border-black">Nombre</label>
-          <input v-model="newProductName" type="text" name="name" id="newProductName" required><br>
-          <label for="newProductPrice" class="text-left">Precio</label>
-          <input v-model="newProductPrice" type="number" name="price" id="newProductPrice" min="0" step="0.01" required><br>
-          <label for="newProductStock" class="text-left">Stock</label>
-          <input v-model="newProductStock" type="number" name="stock" id="newProductStock" min="1" required><br>
-          <label for="newProductCategory" class="text-left">Categoria</label>
-          <select id="newProductCategory" style="width: 200px;" v-model="newProductCategory" required>
-            <option value="0" disabled>--</option>
-            <option v-for="category in categories" :value="category.id">{{ category.name }}</option>
-          </select>
-          <br><br>
+          <div class="flex sm:flex-row flex-col flex-wrap gap-1">
+            <label for="newProductName" class="border border-solid border-black">Nombre</label>
+            <input v-model="newProductName" type="text" name="name" id="newProductName" required>
+          </div>
+          <div class="flex sm:flex-row flex-col flex-wrap gap-1">
+            <label for="newProductPrice">Precio</label>
+            <input v-model="newProductPrice" type="number" name="price" id="newProductPrice" min="0" step="0.01" required>
+          </div>
+          <div class="flex sm:flex-row flex-col flex-wrap gap-1">
+            <label for="newProductStock">Stock</label>
+            <input v-model="newProductStock" type="number" name="stock" id="newProductStock" min="1" required>
+          </div>
+          <div class="flex sm:flex-row flex-col flex-wrap gap-1">
+            <label for="newProductCategory" class="text-left">Categoria</label>
+            <select id="newProductCategory" style="width: 200px;" v-model="newProductCategory" required>
+              <option value="0" disabled>--</option>
+              <option v-for="category in categories" :value="category.id">{{ category.name }}</option>
+            </select>
+          </div>
+          <br>
           <input v-if="isEditingProduct == false" type="submit" value="Añadir producto" class="border border-solid border-black p-1 rounded-md hover:bg-green-400">
           <input v-else type="submit" value="Modificar producto" class="border border-solid border-black p-1 rounded-md hover:bg-green-400">
-          <GenericRedButton type="button" @click="cancelarFormularioProducto" id="btnCancelarFormProducto">Cancelar</GenericRedButton>
+          <GenericRedButton type="button" @click="cancelarFormularioProducto" id="btnCancelarFormProducto" class="p-1">Cancelar</GenericRedButton>
         </fieldset>
       </form>
     </div>
@@ -443,10 +473,11 @@ nav li{
   text-decoration: none;
   list-style: none;
 }
-form.anadir-producto label, form.anadir-producto input, form.anadir-producto textarea{
+form.anadir-producto label, form.anadir-producto input, form.anadir-producto textarea, form.anadir-producto select{
   border: solid;
   border-width: 1px;
   width: 200px;
+  padding: 0;
 }
 table td{
   padding: 5px;

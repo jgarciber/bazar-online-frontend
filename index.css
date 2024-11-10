@@ -1,3 +1,34 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+#mensajesAJAXCursor {
+    position: absolute;
+    opacity: 1;
+    background-color: lightgreen;
+    border-radius: 4px;
+    padding: 4px;
+}
+
+#bt-scroll-top{
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    transition: 0.3s;
+    opacity: 0.5;
+    /* display: none; */
+}
+#bt-scroll-top:hover{
+    /* transform: scale(1.5); */
+    color: maroon;
+    opacity: 1;
+}
+.rotate180{
+    transform: rotate(180deg);
+}
+#bt-scroll-top.rotate180:hover{
+    /* transform: scale(1.5); */
+    transform: rotate(180deg);
+}
+html {
+    scroll-behavior: smooth;
+}

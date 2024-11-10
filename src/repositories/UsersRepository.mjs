@@ -46,7 +46,6 @@ class UsersRepository{
   }
   
   async putUserAPI(newUser){
-    console.log(newUser)
     var url = `http://localhost:3000/users/${newUser.id}`
     const response = await fetch(url, {
       method: 'PUT',
@@ -76,6 +75,7 @@ class UsersRepository{
       }
     });
     if(response.status == 403) alert('Acción no permitida')
+    return await response.text();
   }
 }
 

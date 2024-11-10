@@ -8,7 +8,7 @@ import CategoriesPage from './pages/CategoriesPage.vue'
 import SalesPage from './pages/SalesPage.vue'
 import Login from './pages/Login.vue'
 import Logout from './pages/Logout.vue'
-import Singup from './pages/Singup.vue'
+import SignUp from './pages/SignUp.vue'
 import UsersPage from './pages/UsersPage.vue'
 
 const routes = [
@@ -33,8 +33,8 @@ const routes = [
         component : Login
     },
     {
-        path: '/singup',
-        component : Singup
+        path: '/signup',
+        component : SignUp
     },
     {
         path: '/logout',
