@@ -13,8 +13,8 @@ class SalesRepository{
     return await response.json();
   }
 
-  async searchSalesAPI(searchKeyWord, searchBy){
-    var url = `http://localhost:3000/sales?q=${searchKeyWord}&type=${searchBy}`
+  async searchSalesAPI(searchKeyWord, searchBy, startDate, endDate){
+    var url = `http://localhost:3000/sales?q=${searchKeyWord}&type=${searchBy}&startDate=${startDate}&endDate=${endDate}`
     const response = await fetch(url, {
       method: 'GET',
       headers: {

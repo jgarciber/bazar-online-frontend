@@ -1,8 +1,7 @@
 <script setup>
-import GenericGreenButton from '@/components/GenericGreenButton.vue';
 import GenericBlueButton from '@/components/GenericBlueButton.vue';
 import GenericRedButton from '@/components/GenericRedButton.vue';
-import {ref, onMounted, nextTick, computed} from 'vue';
+import {ref, onMounted, nextTick, computed, watch} from 'vue';
 import { getCookie, smoothScrollJS } from '@/functions.mjs';
 import { usersRepository } from '@/repositories/UsersRepository.mjs';
 
@@ -144,7 +143,7 @@ function handleDelete(user){
 // }
 function cancelarFormularioUsuario(){
   if(isAdmin.value){
-    // Para resetear los valores de los campos del formulario hay que establecerlos a vacío manualmente ya que si no Vue los vuelve a recuperar de los valores que tiene almacenados en las variables. Por eso el método reset() no funciona correctamente.
+    // Para resetear los valores de los campos del formulario hay que establecerlos a vacío manualmente ya que si no Vue los vuelve a recuperar de los valores que tiene almacenados en las variables reactivas ref. Por eso el método reset() no funciona correctamente.
     // userAdminForm.reset();
     newUsernameAdminForm.value = '';
     newUserPasswordAdminForm.value = '';
@@ -167,9 +166,11 @@ function handleSearchUser(e){
     })
 }
 
-function testEmptySearch(){
-  if(searchKeyWord.value == '') getUsers();
-}
+watch(searchKeyWord, (newValue) => {
+  if (newValue.trim() === '') {
+    getUsers();
+  }
+});
 
 // Propiedad computada para verificar si las contraseñas coinciden
 const passwordsMatchAdminForm = computed(() => {

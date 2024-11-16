@@ -3,7 +3,7 @@ import GenericGreenButton from '@/components/GenericGreenButton.vue';
 import GenericBlueButton from '@/components/GenericBlueButton.vue';
 import GenericRedButton from '@/components/GenericRedButton.vue';
 // import CustomHeader from './components/CustomHeader.vue';
-import {ref, onMounted, nextTick} from 'vue';
+import {ref, onMounted, nextTick, watch} from 'vue';
 import { productsRepository } from '../repositories/ProductsRepository.mjs';
 import { categoriesRepository } from '@/repositories/CategoriesRepository.mjs';
 import { salesRepository } from '../repositories/SalesRepository.mjs';
@@ -223,9 +223,11 @@ function handleSearchCategory(e, category){
     })
 }
 
-function testEmptySearch(){
-  if(searchKeyWord.value == '') getProducts();
-}
+watch(searchKeyWord, (newValue) => {
+  if (newValue.trim() === '') {
+    getProducts();
+  }
+});
 
 function init(){
   if(getCookie('token') == undefined){
