@@ -37,7 +37,7 @@ class UsersRepository{
       },
       body: JSON.stringify({
         username: newUser.username,
-        password: newUser.password,
+        password: newUser.password1,
         isAdmin: newUser.isAdmin
       })
     });
@@ -55,7 +55,7 @@ class UsersRepository{
         'Authorization' : `${sessionStorage.getItem('user')} ${getCookie('token')}`
       },
       body: JSON.stringify({
-        password: newUser.password,
+        password: newUser.password1,
         isAdmin: newUser.isAdmin
       })
     });

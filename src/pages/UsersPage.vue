@@ -2,16 +2,25 @@
 import GenericGreenButton from '@/components/GenericGreenButton.vue';
 import GenericBlueButton from '@/components/GenericBlueButton.vue';
 import GenericRedButton from '@/components/GenericRedButton.vue';
-import {ref, onMounted, nextTick} from 'vue';
+import {ref, onMounted, nextTick, computed} from 'vue';
 import { getCookie, smoothScrollJS } from '@/functions.mjs';
 import { usersRepository } from '@/repositories/UsersRepository.mjs';
 
 const users = ref([]);
 const isEditingUser = ref(false);
 const isAdmin = ref();
-let newUsername = ref();
-let newUserPassword = ref();
+const userId = ref();
+// let newUsername = ref();
+// let newUserPassword = ref();
+// let searchKeyWord = ref();
+let newUsernameAdminForm = ref('');
+let resetPasswordAdminForm = ref(false); // Checkbox para restablecer la contraseña
+let newUserPasswordAdminForm = ref('');
+let newUserPassword2AdminForm = ref('');
 let searchKeyWord = ref();
+let newUsernameClientForm = ref();
+let newUserPasswordClientForm = ref();
+let newUserPassword2ClientForm = ref();
 
 function getUsers(){
   usersRepository.getUsersAPI()
@@ -55,35 +64,98 @@ function handleSubmit(e){
   newUser.isAdmin = newAdminUser;
   isEditingUser.value ? putUser(newUser) : postUser(newUser);
   e.target.reset();
-  // mostrarBtnCancelar();
 }
 
-function handleModify(user){
-  formUsuario.reset();
-  isEditingUser.value = true;
-  newUsername.value = user.username;
-  document.getElementById("idUser").value = user.id;
-  newAdminUser.checked = user.isAdmin ? true : false;
-  mostrarBtnCancelar();
-  smoothScrollJS('formUsuario')
-}
-
-function mostrarBtnCancelar(){ 
-  if (newUsername.value == '' && newUserPassword.value == '' && !newAdminUser.checked){
-    btnCancelarFormUsuario.style.display = "inline-none";
+function handleSubmitAdminForm(e){
+  e.preventDefault();
+  const newUser = Object.fromEntries(new FormData(e.target).entries());
+  // Hay que añadir manualmente el valor del campo select del formulario al objeto newUser, ya que este no se incluye en el FormData por no ser de tipo input
+  // console.log(newAdminUser.checked)
+  let newAdminUser = document.getElementById("newAdminUser").checked
+  newUser.isAdmin = newAdminUser;
+  if (!passwordsMatchAdminForm.value && resetPasswordAdminForm.value) {
+    alert("Las contraseñas no coinciden.");
   }else{
-    btnCancelarFormUsuario.style.display = "inline-block";
+    isEditingUser.value ? putUser(newUser) : postUser(newUser);
+  }
+  // e.target.reset();
+  cancelarFormularioUsuario();
+}
+
+function handleSubmitClientForm(e){
+  e.preventDefault();
+  const newUser = Object.fromEntries(new FormData(e.target).entries());
+  newUser.isAdmin = false
+  if (!newUsernameClientForm.value || !newUserPasswordClientForm.value || !newUserPassword2ClientForm.value) {
+    alert("Por favor, complete todos los campos.");
+  }else if (!passwordsMatchClientForm.value) {
+    alert("Las contraseñas no coinciden.");
+  }else{
+    putUser(newUser);
+  }
+  // e.target.reset();
+  cancelarFormularioUsuario();
+}
+
+// function handleModify(user){
+//   formUsuario.reset();
+//   isEditingUser.value = true;
+//   newUsername.value = user.username;
+//   document.getElementById("idUser").value = user.id;
+//   newAdminUser.checked = user.isAdmin ? true : false;
+//   mostrarBtnCancelar();
+//   smoothScrollJS('formUsuario')
+// }
+function handleModify(user){
+  if(isAdmin.value){
+    isEditingUser.value = true;
+    document.getElementById("idUserAdminForm").value = user.id;
+    resetPasswordAdminForm.value = false;
+    newUsernameAdminForm.value = user.username;
+    newUserPasswordAdminForm.value = '';
+    newUserPassword2AdminForm.value = '';
+    newAdminUser.checked = user.isAdmin ? true : false;
+    smoothScrollJS('userAdminForm')
+  }else{
+    // isEditingUser.value = true;
+    document.getElementById("idUserClientForm").value = user.id;
+    newUsernameClientForm.value = user.username;
+    newUserPasswordClientForm.value = '';
+    smoothScrollJS('userClientForm')
   }
 }
+
+// function mostrarBtnCancelar(){ 
+//   if (newUsername.value == '' && newUserPassword.value == '' && !newAdminUser.checked){
+//     btnCancelarFormUsuario.style.display = "inline-none";
+//   }else{
+//     btnCancelarFormUsuario.style.display = "inline-block";
+//   }
+// }
 
 function handleDelete(user){
   if (confirm(`¿Está seguro que quiere borrar el usuario "${user.username}"?`)) deleteUser(user.id);
 }
 
+// function cancelarFormularioUsuario(){
+//   formUsuario.reset();
+//   isEditingUser.value = false;
+//   // mostrarBtnCancelar();
+// }
 function cancelarFormularioUsuario(){
-  formUsuario.reset();
-  isEditingUser.value = false;
-  // mostrarBtnCancelar();
+  if(isAdmin.value){
+    // Para resetear los valores de los campos del formulario hay que establecerlos a vacío manualmente ya que si no Vue los vuelve a recuperar de los valores que tiene almacenados en las variables. Por eso el método reset() no funciona correctamente.
+    // userAdminForm.reset();
+    newUsernameAdminForm.value = '';
+    newUserPasswordAdminForm.value = '';
+    newUserPassword2AdminForm.value = '';
+    isEditingUser.value = false;
+  }else{
+    // userClientForm.reset();
+    newUsernameClientForm.value = '';
+    newUserPasswordClientForm.value = '';
+    newUserPassword2ClientForm.value = '';
+  }
 }
 
 
@@ -99,21 +171,41 @@ function testEmptySearch(){
   if(searchKeyWord.value == '') getUsers();
 }
 
+// Propiedad computada para verificar si las contraseñas coinciden
+const passwordsMatchAdminForm = computed(() => {
+  // return newUserPasswordAdminForm.value === newUserPassword2AdminForm.value && 
+  //        newUserPasswordAdminForm.value.length >= 8 && 
+  //        newUserPassword2AdminForm.value.length >= 8;
+  return newUserPasswordAdminForm.value === newUserPassword2AdminForm.value;
+});
+
+const passwordsMatchClientForm = computed(() => {
+  // return newUserPasswordAdminForm.value === newUserPassword2AdminForm.value && 
+  //        newUserPasswordAdminForm.value.length >= 8 && 
+  //        newUserPassword2AdminForm.value.length >= 8;
+  return newUserPasswordClientForm.value === newUserPassword2ClientForm.value;
+});
+
 function init(){
   if(getCookie('token') == undefined){
     window.location.href = '/login';
   }else{
     getUsers();
     isAdmin.value = sessionStorage.getItem('is_admin') == true ? true : false;
+    userId.value = sessionStorage.getItem('user_id');
     //la función nextTick se ejecuta una vez que se ha renderizado el DOM, pudiendo así capturar sus diferentes elementos que de otro modo no existirían, ya que para mostrarlos he utilizado v-if que los mostraban en función de una variable.
     nextTick(() => {
       if (isAdmin.value){
-        let btnCancelarFormUsuario = document.getElementById("btnCancelarFormUsuario");
-        let formUsuario = document.getElementById("formUsuario");
+        // let btnCancelarFormUsuario = document.getElementById("btnCancelarFormUsuario");
+        // let formUsuario = document.getElementById("formUsuario");
+        // let newAdminUser = document.getElementById("newAdminUser");
+        // btnCancelarFormUsuario.style.display = "none";
+        let btnCancelarAdminForm = document.getElementById("btnCancelarAdminForm");
+        let userAdminForm = document.getElementById("userAdminForm");
         let newAdminUser = document.getElementById("newAdminUser");
-        btnCancelarFormUsuario.style.display = "none";
       }else{
-        isEditingUser.value = true;
+        let btnCancelarClientForm = document.getElementById("btnCancelarClientForm");
+        let userClientForm = document.getElementById("userClientForm");
       }
     });
   }
@@ -123,7 +215,7 @@ onMounted(init);
 </script>
 
 <template>
-  <section class="mx-auto overflow-auto">
+  <section class="mx-auto w-5/6 overflow-auto">
     <div class="my-6">
 
       <form v-if="isAdmin" class="max-w-md mx-auto mb-6" @submit="handleSearchUser" @keydown="testEmptySearch">   
@@ -155,8 +247,8 @@ onMounted(init);
                 <td>{{user.username}}</td>
                 <td>{{user.isAdmin}}</td>
                 <td>
-                  <GenericBlueButton @click="handleModify(user)">Modificar</GenericBlueButton>
-                  <GenericRedButton v-if="isAdmin" @click="handleDelete(user)">Borrar</GenericRedButton>
+                  <GenericBlueButton class="m-0.5" @click="handleModify(user)">Modificar</GenericBlueButton>
+                  <GenericRedButton v-if="isAdmin && user.id != userId" class="m-0.5" @click="handleDelete(user)">Borrar</GenericRedButton>
                 </td>
               </tr> 
             </tbody>
@@ -168,31 +260,78 @@ onMounted(init);
     </div>
     <hr>
     <div class="my-6">
-      <form @submit="handleSubmit" id="formUsuario" @input="mostrarBtnCancelar" class="mx-auto w-full py-6 anadir-usuario">
+      <form v-if="isAdmin == true" @submit="handleSubmitAdminForm" id="userAdminForm" class="mx-auto w-full py-6 anadir-usuario">
       <!-- <form @submit="handleSubmit" id="formProducto"> -->
         <fieldset class="flex flex-col items-center border-2 border-solid border-black p-6 rounded-lg bg-orange-400 gap-1">
-          <legend v-if="isEditingUser == false && isAdmin==true" class="text-left text-lg font-semibold">Registrar Usuario</legend>
-          <legend v-else class="text-left text-lg font-semibold">Modificar usuario</legend>
+          <legend class="text-left text-lg font-semibold">{{ (!isEditingUser) ? 'Registrar Usuario' : 'Modificar Usuario' }}</legend>
           <!-- <h3 class="text-lg font-semibold">Modificar producto</h3> -->
-          <input type="text" name="id" id="idUser" hidden>
+          <input type="text" name="id" id="idUserAdminForm" hidden>
           <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
-            <label for="newUsername" class="text-left border border-solid border-black">Nombre</label>
-            <input v-model="newUsername" type="text" name="username" id="newUsername" placeholder="Seleccione 'modificar'" oninvalid="this.setCustomValidity('Seleccione \'modificar\' un usuario para rellenar el formulario')" onkeypress="return false;" required>
+            <label for="newUsernameAdminForm" class="text-left border border-solid border-black">Nombre</label>
+            <input v-model="newUsernameAdminForm" type="text" name="username" id="newUsernameAdminForm" @input="isEditingUser = false;" required>
           </div>
           <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
-            <label for="newUserPassword" class="text-left">Contraseña</label>
-            <input v-model="newUserPassword" type="password" name="password" id="newUserPassword" required>
+              <!-- <input v-model="newAdminUser" type="checkbox" name="isAdmin" id="newAdminUser" required> -->
+            <label for="resetPasswordAdminForm">{{ (isEditingUser == false) ? 'Establecer Contraseña' : 'Restablecer Contraseña' }}</label>
+            <span style="width: 200px;">
+              <input v-model="resetPasswordAdminForm" id="resetPasswordAdminForm" type="checkbox" name="resetPasswordAdminForm" class="!w-4 h-4 ml-2 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" :required="!isEditingUser">
+            </span>
           </div>
-          <div class="flex items-center justify-start flex-wrap w-full">
-            <!-- <input v-model="newAdminUser" type="checkbox" name="isAdmin" id="newAdminUser" required> -->
-            <label for="newAdminUser" class="text-left">Es usuario administrador</label>
-            <input id="newAdminUser" type="checkbox" name="isAdmin" class="!w-4 h-4 ml-2 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+          <div v-if="resetPasswordAdminForm" class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
+            <label for="newUserPasswordAdminForm" class="text-left">Nueva contraseña</label>
+            <input v-model="newUserPasswordAdminForm" type="password" name="password1" id="newUserPasswordAdminForm" :class="{'!border-green-500': passwordsMatchAdminForm, '!border-red-500': !passwordsMatchAdminForm, '!border-2':true}" pattern="^.{8,}$" 
+            title="La contraseña debe tener al menos 8 caracteres" :required="resetPasswordAdminForm">
+          </div>
+          <div v-if="resetPasswordAdminForm" class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
+            <label for="newUserPassword2AdminForm" class="text-left">Repetir Contraseña</label>
+            <input v-model="newUserPassword2AdminForm" type="password" name="password2" id="newUserPassword2AdminForm" :class="{'!border-green-500': passwordsMatchAdminForm, '!border-red-500': !passwordsMatchAdminForm, '!border-2':true}" pattern="^.{8,}$" 
+            title="La contraseña debe tener al menos 8 caracteres" :required="resetPasswordAdminForm">
+          </div>
+          <!-- <div class="flex flex-col items-center justify-start flex-wrap w-full"> -->
+          <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
+              <!-- <input v-model="newAdminUser" type="checkbox" name="isAdmin" id="newAdminUser" required> -->
+            <label for="newAdminUser">Es usuario administrador</label>
+            <span style="width: 200px;">
+              <input id="newAdminUser" type="checkbox" name="isAdmin" class="!w-4 h-4 ml-2 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+            </span>
           </div>
           <br>
           <div class="flex flex-wrap justify-center gap-1">
-            <input v-if="isEditingUser == false && isAdmin==true" type="submit" value="Registrar usuario" class="border border-solid border-black p-1 rounded-md hover:bg-green-400">
-            <input v-else type="submit" value="Modificar usuario" class="border border-solid border-black p-1 rounded-md hover:bg-green-400">
-            <GenericRedButton type="button" @click="cancelarFormularioUsuario" id="btnCancelarFormUsuario">Cancelar</GenericRedButton>
+            <input type="submit" :value="(!isEditingUser) ? 'Registrar Usuario' : 'Modificar Usuario'" id="btnSubmitAdminForm" class="border border-solid border-black p-1 rounded-md hover:bg-green-400">
+            <GenericRedButton v-if="newUsernameAdminForm != '' || newUserPasswordAdminForm != ''" type="button" @click="cancelarFormularioUsuario" id="btnCancelarAdminForm">Cancelar</GenericRedButton>
+
+          </div>
+        </fieldset>
+      </form>
+      
+      <form v-else @submit="handleSubmitClientForm" id="userClientForm" class="mx-auto w-full py-6 anadir-usuario">
+      <!-- <form @submit="handleSubmit" id="formProducto"> -->
+        <fieldset class="flex flex-col items-center border-2 border-solid border-black p-6 rounded-lg bg-orange-400 gap-1">
+          <legend class="text-left text-lg font-semibold">Modificar usuario</legend>
+          <!-- <h3 class="text-lg font-semibold">Modificar producto</h3> -->
+          <input type="text" name="id" id="idUserClientForm" hidden>
+          <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
+            <label for="newUsernameClientForm" class="text-left border border-solid border-black">Nombre</label>
+            <input v-model="newUsernameClientForm" type="text" name="username" id="newUsernameClientForm" placeholder="Seleccione 'modificar'" title="Seleccione \'modificar\' un usuario para rellenar el formulario" onkeypress="return false;" required>
+          </div>
+          <!-- <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
+            <label for="newUserPasswordClientForm" class="text-left">Nueva Contraseña</label>
+            <input v-model="newUserPasswordClientForm" type="password" name="password" id="newUserPasswordClientForm" required>
+          </div> -->
+          <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
+            <label for="newUserPasswordClientForm" class="text-left">Nueva contraseña</label>
+            <input v-model="newUserPasswordClientForm" type="password" name="password1" id="newUserPasswordClientForm" :class="{'!border-green-500': passwordsMatchClientForm, '!border-red-500': !passwordsMatchClientForm, '!border-2':true}" pattern="^.{8,}$" 
+            title="La contraseña debe tener al menos 8 caracteres" required>
+          </div>
+          <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
+            <label for="newUserPassword2ClientForm" class="text-left">Repetir Contraseña</label>
+            <input v-model="newUserPassword2ClientForm" type="password" name="password2" id="newUserPassword2ClientForm" :class="{'!border-green-500': passwordsMatchClientForm, '!border-red-500': !passwordsMatchClientForm, '!border-2':true}" pattern="^.{8,}$" 
+            title="La contraseña debe tener al menos 8 caracteres" required>
+          </div>
+          <br>
+          <div class="flex flex-wrap justify-center gap-1">
+            <input type="submit" id="btnSubmitClientForm" value="Modificar usuario" class="border border-solid border-black p-1 rounded-md hover:bg-green-400">
+            <GenericRedButton v-if="newUsernameClientForm != '' || newUserPasswordClientForm != ''" type="button" @click="cancelarFormularioUsuario" id="btnCancelarClientForm">Cancelar</GenericRedButton>
           </div>
         </fieldset>
       </form>
@@ -227,9 +366,16 @@ form.anadir-usuario label, form.anadir-usuario input{
   width: 200px;
   padding: 0;
 }
+
+input .border-green-500, input .border-red-500{
+  border-width: 6px !important;
+  transition: border-color 0.3s;
+}
+
 table td{
   padding: 5px;
 }
+
 table, table td, table th{
   border: solid;
 }

@@ -41,7 +41,7 @@ onMounted(init);
 <!-- <script src="./node_modules/flowbite/dist/flowbite.min.js" defer></script> -->
 
 <template>
-  <section class="mx-auto my-6 relative overflow-x-auto sm:rounded-md">
+  <section class="mx-auto my-6 w-5/6 relative overflow-x-auto sm:rounded-md">
     <form class="max-w-lg mx-auto mb-6" @submit="handleSearch" @keydown="testEmptySearch">
       <div class="flex">
           <!-- <label for="search-dropdown" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Your Email</label>
@@ -83,6 +83,7 @@ onMounted(init);
           </div>
       </div>
     </form>
+    
     <table v-if="sales.length != 0" class="w-full text-md text-center rtl:text-right shadow-lg text-gray-800 dark:text-gray-400">
         <thead class="text-sm text-gray-900 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>

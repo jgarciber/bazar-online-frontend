@@ -15,10 +15,10 @@ const categories = ref([]);
 const productsCart = ref([]);
 const isEditingProduct = ref(false);
 const isAdmin = ref();
-let newProductName = ref();
-let newProductPrice = ref();
-let newProductStock = ref();
-let newProductCategory = ref();
+let newProductName = ref('');
+let newProductPrice = ref('');
+let newProductStock = ref('');
+let newProductCategory = ref(0);
 let searchKeyWord = ref();
 
 
@@ -196,46 +196,13 @@ function handleVaciarCarrito(){
 }
 
 function cancelarFormularioProducto(){
-  formProducto.reset();
+  // formProducto.reset();
+  newProductName.value = '';
+  newProductPrice.value = '';
+  newProductStock.value = '';
+  newProductCategory.value = 0;
   isEditingProduct.value = false;
   // mostrarBtnCancelar();
-}
-
-function mostrarBtnCancelar(){
-  // let formulario =  document.getElementById("formProducto");
-  // for (let i = 0; i < formulario.elements.length; i++) { 
-  //   let element = formulario.elements[i]; 
-  //   if (element.value) {
-  //     btnCancelarFormProducto.style.display = "inline-block"; 
-  //     return;
-  //   }
-  // } 
-
-  
-  // let formInputs =  document.querySelectorAll("#formProducto input[type=text], #formProducto input[type=number] ");
-  // for (let input of formInputs) { 
-  //   console.log(input.value)
-  //   if (input.value) {
-  //     btnCancelarFormProducto.style.display = "inline-block"; 
-  //     return;
-  //   }
-  // } 
-  // btnCancelarFormProducto.style.display = "inline-none";
-
-  // console.log("nuevo")
-  // console.log(newProductName.value)
-  // console.log(newProductPrice.value)
-  // console.log(newProductStock.value)
-  // console.log(newProductName.value == '')
-  // console.log(newProductPrice.value == undefined)
-  // console.log(newProductPrice.value == '')
-  // console.log(newProductStock.value == '')
-  
-  if (newProductName.value == '' && newProductPrice.value == '' && newProductStock.value == ''){
-    btnCancelarFormProducto.style.display = "inline-none";
-  }else{
-    btnCancelarFormProducto.style.display = "inline-block";
-  }
 }
 
 function handleSearchProduct(e){
@@ -270,9 +237,9 @@ function init(){
     //la función nextTick se ejecuta una vez que se ha renderizado el DOM, pudiendo así capturar sus diferentes elementos que de otro modo no existirían, ya que para mostrarlos he utilizado v-if que los mostraban en función de una variable.
     nextTick(() => {
       if (isAdmin.value){
-        let btnCancelarFormProducto = document.getElementById("btnCancelarFormProducto");
+        // let btnCancelarFormProducto = document.getElementById("btnCancelarFormProducto");
+        // btnCancelarFormProducto.style.display = "none";
         let formProducto = document.getElementById("formProducto");
-        btnCancelarFormProducto.style.display = "none";
       }
     });
   }
@@ -282,7 +249,7 @@ onMounted(init);
 </script>
 
 <template>
-  <section class="mx-auto overflow-auto">
+  <section class="mx-auto w-5/6 overflow-auto">
     <div class="my-6">
      
       <!-- <form class="flex items-center max-w-sm mx-auto" @submit="handleSearchProduct" @input="testEmptySearch">   
@@ -366,10 +333,10 @@ onMounted(init);
                 <td>{{product.stock}}</td>
                 <td>{{product.categoryName}}</td>
                 <td v-if="isAdmin">
-                  <GenericBlueButton @click="handleModify(product)">Modificar</GenericBlueButton>
-                  <GenericRedButton @click="handleDelete(product)">Borrar</GenericRedButton>
+                  <GenericBlueButton class="m-0.5" @click="handleModify(product)">Modificar</GenericBlueButton>
+                  <GenericRedButton class="m-0.5" @click="handleDelete(product)">Borrar</GenericRedButton>
                 </td>
-                <td><input type="number" class="p-1" name="cantidadAnadir" :id="'cantidadAnadir-'+product.id" min="1" :max="product.stock" value="1"><GenericGreenButton @click="handleAddProduct(product)">Añadir</GenericGreenButton></td>
+                <td><input type="number" class="p-1 w-12 m-0.5" name="cantidadAnadir" :id="'cantidadAnadir-'+product.id" min="1" :max="product.stock" value="1"><GenericGreenButton class="m-0.5" @click="handleAddProduct(product)">Añadir</GenericGreenButton></td>
               </tr> 
             </tbody>
           </table>
@@ -413,7 +380,7 @@ onMounted(init);
     </div>
     <hr>
     <div class="my-6" v-if="isAdmin">
-      <form @submit="handleSubmit" id="formProducto" @input="mostrarBtnCancelar" class="mx-auto w-3/4 py-4 anadir-producto">
+      <form @submit="handleSubmit" id="formProducto" class="mx-auto w-3/4 py-4 anadir-producto">
       <!-- <form @submit="handleSubmit" id="formProducto"> -->
         <fieldset class="flex flex-col items-center gap-1 border-2 border-solid border-black p-3 rounded-lg bg-orange-400">
           <legend v-if="isEditingProduct == false" class="text-left text-lg font-semibold">Añadir producto</legend>
@@ -435,14 +402,14 @@ onMounted(init);
           <div class="flex sm:flex-row flex-col flex-wrap gap-1">
             <label for="newProductCategory" class="text-left">Categoria</label>
             <select id="newProductCategory" style="width: 200px;" v-model="newProductCategory" required>
-              <option value="0" disabled>--</option>
+              <option value="0" selected disabled>--</option>
               <option v-for="category in categories" :value="category.id">{{ category.name }}</option>
             </select>
           </div>
           <br>
           <input v-if="isEditingProduct == false" type="submit" value="Añadir producto" class="border border-solid border-black p-1 rounded-md hover:bg-green-400">
           <input v-else type="submit" value="Modificar producto" class="border border-solid border-black p-1 rounded-md hover:bg-green-400">
-          <GenericRedButton type="button" @click="cancelarFormularioProducto" id="btnCancelarFormProducto" class="p-1">Cancelar</GenericRedButton>
+          <GenericRedButton v-if="newProductName != '' || newProductPrice != 0 || newProductStock != 0 || newProductCategory != 0" type="button" @click="cancelarFormularioProducto" id="btnCancelarFormProducto" class="p-1">Cancelar</GenericRedButton>
         </fieldset>
       </form>
     </div>

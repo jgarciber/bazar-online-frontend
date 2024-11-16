@@ -89,7 +89,7 @@ onMounted(init);
 </script>
 
 <template>
-  <section class="mx-auto overflow-auto">
+  <section class="mx-auto w-5/6 overflow-auto">
     <div class="my-6 relative overflow-x-auto sm:rounded-md">
       <table class="w-full text-md text-center rtl:text-right shadow-lg text-gray-800 dark:text-gray-400">
         <thead class="text-sm text-gray-900 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -104,8 +104,8 @@ onMounted(init);
             <td>{{category.name}}</td>
             <td>{{category.description}}</td>
             <td v-if="isAdmin">
-              <GenericBlueButton @click="handleModify(category)">Modificar</GenericBlueButton>
-              <GenericRedButton @click="handleDelete(category)">Borrar</GenericRedButton>
+              <GenericBlueButton class="m-0.5" @click="handleModify(category)">Modificar</GenericBlueButton>
+              <GenericRedButton class="m-0.5" @click="handleDelete(category)">Borrar</GenericRedButton>
             </td>
           </tr> 
         </tbody>
