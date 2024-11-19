@@ -3,10 +3,11 @@ import GenericGreenButton from '@/components/GenericGreenButton.vue';
 import GenericBlueButton from '@/components/GenericBlueButton.vue';
 import GenericRedButton from '@/components/GenericRedButton.vue';
 // import CustomHeader from './components/CustomHeader.vue';
-import {ref, onMounted, nextTick, watch} from 'vue';
+import {ref, onMounted, nextTick, watch, computed} from 'vue';
 import { productsRepository } from '../repositories/ProductsRepository.mjs';
 import { categoriesRepository } from '@/repositories/CategoriesRepository.mjs';
 import { salesRepository } from '../repositories/SalesRepository.mjs';
+import { ordersRepository } from '@/repositories/OrdersRepository.mjs';
 import { getCookie, mostrarMensajeEnCursor, smoothScrollJS } from '@/functions.mjs';
 
 // const message = ref('Hello vue!');
@@ -20,6 +21,10 @@ let newProductPrice = ref('');
 let newProductStock = ref('');
 let newProductCategory = ref(0);
 let searchKeyWord = ref();
+
+ // Descuento e impuestos
+const descuento = ref(0.1); // Ejemplo de descuento (10%)
+const impuesto = ref(0.21);  // Impuesto al (21%)
 
 
 function getProducts(){
@@ -40,6 +45,7 @@ function getCategories(){
 function postProduct(product){
   productsRepository.postProductAPI(product)
   .then(res => {
+    if(res.message != '') alert(res.message);
     getProducts();
     isEditingProduct.value = false;
   })
@@ -52,14 +58,14 @@ function postProduct(product){
 //     isEditingProduct.value = false;
 //   })
 // }
-function postSale(carrito){
+function postSale(carrito, orderId){
   let arrayPromesas = [];
   for (let product of carrito){
-    arrayPromesas.push(salesRepository.postSaleAPI(sessionStorage.getItem('user_id'), product, product.quantity));
+    arrayPromesas.push(salesRepository.postSaleAPI(sessionStorage.getItem('user_id'), product, product.quantity, orderId));
   }
 
   Promise.all(arrayPromesas).then(() => {
-    alert("Se ha realizado la compra correctamente");
+    // alert("Se ha realizado la compra correctamente");
     productsCart.value = []
     //Actualizo el stock de los productos, volviendo a filtrar por la categoría actual
     productsRepository.searchProductsByCategoryAPI(carrito[0].categoryId)
@@ -71,9 +77,23 @@ function postSale(carrito){
   })
 }
 
+function postOrder(user_id, total_articulos, subtotal, descuento, descuentoTotal, subtotalConDescuento, impuesto, impuestos, totalFinal){
+  ordersRepository.postOrderAPI(user_id, total_articulos, subtotal, descuento, descuentoTotal, subtotalConDescuento, impuesto, impuestos, totalFinal)
+  .then(res => {
+    ordersRepository.getUserOrdersAPI(sessionStorage.getItem('user_id')).then(orders => {
+      //le paso a postSale el id del último pedido del usuario, el cual se acaba de crear en la BD.
+      postSale(productsCart.value, orders[orders.length - 1].id);
+      alert('Se ha realizado la compra correctamente')
+      getProducts();
+      isEditingProduct.value = false;
+    })
+  })
+}
+
 function putProduct(modifiedProduct){
   productsRepository.putProductAPI(modifiedProduct)
   .then(res => {
+    if(res.message != '') alert(res.message);
     getProducts();
     isEditingProduct.value = false;
   })
@@ -82,6 +102,7 @@ function putProduct(modifiedProduct){
 function deleteProducts(id){
   productsRepository.deleteProductAPI(id)
   .then(res => {
+    if(res.message != '') alert(res.message);
     getProducts();
   })
 }
@@ -98,24 +119,17 @@ function handleSubmit(e){
   isEditingProduct.value ? putProduct(newProduct) : postProduct(newProduct);
   e.target.reset();
   productsCart.value = [];
-  mostrarBtnCancelar();
 }
 
 function handleModify(product){
   formProducto.reset();
   isEditingProduct.value = true;
   // const form = document.getElementById("formProducto");
-  // document.getElementById("newProductPrice").value = product.price;
-  // document.getElementById("newProductName").value = product.name;
-  // document.getElementById("newProductStock").value = product.stock;
-  // document.getElementById("newProductCategory").value = product.category;
-  // document.getElementById("idProduct").value = product.id;
-  newProductName = product.name;
-  newProductPrice = product.price;
-  newProductStock = product.stock;
-  newProductCategory = product.categoryId;
   document.getElementById("idProduct").value = product.id;
-  mostrarBtnCancelar();
+  newProductName.value = product.name;
+  newProductPrice.value = product.price;
+  newProductStock.value = product.stock;
+  newProductCategory.value = product.categoryId;
   smoothScrollJS('formProducto')
 }
 
@@ -187,9 +201,34 @@ function handleComprar(){
   // }
   // productsCart.value = []
 
-  if (confirm('¿Quiere finalizar la comprar?')) postSale(productsCart.value);
+  // if (confirm('¿Quiere finalizar la comprar?')) postSale(productsCart.value);
+  if (confirm('¿Quiere finalizar la comprar?')){
+    postOrder(sessionStorage.getItem('user_id'), productsCart.value.length, subtotal.value, descuento.value*100, descuentoTotal.value, subtotalConDescuento.value, impuesto.value*100, impuestos.value, totalFinal.value);
+    // postSale(productsCart.value);
+  }
 
 }
+
+// Cálculos computados
+const subtotal = computed(() => {
+  return productsCart.value.reduce((total, product) => total + (product.price * product.quantity), 0);
+});
+
+const descuentoTotal = computed(() => {
+  return subtotal.value * descuento.value;
+});
+
+const subtotalConDescuento = computed(() => {
+  return subtotal.value - descuentoTotal.value;
+});
+
+const impuestos = computed(() => {
+  return subtotalConDescuento.value * impuesto.value;
+});
+
+const totalFinal = computed(() => {
+  return subtotalConDescuento.value + impuestos.value;
+});
 
 function handleVaciarCarrito(){
   productsCart.value = [];
@@ -202,7 +241,6 @@ function cancelarFormularioProducto(){
   newProductStock.value = '';
   newProductCategory.value = 0;
   isEditingProduct.value = false;
-  // mostrarBtnCancelar();
 }
 
 function handleSearchProduct(e){
@@ -362,11 +400,36 @@ onMounted(init);
           <tr v-for="(product, index) in productsCart">
             <td>{{product.name}}</td>
             <td>{{product.quantity}}</td>
-            <td>{{product.price}}</td>
-            <td>{{product.price * product.quantity}}</td>
+            <td>{{product.price}} &euro;</td>
+            <td>{{product.price * product.quantity}} &euro;</td>
             <td>
               <GenericRedButton @click="handleDeleteProductCart(index)">Borrar</GenericRedButton>
             </td>
+          </tr>
+          <!-- Subtotal -->
+          <tr class="text-right">
+            <td colspan="4">Subtotal: </td>
+            <td>{{ subtotal.toFixed(2) }} &euro;</td>
+          </tr>
+          <!-- Descuento -->
+          <tr class="text-right">
+            <td colspan="4"> {{ 'Descuento (' + descuento*100 + '%):' }} </td>
+            <td>{{ descuentoTotal.toFixed(2) }} &euro;</td>
+          </tr>
+          <!-- Subtotal con descuento -->
+          <tr class="text-right">
+            <td colspan="4">Subtotal con descuento: </td>
+            <td>{{ subtotalConDescuento.toFixed(2) }} &euro;</td>
+          </tr>
+          <!-- Impuestos -->
+          <tr class="text-right">
+            <td colspan="4">{{ 'Impuestos (' + impuesto*100 + '%):' }}</td>
+            <td>{{ impuestos.toFixed(2) }} &euro;</td>
+          </tr>
+          <!-- Total final -->
+          <tr class="text-right font-bold uppercase">
+            <td colspan="4" >Total: </td>
+            <td>{{ totalFinal.toFixed(2) }} &euro;</td>
           </tr>
         </tbody>
         <tfoot>

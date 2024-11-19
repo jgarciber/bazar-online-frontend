@@ -15,6 +15,19 @@ DROP CONSTRAINT constraintname;
 
 ALTER TABLE sales AUTO_INCREMENT = 1
 
+CREATE TABLE orders (
+    id INT PRIMARY KEY AUTO_INCREMENT,          -- id como clave primaria con autoincremento
+    client_id INT NOT NULL,                     -- client_id como clave foránea de la tabla users
+    total_articles INT NOT NULL,               -- total_articulos como número entero (cantidad de productos)
+    subtotal DECIMAL(10, 2) NOT NULL,           -- subtotal con 2 decimales
+    discount INT NOT NULL,                      -- discount como entero (porcentaje o valor del descuento)
+    calculated_discount DECIMAL(10, 2) NOT NULL, -- calculated_discount con 2 decimales
+    subtotal_with_discount DECIMAL(10, 2) NOT NULL, -- subtotal_with_discount con 2 decimales
+    taxes INT NOT NULL,                         -- taxes como porcentaje o valor de los impuestos
+    calculated_taxes DECIMAL(10, 2) NOT NULL,   -- calculated_taxes con 2 decimales
+    total DECIMAL(10, 2) NOT NULL,              -- total con 2 decimales (monto final)
+    FOREIGN KEY (client_id) REFERENCES users(id) -- clave foránea referenciando la columna id de users
+);
 
 -- CATEGORIAS GENERADAS POR IA
 -- prompt:Estoy desarrollando una aplicación web llamada BAZAR ONLINE. La aplicación web del Bazar online busca ofrecer una amplia cartelera de productos 

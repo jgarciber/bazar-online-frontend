@@ -9,6 +9,7 @@ let searchBy = ref();
 let selectedRange = ref();
 let startDate = ref ("");
 let endDate = ref ("");
+const isAdmin = ref();
 
 function getSales(){
   salesRepository.getSalesAPI()
@@ -36,6 +37,12 @@ function updateDates() {
   const today = new Date();
 
   switch (selectedRange.value) {
+    case "all":
+      // Todas las fechas son válidas
+      //La fecha más antigua posible
+      startDate.value = formatDate(new Date(0));
+      endDate.value = formatDate(today);
+      break;
     case "today":
       // Hoy
       startDate.value = formatDate(today);
@@ -93,9 +100,10 @@ function init(){
   if(getCookie('token') == undefined){
     window.location.href = '/login';
   }else{
+    isAdmin.value = sessionStorage.getItem('is_admin') == true ? true : false;
     getSales();
     searchBy.value = 'product';
-    selectedRange.value = 'today';
+    selectedRange.value = 'all';
     updateDates();
   }
 };
@@ -106,7 +114,7 @@ onMounted(init);
 
 <template>
   <section class="mx-auto my-6 w-5/6 relative overflow-x-auto sm:rounded-md">
-    <form class="max-w-lg mx-auto mb-6" @submit="handleSearch">
+    <form v-if="isAdmin" class="max-w-lg mx-auto mb-6" @submit="handleSearch">
       <fieldset class="border-2 border-solid border-gray-300 p-4 rounded-lg bg-gray-50">
         <legend class="text-left text-lg font-semibold">Búsqueda avanzada</legend>
         <div class="flex">
@@ -133,6 +141,7 @@ onMounted(init);
             <select name="searchBy" id="searchBy" v-model="searchBy">
               <!-- <option value="all" disabled>--</option> -->
               <option value="user">Usuario</option>
+              <option value="order">Pedido</option>
               <option value="product">Producto</option>
               <option value="category">Categoría</option>
               <!-- <option value="date">Fecha</option> -->
@@ -153,6 +162,10 @@ onMounted(init);
         <div class="flex flex-col w-full">
           <label for="dateRange" class="text-left mb-2">Rango de fechas</label>
           <div>
+            <label class="inline-flex items-center mr-4">
+              <input type="radio" name="dateRange" value="all" v-model="selectedRange" @change="updateDates" class="form-radio" />
+              <span class="ml-2">Todas</span>
+            </label>
             <label class="inline-flex items-center mr-4">
               <input type="radio" name="dateRange" value="today" v-model="selectedRange" @change="updateDates" class="form-radio" />
               <span class="ml-2">Hoy</span>
@@ -201,6 +214,7 @@ onMounted(init);
         <thead class="text-sm text-gray-900 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
             <th>Usuario</th>
+            <th>Pedido</th>
             <th>Nombre</th>
             <th>Categoría</th>
             <th>Cantidad</th>
@@ -212,6 +226,7 @@ onMounted(init);
         <tbody>
           <tr v-for="venta in sales" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
             <td>{{venta.username}}</td>
+            <td>{{venta.order_id}}</td>
             <td>{{venta.name}}</td>
             <td>{{venta.category}}</td>
             <td>{{venta.quantity}}</td>

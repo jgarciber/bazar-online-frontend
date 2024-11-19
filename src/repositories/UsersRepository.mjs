@@ -42,7 +42,7 @@ class UsersRepository{
       })
     });
     if(response.status == 403) alert('Acción no permitida')
-    if(response.ok) return await response.text();
+    return await response.json();
   }
   
   async putUserAPI(newUser){
@@ -55,13 +55,13 @@ class UsersRepository{
         'Authorization' : `${sessionStorage.getItem('user')} ${getCookie('token')}`
       },
       body: JSON.stringify({
+        username: newUser.username,
         password: newUser.password1,
         isAdmin: newUser.isAdmin
       })
     });
     if(response.status == 403) alert('Acción no permitida')
-    if(response.status == 201) alert('Se ha modificado la información del usuario correctamente')
-    if(response.status == 404) alert('No se ha podido modificar la información del usuario')
+    return await response.json();
   }
   
   async deleteUserAPI(userId){
@@ -75,7 +75,7 @@ class UsersRepository{
       }
     });
     if(response.status == 403) alert('Acción no permitida')
-    return await response.text();
+    return await response.json();
   }
 }
 

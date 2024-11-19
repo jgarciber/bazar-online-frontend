@@ -31,7 +31,7 @@ function getUsers(){
 function postUser(newUser){
   usersRepository.postUserAPI(newUser)
   .then(res => {
-    if(res != undefined) alert(res);
+    if(res.message != '') alert(res.message);
     getUsers();
     isEditingUser.value = false;
   })
@@ -40,6 +40,7 @@ function postUser(newUser){
 function putUser(newUser){
   usersRepository.putUserAPI(newUser)
   .then(res => {
+    if(res.message != '') alert(res.message);
     getUsers();
     isEditingUser.value = false;
   })
@@ -48,8 +49,7 @@ function putUser(newUser){
 function deleteUser(id){
   usersRepository.deleteUserAPI(id)
   .then(res => {
-    console.log(res)
-    if(res != '') alert(res);
+    if(res.message != '') alert(res.message);
     getUsers();
   })
 }
@@ -116,7 +116,7 @@ function handleModify(user){
     newAdminUser.checked = user.isAdmin ? true : false;
     smoothScrollJS('userAdminForm')
   }else{
-    // isEditingUser.value = true;
+    isEditingUser.value = true;
     document.getElementById("idUserClientForm").value = user.id;
     newUsernameClientForm.value = user.username;
     newUserPasswordClientForm.value = '';
@@ -269,7 +269,7 @@ onMounted(init);
           <input type="text" name="id" id="idUserAdminForm" hidden>
           <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
             <label for="newUsernameAdminForm" class="text-left border border-solid border-black">Nombre</label>
-            <input v-model="newUsernameAdminForm" type="text" name="username" id="newUsernameAdminForm" @input="isEditingUser = false;" required>
+            <input v-model="newUsernameAdminForm" type="text" name="username" id="newUsernameAdminForm" @input="isEditingUser = false;" required :readonly="isEditingUser">
           </div>
           <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
               <!-- <input v-model="newAdminUser" type="checkbox" name="isAdmin" id="newAdminUser" required> -->
@@ -313,7 +313,7 @@ onMounted(init);
           <input type="text" name="id" id="idUserClientForm" hidden>
           <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
             <label for="newUsernameClientForm" class="text-left border border-solid border-black">Nombre</label>
-            <input v-model="newUsernameClientForm" type="text" name="username" id="newUsernameClientForm" placeholder="Seleccione 'modificar'" title="Seleccione \'modificar\' un usuario para rellenar el formulario" onkeypress="return false;" required>
+            <input v-model="newUsernameClientForm" type="text" name="username" id="newUsernameClientForm" placeholder="Seleccione 'modificar'" title="Seleccione \'modificar\' un usuario para rellenar el formulario" required readonly>
           </div>
           <!-- <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
             <label for="newUserPasswordClientForm" class="text-left">Nueva Contraseña</label>

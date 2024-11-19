@@ -10,6 +10,8 @@ import { getCookie, smoothScrollJS } from '@/functions.mjs';
 const categories = ref([]);
 const isEditingCategory = ref(false);
 const isAdmin = ref();
+let newCategoryName = ref('');
+let newCategoryDescription = ref('');
 
 function getCategories(){
   categoriesRepository.getCategoriesAPI()
@@ -21,6 +23,7 @@ function getCategories(){
 function postCategory(category){
   categoriesRepository.postCategoryAPI(category)
   .then(res => {
+    if(res.message != '') alert(res.message);
     getCategories();
     isEditingCategory.value = false;
   })
@@ -29,6 +32,7 @@ function postCategory(category){
 function putCategory(modifiedCategory){
   categoriesRepository.putCategoryAPI(modifiedCategory)
   .then(res => {
+    if(res.message != '') alert(res.message);
     getCategories();
     isEditingCategory.value = false;
   })
@@ -37,6 +41,7 @@ function putCategory(modifiedCategory){
 function deleteCategory(id){
   categoriesRepository.deleteCategoryAPI(id)
   .then(res => {
+    if(res.message != '') alert(res.message);
     getCategories();
   })
 }
@@ -51,8 +56,8 @@ function handleSubmit(e){
 function handleModify(category){
   isEditingCategory.value = true;
   document.getElementById("idCategory").value = category.id;
-  document.getElementById("newCategoryName").value = category.name;
-  document.getElementById("newCategoryDescription").value = category.description;
+  newCategoryName.value = category.name;
+  newCategoryDescription.value = category.description;
   smoothScrollJS('formCategory');
 }
 
@@ -62,6 +67,8 @@ function handleDelete(category){
 
 function cancelarFormularioCategoria(){
   formCategory.reset();
+  newCategoryName.value = '';
+  newCategoryDescription.value = '';
   isEditingCategory.value = false;
 }
 
@@ -77,9 +84,7 @@ function init(){
     //la función nextTick se ejecuta una vez que se ha renderizado el DOM, pudiendo así capturar sus diferentes elementos que de otro modo no existirían, ya que para mostrarlos he utilizado v-if que los mostraban en función de una variable.
     nextTick(() => {
       if (isAdmin.value){
-        let btnCancelarFormCategory = document.getElementById("btnCancelarFormCategory");
         let formCategory = document.getElementById("formCategory");
-        btnCancelarFormCategory.style.display = "none";
       }
     });
   }
@@ -124,16 +129,16 @@ onMounted(init);
           <input type="text" name="id" id="idCategory" style="display:none;">
           <div class="flex sm:flex-row flex-col flex-wrap gap-1">
             <label for="name" class="border border-solid border-black">Nombre</label>
-            <input type="text" name="name" id="newCategoryName" required>
+            <input type="text" v-model="newCategoryName" name="name" id="newCategoryName" required>
           </div>
           <div class="flex sm:flex-row flex-col flex-wrap gap-1">
             <label for="description" class="border border-solid border-black">Descripción</label>
-            <textarea name="description" id="newCategoryDescription" rows="5" class=""></textarea>
+            <textarea v-model="newCategoryDescription" name="description" id="newCategoryDescription" rows="5" required></textarea>
           </div>
           <br><br>
           <input v-if="isEditingCategory==false" type="submit" value="Añadir categoría" class="border border-solid border-black p-1 rounded-md hover:bg-green-400">
           <input v-else type="submit" value="Modificar categoría" class="border border-solid border-black p-1 rounded-md hover:bg-green-400">
-          <GenericRedButton type="button" @click="cancelarFormularioCategoria" id="btnCancelarFormCategory">Cancelar</GenericRedButton>
+          <GenericRedButton v-if="newCategoryName != '' || newCategoryDescription != ''" type="button" @click="cancelarFormularioCategoria" id="btnCancelarAdminForm">Cancelar</GenericRedButton>
         </fieldset>
       </form>
     </div>

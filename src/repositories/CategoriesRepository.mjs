@@ -49,6 +49,7 @@ class CategoriesRepository{
       })
     });
     if(response.status == 403) alert('Acción no permitida')
+    return await response.json();
   }
   
   async deleteCategoryAPI(categoryId){
@@ -62,6 +63,7 @@ class CategoriesRepository{
       }
     });
     if(response.status == 403) alert('Acción no permitida')
+    return await response.json();
   }
 }
 

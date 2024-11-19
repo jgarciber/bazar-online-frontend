@@ -81,6 +81,7 @@ class ProductsRepository{
       })
     });
     if(response.status == 403) alert('Acción no permitida')
+    return await response.json();
   }
   
   async deleteProductAPI(productId){
@@ -94,6 +95,7 @@ class ProductsRepository{
       }
     });
     if(response.status == 403) alert('Acción no permitida')
+    return await response.json();
   }
 }
 

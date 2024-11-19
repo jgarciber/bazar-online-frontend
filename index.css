@@ -29,6 +29,7 @@
     /* transform: scale(1.5); */
     transform: rotate(180deg);
 }
+/* Para que el scroll sea suave cuando se mueve mediante location.href=# */
 html {
     scroll-behavior: smooth;
 }

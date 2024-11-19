@@ -1,7 +1,7 @@
 import { getCookie } from "@/functions.mjs";
-class SalesRepository{
-  async getSalesAPI(){
-    var url = 'http://localhost:3000/sales'
+class OrdersRepository{
+  async getAllOrdersAPI(){
+    var url = 'http://localhost:3000/orders/all'
     const response = await fetch(url, {
       method: 'GET',
       headers: {
@@ -13,8 +13,8 @@ class SalesRepository{
     return await response.json();
   }
 
-  async searchSalesAPI(searchKeyWord, searchBy, startDate, endDate){
-    var url = `http://localhost:3000/sales?q=${searchKeyWord}&type=${searchBy}&startDate=${startDate}&endDate=${endDate}`
+  async getUserOrdersAPI(){
+    var url = `http://localhost:3000/orders`
     const response = await fetch(url, {
       method: 'GET',
       headers: {
@@ -26,8 +26,9 @@ class SalesRepository{
     return await response.json();
   }
 
-  async postSaleAPI (user_id, newProduct, quantity, orderId){
-    var url = 'http://localhost:3000/sales'
+  async postOrderAPI (user_id, total_articulos, subtotal, descuento, descuentoTotal, subtotalConDescuento, impuesto, impuestos, totalFinal){
+    var url = 'http://localhost:3000/orders'
+    console.log(user_id, total_articulos, subtotal, descuento, descuentoTotal, subtotalConDescuento, impuesto, impuestos, totalFinal)
     const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -36,22 +37,20 @@ class SalesRepository{
         'Authorization' : `${sessionStorage.getItem('user')} ${getCookie('token')}`
         },
         body: JSON.stringify({
-          product:{
-            id: newProduct.id,
-            name: newProduct.name,
-            price: newProduct.price,
-            stock: newProduct.stock,
-            quantity: quantity,
-          },
-          order:{
-            user_id,
-            order_id: orderId
-          }
+          user_id,
+          total_articulos,
+          subtotal,
+          descuento,
+          descuentoTotal,
+          subtotalConDescuento,
+          impuesto,
+          impuestos,
+          totalFinal
         })
     });
-    if (response.ok) console.log("Se ha añadido una venta correctamente")
+    if (response.ok) console.log("Se ha añadido el pedido correctamente")
     return await response.json();
   }
 }
 
-export const salesRepository = new SalesRepository();
+export const ordersRepository = new OrdersRepository();
