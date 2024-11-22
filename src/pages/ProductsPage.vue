@@ -80,7 +80,7 @@ function postSale(carrito, orderId){
 function postOrder(user_id, total_articulos, subtotal, descuento, descuentoTotal, subtotalConDescuento, impuesto, impuestos, totalFinal){
   ordersRepository.postOrderAPI(user_id, total_articulos, subtotal, descuento, descuentoTotal, subtotalConDescuento, impuesto, impuestos, totalFinal)
   .then(res => {
-    ordersRepository.getUserOrdersAPI(sessionStorage.getItem('user_id')).then(orders => {
+    ordersRepository.getOrdersAPI(sessionStorage.getItem('user_id')).then(orders => {
       //le paso a postSale el id del último pedido del usuario, el cual se acaba de crear en la BD.
       postSale(productsCart.value, orders[orders.length - 1].id);
       alert('Se ha realizado la compra correctamente')
@@ -305,7 +305,7 @@ onMounted(init);
         </button>
       </form> -->
 
-      <form class="max-w-sm mx-auto" @submit="handleSearchProduct" @keydown="testEmptySearch">   
+      <form class="max-w-sm mx-auto" @submit="handleSearchProduct">   
         <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
         <div class="relative">
           <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">

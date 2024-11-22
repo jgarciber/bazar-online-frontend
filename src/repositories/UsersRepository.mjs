@@ -56,8 +56,12 @@ class UsersRepository{
       },
       body: JSON.stringify({
         username: newUser.username,
+        firstName: newUser.firstName,
+        lastName: newUser.lastName,
+        email: newUser.email,
         password: newUser.password1,
-        isAdmin: newUser.isAdmin
+        isAdmin: newUser.isAdmin,
+        isActive: newUser.isActive
       })
     });
     if(response.status == 403) alert('Acción no permitida')

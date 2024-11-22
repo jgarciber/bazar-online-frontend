@@ -22,12 +22,13 @@ onMounted(init);
     </div>
     <!-- <header class="w-full min-h-14 bg-orange-400 flex items-center px-4 py-2"> -->
     <header class="w-full min-h-14 bg-amber-200 flex items-center px-4 py-2">
-        <nav class="h-full">
+        <nav class="h-full w-full">
             <ul class="flex flex-row flex-wrap gap-4 text-md md:text-xl xl:text-2xl uppercase font-semibold items-center h-full">
                 <NavHeaderItem href="/products">Productos</NavHeaderItem>
                 <NavHeaderItem href="/categories">Categorias</NavHeaderItem>
                 <NavHeaderItem href="/sales">Ventas</NavHeaderItem>
                 <NavHeaderItem href="/users">Usuarios</NavHeaderItem>
+                <NavHeaderItem href="/orders">Pedidos</NavHeaderItem>
                 <NavHeaderItem href="/logout">Salir</NavHeaderItem>
                 <!-- <NavHeaderItem href="/charts-sales">Gráficos de ventas</NavHeaderItem> -->
             </ul>

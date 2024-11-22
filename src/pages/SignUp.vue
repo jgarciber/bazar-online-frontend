@@ -5,23 +5,24 @@ import Eye from '@/icons/Eye.vue';
 import ClosedEye from '@/icons/ClosedEye.vue';
 
 const username = ref();
+let firstName = ref();
+let lastName = ref();
+let email = ref();
 const password = ref();
 const password2 = ref();
 let passwordVisible = ref(false);
 
 function postUserLogin(userTryingToRegister){
   loginRepository.postUserLoginAPI(userTryingToRegister).then(res => {
-    // alert(`Se ha registrado al usuario ${userTryingToRegister.username} correctamente`)
-    alert(res);
+    if(res.message != '') alert(res.message);
     window.location.href = '/login';
   })
 }
 
 function handleSubmit(e){
   e.preventDefault();
-  console.log('hola')
   const userTryingToLog = Object.fromEntries(new FormData(e.target).entries());
-  if (!username.value || !password.value || !password2.value) {
+  if (!username.value || !firstName.value || !lastName.value || !email.value || !password.value || !password2.value) {
     alert("Por favor, complete todos los campos.");
   }else if (!passwordsMatch.value) {
     alert("Las contraseñas no coinciden.");
@@ -40,14 +41,24 @@ function togglePasswordVisibility() {
 </script>
 
 <template>
-    <div class="flex flex-col justify-center items-center m-auto h-screen">
+    <div class="flex flex-col justify-center items-center mx-auto my-6">
         <!-- <img src="./imagenes/logo-ies2-edit5.png" alt="Si no carga la imagen" id="imagen_portada"><br> -->
         <h3 class="font-bold my-3 text-xl uppercase">Bazar online</h3>
-        <h3 class="font-bold my-5 text-lg">Iniciar sesión</h3>
+        <h3 class="font-bold my-5 text-lg">Registro</h3>
         <!-- <form action="http://localhost:3000/login/" method="post"> -->
         <form @submit="handleSubmit" class="border border-gray-500 rounded-md p-6">
           <label for="usuario" class="block mb-1 text-md font-medium text-gray-900 dark:text-white">Usuario: </label>
           <input type="text" name="username" v-model="username" class="bg-gray-50 border border-gray-500 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 my-4 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required/>
+
+          <label for="first-name" class="block mb-1 text-md font-medium text-gray-900 dark:text-white">Nombre: </label>
+          <input type="text" name="firstName" v-model="firstName" class="bg-gray-50 border border-gray-500 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 my-4 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" pattern="^[a-zA-Zª]+(?: [a-zA-Zª]+)*$" title="El nombre puede estar formado por varias palabras, sin números o caracteres especiales, salvo el carácter ª" required/>
+
+          <label for="last-name" class="block mb-1 text-md font-medium text-gray-900 dark:text-white">Apellidos: </label>
+          <input type="text" name="lastName" v-model="lastName" class="bg-gray-50 border border-gray-500 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 my-4 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" pattern="^[a-zA-Zª]+(?: [a-zA-Zª]+)*$" title="El apellido puede estar formado por varias palabras, sin números o caracteres especiales, salvo el carácter ª" required/>
+
+          <label for="email" class="block mb-1 text-md font-medium text-gray-900 dark:text-white">Correo: </label>
+          <input type="email" name="email" v-model="email" class="bg-gray-50 border border-gray-500 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 my-4 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required/>
+
           <label for="contrasena" class="block mb-1 text-md font-medium text-gray-900 dark:text-white">Contraseña: </label>
           <div class="relative">
             <input :type="passwordVisible ? 'text' : 'password'" name="password" v-model="password" class="bg-gray-50 border border-gray-500 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 my-4 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" :class="{'!border-green-500': passwordsMatch, '!border-red-500': !passwordsMatch, '!border-2':true}" pattern="^.{8,}$" 

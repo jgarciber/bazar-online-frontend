@@ -10,6 +10,7 @@ import Login from './pages/Login.vue'
 import Logout from './pages/Logout.vue'
 import SignUp from './pages/SignUp.vue'
 import UsersPage from './pages/UsersPage.vue'
+import OrdersPage from './pages/OrdersPage.vue'
 
 const routes = [
     {
@@ -27,6 +28,10 @@ const routes = [
     {
         path: '/users',
         component : UsersPage
+    },
+    {
+        path: '/orders',
+        component : OrdersPage
     },
     {
         path: '/login',

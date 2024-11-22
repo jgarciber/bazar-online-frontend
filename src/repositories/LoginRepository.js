@@ -25,14 +25,15 @@ class LoginRepository{
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         },
-        // body: JSON.stringify({a: 1, b: 'Textual content'})
         body: JSON.stringify({
             username: userTryingtoRegister.username,
-            password: userTryingtoRegister.password
+            firstName: userTryingtoRegister.firstName,
+            lastName: userTryingtoRegister.lastName,
+            email: userTryingtoRegister.email,
+            password: userTryingtoRegister.password,
         })
         });
-        if(response.ok) return await response.text();
-        // return await response.json();
+        return await response.json();
     }
 }
 

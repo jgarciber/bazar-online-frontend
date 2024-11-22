@@ -1,7 +1,7 @@
 import { getCookie } from "@/functions.mjs";
 class OrdersRepository{
-  async getAllOrdersAPI(){
-    var url = 'http://localhost:3000/orders/all'
+  async getOrdersAPI(){
+    var url = 'http://localhost:3000/orders'
     const response = await fetch(url, {
       method: 'GET',
       headers: {
@@ -13,8 +13,8 @@ class OrdersRepository{
     return await response.json();
   }
 
-  async getUserOrdersAPI(){
-    var url = `http://localhost:3000/orders`
+  async searchOrdersAPI(searchKeyWord){
+    var url = `http://localhost:3000/orders?q=${searchKeyWord}`
     const response = await fetch(url, {
       method: 'GET',
       headers: {
@@ -28,7 +28,6 @@ class OrdersRepository{
 
   async postOrderAPI (user_id, total_articulos, subtotal, descuento, descuentoTotal, subtotalConDescuento, impuesto, impuestos, totalFinal){
     var url = 'http://localhost:3000/orders'
-    console.log(user_id, total_articulos, subtotal, descuento, descuentoTotal, subtotalConDescuento, impuesto, impuestos, totalFinal)
     const response = await fetch(url, {
         method: 'POST',
         headers: {

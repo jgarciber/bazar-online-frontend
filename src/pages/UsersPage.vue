@@ -14,12 +14,25 @@ const userId = ref();
 // let searchKeyWord = ref();
 let newUsernameAdminForm = ref('');
 let resetPasswordAdminForm = ref(false); // Checkbox para restablecer la contraseña
+let resetFirstNameAdminForm = ref(false);
+let resetLastNameAdminForm = ref(false);
+let resetEmailAdminForm = ref(false);
+let newFirstNameAdminForm = ref('')
+let newLastNameAdminForm = ref('')
+let newEmailAdminForm = ref('')
 let newUserPasswordAdminForm = ref('');
 let newUserPassword2AdminForm = ref('');
-let searchKeyWord = ref();
+let newAdminUser = ref(false);
+let newActiveUser = ref(false);
+let searchKeyWord = ref('');
+
 let newUsernameClientForm = ref();
-let newUserPasswordClientForm = ref();
-let newUserPassword2ClientForm = ref();
+let newFirstNameClientForm = ref('');
+let newLastNameClientForm = ref('');
+let newEmailClientForm = ref('');
+let resetPasswordClientForm = ref(false)
+let newUserPasswordClientForm = ref('');
+let newUserPassword2ClientForm = ref('');
 
 function getUsers(){
   usersRepository.getUsersAPI()
@@ -58,7 +71,7 @@ function handleSubmit(e){
   e.preventDefault();
   const newUser = Object.fromEntries(new FormData(e.target).entries());
   // Hay que añadir manualmente el valor del campo select del formulario al objeto newUser, ya que este no se incluye en el FormData por no ser de tipo input
-  // console.log(newAdminUser.checked)
+  console.log(newUser)
   let newAdminUser = document.getElementById("newAdminUser").checked
   newUser.isAdmin = newAdminUser;
   isEditingUser.value ? putUser(newUser) : postUser(newUser);
@@ -68,12 +81,11 @@ function handleSubmit(e){
 function handleSubmitAdminForm(e){
   e.preventDefault();
   const newUser = Object.fromEntries(new FormData(e.target).entries());
-  // Hay que añadir manualmente el valor del campo select del formulario al objeto newUser, ya que este no se incluye en el FormData por no ser de tipo input
-  // console.log(newAdminUser.checked)
-  let newAdminUser = document.getElementById("newAdminUser").checked
-  newUser.isAdmin = newAdminUser;
+  // let newAdminUser = document.getElementById("newAdminUser").checked
+  newUser.isAdmin = newAdminUser.value;
+  newUser.isActive = newActiveUser.value;
   if (!passwordsMatchAdminForm.value && resetPasswordAdminForm.value) {
-    alert("Las contraseñas no coinciden.");
+    return alert("Las contraseñas no coinciden.");
   }else{
     isEditingUser.value ? putUser(newUser) : postUser(newUser);
   }
@@ -85,8 +97,9 @@ function handleSubmitClientForm(e){
   e.preventDefault();
   const newUser = Object.fromEntries(new FormData(e.target).entries());
   newUser.isAdmin = false
-  if (!newUsernameClientForm.value || !newUserPasswordClientForm.value || !newUserPassword2ClientForm.value) {
-    alert("Por favor, complete todos los campos.");
+  newUser.isActive = true
+  if (!newUsernameClientForm.value || !newFirstNameClientForm.value || !newLastNameClientForm.value || !newEmailClientForm.value) {
+    return alert("Por favor, complete todos los campos.");
   }else if (!passwordsMatchClientForm.value) {
     alert("Las contraseñas no coinciden.");
   }else{
@@ -107,13 +120,19 @@ function handleSubmitClientForm(e){
 // }
 function handleModify(user){
   if(isAdmin.value){
+    //limpio el formulario para que no haya errores
+    cancelarFormularioUsuario();
     isEditingUser.value = true;
     document.getElementById("idUserAdminForm").value = user.id;
     resetPasswordAdminForm.value = false;
     newUsernameAdminForm.value = user.username;
+    newFirstNameAdminForm = user.firstName;
+    newLastNameAdminForm = user.lastName;
+    newEmailAdminForm = user.email;
     newUserPasswordAdminForm.value = '';
     newUserPassword2AdminForm.value = '';
     newAdminUser.checked = user.isAdmin ? true : false;
+    newActiveUser.value = user.isActive ? true : false;
     smoothScrollJS('userAdminForm')
   }else{
     isEditingUser.value = true;
@@ -146,14 +165,37 @@ function cancelarFormularioUsuario(){
     // Para resetear los valores de los campos del formulario hay que establecerlos a vacío manualmente ya que si no Vue los vuelve a recuperar de los valores que tiene almacenados en las variables reactivas ref. Por eso el método reset() no funciona correctamente.
     // userAdminForm.reset();
     newUsernameAdminForm.value = '';
+    newFirstNameAdminForm = '';
+    newLastNameAdminForm = '';
+    newEmailAdminForm = '';
     newUserPasswordAdminForm.value = '';
     newUserPassword2AdminForm.value = '';
+    resetFirstNameAdminForm.value = false;
+    resetLastNameAdminForm.value = false;
+    resetEmailAdminForm.value = false;
+    resetPasswordAdminForm.value = false;
+    newAdminUser.value = false;
+    newActiveUser.value = false;
     isEditingUser.value = false;
   }else{
     // userClientForm.reset();
     newUsernameClientForm.value = '';
+    newFirstNameClientForm.value = '';
+    newLastNameClientForm.value = '';
+    newEmailClientForm.value = '';
+    resetPasswordClientForm.value = false;
     newUserPasswordClientForm.value = '';
     newUserPassword2ClientForm.value = '';
+  }
+}
+
+function testNewUserAdminForm(){
+  if (!isEditingUser.value){
+    resetFirstNameAdminForm.value = true;
+    resetLastNameAdminForm.value = true;
+    resetEmailAdminForm.value = true;
+    resetPasswordAdminForm.value = true;
+    newActiveUser.value = true;
   }
 }
 
@@ -174,16 +216,10 @@ watch(searchKeyWord, (newValue) => {
 
 // Propiedad computada para verificar si las contraseñas coinciden
 const passwordsMatchAdminForm = computed(() => {
-  // return newUserPasswordAdminForm.value === newUserPassword2AdminForm.value && 
-  //        newUserPasswordAdminForm.value.length >= 8 && 
-  //        newUserPassword2AdminForm.value.length >= 8;
   return newUserPasswordAdminForm.value === newUserPassword2AdminForm.value;
 });
 
 const passwordsMatchClientForm = computed(() => {
-  // return newUserPasswordAdminForm.value === newUserPassword2AdminForm.value && 
-  //        newUserPasswordAdminForm.value.length >= 8 && 
-  //        newUserPassword2AdminForm.value.length >= 8;
   return newUserPasswordClientForm.value === newUserPassword2ClientForm.value;
 });
 
@@ -203,7 +239,6 @@ function init(){
         // btnCancelarFormUsuario.style.display = "none";
         let btnCancelarAdminForm = document.getElementById("btnCancelarAdminForm");
         let userAdminForm = document.getElementById("userAdminForm");
-        let newAdminUser = document.getElementById("newAdminUser");
       }else{
         let btnCancelarClientForm = document.getElementById("btnCancelarClientForm");
         let userClientForm = document.getElementById("userClientForm");
@@ -238,15 +273,23 @@ onMounted(init);
           <table class="w-full text-md text-center rtl:text-right shadow-lg text-gray-800 dark:text-gray-400">
             <thead class="text-sm text-gray-900 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
               <tr>
+                <th>Usuario</th>
                 <th>Nombre</th>
+                <th>Apellidos</th>
+                <th>Correo</th>
                 <th>Es admin</th>
+                <th v-if="isAdmin">Activo</th>
                 <th>Acciones</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="user in users" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                 <td>{{user.username}}</td>
+                <td>{{user.firstName}}</td>
+                <td>{{user.lastName}}</td>
+                <td>{{user.email}}</td>
                 <td>{{user.isAdmin}}</td>
+                <td v-if="isAdmin">{{user.isActive}}</td>
                 <td>
                   <GenericBlueButton class="m-0.5" @click="handleModify(user)">Modificar</GenericBlueButton>
                   <GenericRedButton v-if="isAdmin && user.id != userId" class="m-0.5" @click="handleDelete(user)">Borrar</GenericRedButton>
@@ -261,15 +304,45 @@ onMounted(init);
     </div>
     <hr>
     <div class="my-6">
-      <form v-if="isAdmin == true" @submit="handleSubmitAdminForm" id="userAdminForm" class="mx-auto w-full py-6 anadir-usuario">
+      <form v-if="isAdmin == true" @submit="handleSubmitAdminForm" @change="testNewUserAdminForm" id="userAdminForm" class="mx-auto w-full py-6 anadir-usuario">
       <!-- <form @submit="handleSubmit" id="formProducto"> -->
         <fieldset class="flex flex-col items-center border-2 border-solid border-black p-6 rounded-lg bg-orange-400 gap-1">
           <legend class="text-left text-lg font-semibold">{{ (!isEditingUser) ? 'Registrar Usuario' : 'Modificar Usuario' }}</legend>
           <!-- <h3 class="text-lg font-semibold">Modificar producto</h3> -->
           <input type="text" name="id" id="idUserAdminForm" hidden>
           <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
-            <label for="newUsernameAdminForm" class="text-left border border-solid border-black">Nombre</label>
+            <label for="newUsernameAdminForm" class="text-left border border-solid border-black">Usuario</label>
             <input v-model="newUsernameAdminForm" type="text" name="username" id="newUsernameAdminForm" @input="isEditingUser = false;" required :readonly="isEditingUser">
+          </div>
+          <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
+            <label for="resetFirstNameAdminForm">{{ (isEditingUser == false) ? 'Establecer Nombre' : 'Restablecer Nombre' }}</label>
+            <span style="width: 200px;">
+              <input v-model="resetFirstNameAdminForm" id="resetFirstNameAdminForm" type="checkbox" name="resetFirstNameAdminForm" class="!w-4 h-4 ml-2 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" :required="!isEditingUser">
+            </span>
+          </div>
+          <div v-if="resetFirstNameAdminForm" class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
+            <label for="newFirstNameAdminForm" class="text-left border border-solid border-black">Nombre</label>
+            <input v-model="newFirstNameAdminForm" type="text" name="firstName" id="newFirstNameAdminForm" pattern="^[a-zA-Zª]+(?: [a-zA-Zª]+)*$" title="El nombre puede estar formado por varias palabras, sin números o caracteres especiales, salvo el carácter ª" required>
+          </div>
+          <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
+            <label for="resetLastNameAdminForm">{{ (isEditingUser == false) ? 'Establecer Apellidos' : 'Restablecer Apellidos' }}</label>
+            <span style="width: 200px;">
+              <input v-model="resetLastNameAdminForm" id="resetLastNameAdminForm" type="checkbox" name="resetLastNameAdminForm" class="!w-4 h-4 ml-2 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" :required="!isEditingUser">
+            </span>
+          </div>
+          <div v-if="resetLastNameAdminForm" class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
+            <label for="newLastNameAdminForm" class="text-left border border-solid border-black">Apellidos</label>
+            <input v-model="newLastNameAdminForm" type="text" name="lastName" id="newLastNameAdminForm" pattern="^[a-zA-Zª]+(?: [a-zA-Zª]+)*$" title="El nombre puede estar formado por varias palabras, sin números o caracteres especiales, salvo el carácter ª" required>
+          </div>
+          <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
+            <label for="resetEmailAdminForm">{{ (isEditingUser == false) ? 'Establecer Correo' : 'Restablecer Correo' }}</label>
+            <span style="width: 200px;">
+              <input v-model="resetEmailAdminForm" id="resetEmailAdminForm" type="checkbox" name="resetEmailAdminForm" class="!w-4 h-4 ml-2 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" :required="!isEditingUser">
+            </span>
+          </div>
+          <div v-if="resetEmailAdminForm" class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
+            <label for="newEmailAdminForm" class="text-left border border-solid border-black">Correo</label>
+            <input v-model="newEmailAdminForm" type="email" name="email" id="newEmailAdminForm" required>
           </div>
           <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
               <!-- <input v-model="newAdminUser" type="checkbox" name="isAdmin" id="newAdminUser" required> -->
@@ -293,13 +366,19 @@ onMounted(init);
               <!-- <input v-model="newAdminUser" type="checkbox" name="isAdmin" id="newAdminUser" required> -->
             <label for="newAdminUser">Es usuario administrador</label>
             <span style="width: 200px;">
-              <input id="newAdminUser" type="checkbox" name="isAdmin" class="!w-4 h-4 ml-2 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+              <input v-model="newAdminUser" id="newAdminUser" type="checkbox" name="isAdmin" class="!w-4 h-4 ml-2 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+            </span>
+          </div>
+          <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
+            <label for="newActiveUser">Está activo</label>
+            <span style="width: 200px;">
+              <input v-model="newActiveUser" id="newActiveUser" type="checkbox" name="isActive" class="!w-4 h-4 ml-2 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
             </span>
           </div>
           <br>
           <div class="flex flex-wrap justify-center gap-1">
             <input type="submit" :value="(!isEditingUser) ? 'Registrar Usuario' : 'Modificar Usuario'" id="btnSubmitAdminForm" class="border border-solid border-black p-1 rounded-md hover:bg-green-400">
-            <GenericRedButton v-if="newUsernameAdminForm != '' || newUserPasswordAdminForm != ''" type="button" @click="cancelarFormularioUsuario" id="btnCancelarAdminForm">Cancelar</GenericRedButton>
+            <GenericRedButton v-if="newUsernameAdminForm != '' || resetFirstNameAdminForm != false || newFirstNameAdminForm != '' || resetLastNameAdminForm != false || newLastNameAdminForm != '' || resetEmailAdminForm != false || newEmailAdminForm != '' || resetPasswordAdminForm != false || newUserPasswordAdminForm != '' || newAdminUser != false || newActiveUser != false" type="button" @click="cancelarFormularioUsuario" id="btnCancelarAdminForm">Cancelar</GenericRedButton>
 
           </div>
         </fieldset>
@@ -312,19 +391,38 @@ onMounted(init);
           <!-- <h3 class="text-lg font-semibold">Modificar producto</h3> -->
           <input type="text" name="id" id="idUserClientForm" hidden>
           <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
-            <label for="newUsernameClientForm" class="text-left border border-solid border-black">Nombre</label>
+            <label for="newUsernameClientForm" class="text-left border border-solid border-black">Usuario</label>
             <input v-model="newUsernameClientForm" type="text" name="username" id="newUsernameClientForm" placeholder="Seleccione 'modificar'" title="Seleccione \'modificar\' un usuario para rellenar el formulario" required readonly>
+          </div>
+          <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
+            <label for="newFirstNameClientForm" class="text-left border border-solid border-black">Nombre</label>
+            <input v-model="newFirstNameClientForm" type="text" name="firstName" id="newFirstNameClientForm" placeholder="Seleccione 'modificar'" pattern="^[a-zA-Zª]+(?: [a-zA-Zª]+)*$" title="El nombre puede estar formado por varias palabras, sin números o caracteres especiales, salvo el carácter ª" required>
+          </div>
+          <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
+            <label for="newLastNameClientForm" class="text-left border border-solid border-black">Apellidos</label>
+            <input v-model="newLastNameClientForm" type="text" name="lastName" id="newLastNameClientForm" placeholder="Seleccione 'modificar'" pattern="^[a-zA-Zª]+(?: [a-zA-Zª]+)*$" title="El nombre puede estar formado por varias palabras, sin números o caracteres especiales, salvo el carácter ª" required>
+          </div>
+          <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
+            <label for="newEmailClientForm" class="text-left border border-solid border-black">Correo</label>
+            <input v-model="newEmailClientForm" type="email" name="email" id="newEmailClientForm" placeholder="Seleccione 'modificar'" title="Seleccione \'modificar\' un usuario para rellenar el formulario" required>
           </div>
           <!-- <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
             <label for="newUserPasswordClientForm" class="text-left">Nueva Contraseña</label>
             <input v-model="newUserPasswordClientForm" type="password" name="password" id="newUserPasswordClientForm" required>
           </div> -->
           <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
+              <!-- <input v-model="newAdminUser" type="checkbox" name="isAdmin" id="newAdminUser" required> -->
+            <label for="resetPasswordClientForm">Restablecer Contraseña</label>
+            <span style="width: 200px;">
+              <input v-model="resetPasswordClientForm" id="resetPasswordClientForm" type="checkbox" name="resetPasswordClientForm" class="!w-4 h-4 ml-2 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+            </span>
+          </div>
+          <div v-if="resetPasswordClientForm" class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
             <label for="newUserPasswordClientForm" class="text-left">Nueva contraseña</label>
             <input v-model="newUserPasswordClientForm" type="password" name="password1" id="newUserPasswordClientForm" :class="{'!border-green-500': passwordsMatchClientForm, '!border-red-500': !passwordsMatchClientForm, '!border-2':true}" pattern="^.{8,}$" 
             title="La contraseña debe tener al menos 8 caracteres" required>
           </div>
-          <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
+          <div v-if="resetPasswordClientForm" class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
             <label for="newUserPassword2ClientForm" class="text-left">Repetir Contraseña</label>
             <input v-model="newUserPassword2ClientForm" type="password" name="password2" id="newUserPassword2ClientForm" :class="{'!border-green-500': passwordsMatchClientForm, '!border-red-500': !passwordsMatchClientForm, '!border-2':true}" pattern="^.{8,}$" 
             title="La contraseña debe tener al menos 8 caracteres" required>

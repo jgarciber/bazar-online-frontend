@@ -19,7 +19,8 @@ function getUserLogin(userTryingToLog){
       //   sessionStorage.setItem('user', '');
       //   sessionStorage.setItem('is_admin', 0);
       // }
-      if(res.rows[0].username != ''){
+      // if(res.rows[0].username != ''){
+      if(res.rows != undefined){
         sessionStorage.setItem('user_id', res.rows[0].id);
         sessionStorage.setItem('username', res.rows[0].username);
         sessionStorage.setItem('is_admin', res.rows[0].is_admin);
@@ -27,7 +28,7 @@ function getUserLogin(userTryingToLog){
         document.cookie = `token=${res.token}`
         window.location.href = '/products';
       }else{
-        alert('No se ha encontrado a dicho usuario, por favor inténtelo otra vez');
+        alert(res.error);
         sessionStorage.setItem('user_id', '');
         sessionStorage.setItem('username', '');
         sessionStorage.setItem('is_admin', 0);

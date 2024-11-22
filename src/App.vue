@@ -1,9 +1,16 @@
 <script setup>
-// import {ref, onMounted} from 'vue';
+import {onMounted} from 'vue';
 import { RouterView, useRoute } from 'vue-router';
 import CustomHeader from './components/CustomHeader.vue';
 const route = useRoute();
 
+function init(){
+  console.log(route.path)
+  if(route.path === '/'){
+    window.location.href = '/login';
+  }
+};
+// onMounted(init);
 </script>
 
 <template>
