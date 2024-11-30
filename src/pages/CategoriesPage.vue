@@ -1,12 +1,10 @@
 <script setup>
 import GenericBlueButton from '@/components/GenericBlueButton.vue';
 import GenericRedButton from '@/components/GenericRedButton.vue';
-// import CustomHeader from './components/CustomHeader.vue';
 import {ref, onMounted, nextTick} from 'vue';
 import { categoriesRepository } from '../repositories/CategoriesRepository.mjs';
 import { getCookie, smoothScrollJS } from '@/functions.mjs';
 
-// const message = ref('Hello vue!');
 const categories = ref([]);
 const isEditingCategory = ref(false);
 const isAdmin = ref();
@@ -78,11 +76,8 @@ function init(){
     window.location.href = '/login';
   }else{
     getCategories();
-    // let btnCancelarFormProducto = document.getElementById("btnCancelarFormProducto");
-    // btnCancelarFormProducto.style.display = "none";
     isAdmin.value = sessionStorage.getItem('is_admin') == true ? true : false;
-    // isAdmin.value =  true;
-    //la función nextTick se ejecuta una vez que se ha renderizado el DOM, pudiendo así capturar sus diferentes elementos que de otro modo no existirían, ya que para mostrarlos he utilizado v-if que los mostraban en función de una variable.
+    // La función nextTick se ejecuta después de que el DOM ha sido completamente renderizado, lo que permite acceder a sus elementos, los cuales no estarían disponibles de otra manera. Esto es particularmente útil cuando se utilizan directivas como v-if, que muestran elementos condicionalmente según el valor de una variable.
     nextTick(() => {
       if (isAdmin.value){
         let formCategory = document.getElementById("formCategory");
@@ -121,21 +116,23 @@ onMounted(init);
     <hr>
   
     <div class="my-6" v-if="isAdmin">
-      <!-- <form @submit="handleSubmit" id="formProducto" @keydown="mostrarBtnCancelar" @input="mostrarBtnCancelar"> -->
       <form @submit="handleSubmit" id="formCategory">
         <fieldset class="flex flex-col items-center border-2 border-solid border-black p-3 rounded-lg bg-orange-400 gap-1">
           <legend v-if="isEditingCategory==false" class="text-lg font-semibold">Añadir categoría</legend>
           <legend v-else class="text-lg font-semibold">Modificar categoría</legend>
-          <!-- <h3 class="text-lg font-semibold">Modificar producto</h3> -->
+
           <input type="text" name="id" id="idCategory" style="display:none;">
+
           <div class="flex sm:flex-row flex-col flex-wrap gap-1">
             <label for="name" class="border border-solid border-black">Nombre</label>
             <input type="text" v-model="newCategoryName" name="name" id="newCategoryName" required>
           </div>
+
           <div class="flex sm:flex-row flex-col flex-wrap gap-1">
             <label for="description" class="border border-solid border-black">Descripción</label>
             <textarea v-model="newCategoryDescription" name="description" id="newCategoryDescription" rows="5" required></textarea>
           </div>
+          
           <br><br>
           <input v-if="isEditingCategory==false" type="submit" value="Añadir categoría" class="border border-solid border-black p-1 rounded-md hover:bg-green-400">
           <input v-else type="submit" value="Modificar categoría" class="border border-solid border-black p-1 rounded-md hover:bg-green-400">
@@ -158,18 +155,6 @@ label{
   width: 100px;
   display: inline-block;
 }
-nav ul{
-  list-style-type: none;
-  text-decoration: none;
-}
-nav li{
-  display: inline-block;
-  padding-left: 30px;
-}
-#productsCart{
-  text-decoration: none;
-  list-style: none;
-}
 form label, form input, form textarea{
   border: solid;
   border-width: 1px;
@@ -181,35 +166,5 @@ table td{
 }
 table, table td, table th{
   border: solid;
-}
-section{
-  /* display: flex; */
-  /* flex-direction: row; */
-}
- header {
-  line-height: 1.5;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
 }
 </style>

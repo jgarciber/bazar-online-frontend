@@ -1,6 +1,5 @@
 class LoginRepository{
     async getUserLoginAPI(userTryingToLog){
-        // const url = import.meta.env.VITE_HOST + `/login?username=${userTryingToLog.username}&password=${userTryingToLog.password}`
         const url = import.meta.env.VITE_HOST + '/login'
         const response = await fetch((url), {
             method: 'POST',
@@ -8,7 +7,6 @@ class LoginRepository{
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            // body: JSON.stringify({a: 1, b: 'Textual content'})
             body: JSON.stringify({
                 username: userTryingToLog.username,
                 password: userTryingToLog.password

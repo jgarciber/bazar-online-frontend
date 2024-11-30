@@ -6,11 +6,11 @@ import { createWebHistory } from 'vue-router'
 import ProductsPage from './pages/ProductsPage.vue'
 import CategoriesPage from './pages/CategoriesPage.vue' 
 import SalesPage from './pages/SalesPage.vue'
+import UsersPage from './pages/UsersPage.vue'
+import OrdersPage from './pages/OrdersPage.vue'
 import Login from './pages/Login.vue'
 import Logout from './pages/Logout.vue'
 import SignUp from './pages/SignUp.vue'
-import UsersPage from './pages/UsersPage.vue'
-import OrdersPage from './pages/OrdersPage.vue'
 
 const routes = [
     {
@@ -53,5 +53,3 @@ createApp(App)
     routes
 }))
 .mount('#app');
-
-// createApp(App).mount('#app');

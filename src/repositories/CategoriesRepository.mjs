@@ -22,7 +22,6 @@ class CategoriesRepository{
         'Content-Type': 'application/json',
         'Authorization' : `${sessionStorage.getItem('user')} ${getCookie('token')}`
       },
-      // body: JSON.stringify({a: 1, b: 'Textual content'})
       body: JSON.stringify({
         name: newCategory.name,
         description: newCategory.description,

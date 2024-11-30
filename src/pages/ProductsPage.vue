@@ -2,22 +2,24 @@
 import GenericGreenButton from '@/components/GenericGreenButton.vue';
 import GenericBlueButton from '@/components/GenericBlueButton.vue';
 import GenericRedButton from '@/components/GenericRedButton.vue';
-// import CustomHeader from './components/CustomHeader.vue';
+import PlusSimbol from '@/icons/PlusSimbol.vue';
+import MinusSimbol from '@/icons/MinusSimbol.vue';
 import {ref, onMounted, nextTick, watch, computed} from 'vue';
 import { productsRepository } from '../repositories/ProductsRepository.mjs';
 import { categoriesRepository } from '@/repositories/CategoriesRepository.mjs';
 import { salesRepository } from '../repositories/SalesRepository.mjs';
 import { ordersRepository } from '@/repositories/OrdersRepository.mjs';
 import { getCookie, mostrarMensajeEnCursor, smoothScrollJS } from '@/functions.mjs';
-import PlusSimbol from '@/icons/PlusSimbol.vue';
-import MinusSimbol from '@/icons/MinusSimbol.vue';
 
-// const message = ref('Hello vue!');
+//Variables que almacenan la información recibida del servidor
 const products = ref([]);
 const categories = ref([]);
 const productsCart = ref([]);
+
 const isEditingProduct = ref(false);
 const isAdmin = ref();
+
+//Variables reactivas con los campos del formulario
 let newProductName = ref('');
 let newProductPrice = ref('');
 let newProductStock = ref('');
@@ -42,7 +44,6 @@ function getCategories(){
   })
 }
 
-
 function postProduct(product){
   productsRepository.postProductAPI(product)
   .then(res => {
@@ -52,13 +53,6 @@ function postProduct(product){
   })
 }
 
-// function postSale(product, quantity){
-//   salesRepository.postSaleAPI(product, quantity)
-//   .then(res => {
-//     getProducts();
-//     isEditingProduct.value = false;
-//   })
-// }
 function postSale(carrito, orderId){
   let arrayPromesas = [];
   for (let product of carrito){
@@ -66,14 +60,12 @@ function postSale(carrito, orderId){
   }
 
   Promise.all(arrayPromesas).then(() => {
-    // alert("Se ha realizado la compra correctamente");
     productsCart.value = []
-    //Actualizo el stock de los productos, volviendo a filtrar por la categoría actual
+    //Actualizo la tabla de productos visualizados, volviendo a filtrar por la categoría actual
     productsRepository.searchProductsByCategoryAPI(carrito[0].categoryId)
     .then(res => {
       products.value = res;
     })
-    // getProducts();
     isEditingProduct.value = false;
   })
 }
@@ -82,8 +74,7 @@ function postOrder(user_id, total_articulos, subtotal, descuento, descuentoTotal
   ordersRepository.postOrderAPI(user_id, total_articulos, subtotal, descuento, descuentoTotal, subtotalConDescuento, impuesto, impuestos, totalFinal)
   .then(res => {
     ordersRepository.getOrdersAPI(sessionStorage.getItem('user_id')).then(orders => {
-      //le paso a postSale el id del último pedido del usuario, el cual se acaba de crear en la BD.
-      // postSale(productsCart.value, orders[orders.length - 1].id);
+      //Le paso a postSale el id del último pedido del usuario, el cual se acaba de crear en la BD. Como se obtienen los pedidos en orden descendente, el último pedido realizado es el primer registro de la consulta de pedidos
       postSale(productsCart.value, orders[0].id);
       alert('Se ha realizado la compra correctamente')
       // if (confirm('¿Quiere ver la factura en PDF en el navegador?')) ordersRepository.getOrderBillPDFAPI().then(res => {
@@ -112,12 +103,10 @@ function deleteProducts(id){
   })
 }
 
-// let isEditingProduct = false;
-
 function handleSubmit(e){
   e.preventDefault();
   const newProduct = Object.fromEntries(new FormData(e.target).entries());
-  // Hay que añadir manualmente el valor del campo select del formulario al objeto newProduct, ya que este no se incluye en el FormData por no ser de tipo input
+  // Hay que añadir manualmente al objeto newProduct el valor del campo select category del formulario, ya que este no se incluye en el FormData (por no ser un campo de tipo input)
   let newProductCategory = document.getElementById('newProductCategory');
   newProduct.categoryId = newProductCategory.value;
   // newProduct.category = newProductCategory.options[newProductCategory.selectedIndex].text;
@@ -127,7 +116,6 @@ function handleSubmit(e){
 }
 
 function handleModify(product){
-  // formProducto.reset();
   isEditingProduct.value = true;
   document.getElementById("idProduct").value = product.id;
   newProductName.value = product.name;
@@ -142,12 +130,9 @@ function handleDelete(product){
 }
 
 function handleAddProduct(product){
-  // let target = { "quantity": quantity };
-  // let source = { prop: "source prop", anotherProp: "anotherSourceProp" };
-  // Object.assign(target, product);
-  let btnId = "cantidadAnadir-"+product.id
+
+  let btnId = "cantidadAnadir-" + product.id
   // Copio el objeto
-  // const newProduct = {...product}
   let newProduct = Object.assign({}, product)
   newProduct.quantity = Number.parseFloat(document.getElementById(btnId).value);
   let indiceProductoExistenteCarrito = null;
@@ -182,23 +167,11 @@ function increaseProduct(index, newQuantity){
 }
 
 function handleDeleteProductCart(index){
-  // let indexProduct = productsCart.value.indexOf(product);
-  // productsCart.splice(indexProduct,1);
-  // productsCart.value = productsCart.value.filter((prod) => prod.id !== product.id)
   mostrarMensajeEnCursor(`"${productsCart.value[index].name}" borrado del carrito`);
   productsCart.value.splice(index, 1)
 }
 
 function handleComprar(){
-  // for (let product of productsCart.value){
-  //     let cantidadTotalProducto = productsCart.value.reduce((acum, curr) => {return parseInt(curr.quantity) + acum}, 0)
-  //     console.log(cantidadTotalProducto)
-  //     if (cantidadTotalProducto > product.stock){
-  //         alert ("Tiene más productos en el carrito que disponibles en stock. Por favor borre algunos artículos del carrito para continuar");
-  //     return;
-  //     }
-  // }
-
   for (let product of productsCart.value){
     if (product.quantity > product.stock){
       alert ("Tiene más productos en el carrito que disponibles en stock. Por favor borre algunos artículos del carrito para continuar");
@@ -206,33 +179,9 @@ function handleComprar(){
     }
   }
 
-  // let arrayPromesas = [];
-  // for (let product of productsCart.value){
-  //   arrayPromesas.push(postSale(product, product.quantity));
-  // }
-
-  // Promise.all(arrayPromesas).then(
-  //   () => {
-  //   for (let product of productsCart.value){
-  //     productsCart.value.forEach((p) => {if(p.id == product.id) product.stock -= product.quantity })
-  //     putProduct(product);
-  //   }
-  //     productsCart.value = []
-  //   }
-  // );
-
-
-  // for (let product of productsCart.value){
-  //   postSale(product, product.quantity);
-  // }
-  // productsCart.value = []
-
-  // if (confirm('¿Quiere finalizar la comprar?')) postSale(productsCart.value);
   if (confirm('¿Quiere finalizar la comprar?')){
     postOrder(sessionStorage.getItem('user_id'), productsCart.value.length, subtotal.value, descuento.value*100, descuentoTotal.value, subtotalConDescuento.value, impuesto.value*100, impuestos.value, totalFinal.value);
-    // postSale(productsCart.value);
   }
-
 }
 
 // Cálculos computados
@@ -261,7 +210,6 @@ function handleVaciarCarrito(){
 }
 
 function cancelarFormularioProducto(){
-  // formProducto.reset();
   newProductName.value = '';
   newProductPrice.value = '';
   newProductStock.value = '';
@@ -301,11 +249,9 @@ function init(){
     getProducts();
     getCategories();
     isAdmin.value = sessionStorage.getItem('is_admin') == true ? true : false;
-    //la función nextTick se ejecuta una vez que se ha renderizado el DOM, pudiendo así capturar sus diferentes elementos que de otro modo no existirían, ya que para mostrarlos he utilizado v-if que los mostraban en función de una variable.
+    // La función nextTick se ejecuta después de que el DOM ha sido completamente renderizado, lo que permite acceder a sus elementos, los cuales no estarían disponibles de otra manera. Esto es particularmente útil cuando se utilizan directivas como v-if, que muestran elementos condicionalmente según el valor de una variable.
     nextTick(() => {
       if (isAdmin.value){
-        // let btnCancelarFormProducto = document.getElementById("btnCancelarFormProducto");
-        // btnCancelarFormProducto.style.display = "none";
         let formProducto = document.getElementById("formProducto");
       }
     });
@@ -318,20 +264,6 @@ onMounted(init);
 <template>
   <section class="mx-auto w-5/6 overflow-auto">
     <div class="my-6">
-     
-      <!-- <form class="flex items-center max-w-sm mx-auto" @submit="handleSearchProduct" @input="testEmptySearch">   
-        <label for="simple-search" class="sr-only">Search</label>
-        <div class="relative w-full">
-          <input v-model="searchKeyWord" type="text" id="simple-search" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Buscar productos" />
-        </div>
-        <button type="submit" class="p-2.5 ms-2 text-sm font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-            <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
-            </svg>
-            <span class="sr-only">Search</span>
-        </button>
-      </form> -->
-
       <form class="max-w-sm mx-auto" @submit="handleSearchProduct">   
         <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
         <div class="relative">
@@ -352,33 +284,6 @@ onMounted(init);
           <li class="mx-2 hover:bg-blue-200 list-none hover:list-disc" @click="handleSearchCategory($event, 'todas')">TODAS</li>
           <li v-for="category in categories" @click="handleSearchCategory($event, category)" class="mx-2 hover:bg-blue-200 list-none hover:list-disc">{{ category.name }}</li>
         </ul>
-
-        <!-- <table v-if="products.length != 0" class="mx-3">
-          <thead>
-            <tr>
-              <th>Nombre</th>
-              <th>Precio</th>
-              <th>Stock</th>
-              <th>Categoria</th>
-              <th v-if="isAdmin">Acciones</th>
-              <th>Encargar</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="product in products">
-              <td>{{product.name}}</td>
-              <td>{{product.price}}</td>
-              
-              <td>{{product.stock}}</td>
-              <td>{{product.categoryName}}</td>
-              <td v-if="isAdmin">
-                <GenericBlueButton @click="handleModify(product)">Modificar</GenericBlueButton>
-                <GenericRedButton @click="handleDelete(product.id)">Borrar</GenericRedButton>
-              </td>
-              <td><input type="number" name="cantidadAnadir" :id="'cantidadAnadir-'+product.id" min="1" :max="product.stock" value="1"><GenericGreenButton @click="handleAddProduct(product)">Añadir</GenericGreenButton></td>
-            </tr> 
-          </tbody>
-        </table> -->
 
         <div v-if="products.length != 0" class="relative overflow-x-auto sm:rounded-md">
           <table class="w-full text-md text-center rtl:text-right shadow-lg text-gray-800 dark:text-gray-400">
@@ -466,31 +371,31 @@ onMounted(init);
                 <GenericBlueButton @click="handleVaciarCarrito">Vaciar</GenericBlueButton>
             </td>
         </tr>
-          <!-- <tr><td colspan="5" style="text-align: center;" ><button @click="handleComprar">Comprar</button></td></tr> -->
         </tfoot>
       </table>
     </div>
     <hr>
     <div class="my-6" v-if="isAdmin">
       <form @submit="handleSubmit" id="formProducto" class="mx-auto w-3/4 py-4 anadir-producto">
-      <!-- <form @submit="handleSubmit" id="formProducto"> -->
         <fieldset class="flex flex-col items-center gap-1 border-2 border-solid border-black p-3 rounded-lg bg-orange-400">
           <legend v-if="isEditingProduct == false" class="text-left text-lg font-semibold">Añadir producto</legend>
           <legend v-else class="text-lg font-semibold">Modificar producto</legend>
-          <!-- <h3 class="text-lg font-semibold">Modificar producto</h3> -->
           <input type="text" name="id" id="idProduct" hidden>
           <div class="flex sm:flex-row flex-col flex-wrap gap-1">
             <label for="newProductName" class="border border-solid border-black">Nombre</label>
             <input v-model="newProductName" type="text" name="name" id="newProductName" required>
           </div>
+
           <div class="flex sm:flex-row flex-col flex-wrap gap-1">
             <label for="newProductPrice">Precio</label>
             <input v-model="newProductPrice" type="number" name="price" id="newProductPrice" min="0" step="0.01" required>
           </div>
+
           <div class="flex sm:flex-row flex-col flex-wrap gap-1">
             <label for="newProductStock">Stock</label>
             <input v-model="newProductStock" type="number" name="stock" id="newProductStock" min="1" required>
           </div>
+
           <div class="flex sm:flex-row flex-col flex-wrap gap-1">
             <label for="newProductCategory" class="text-left">Categoria</label>
             <select id="newProductCategory" style="width: 200px;" v-model="newProductCategory" required>
@@ -498,6 +403,7 @@ onMounted(init);
               <option v-for="category in categories" :value="category.id">{{ category.name }}</option>
             </select>
           </div>
+
           <br>
           <input v-if="isEditingProduct == false" type="submit" value="Añadir producto" class="border border-solid border-black p-1 rounded-md hover:bg-green-400">
           <input v-else type="submit" value="Modificar producto" class="border border-solid border-black p-1 rounded-md hover:bg-green-400">
@@ -520,18 +426,6 @@ label{
   width: 100px;
   display: inline-block;
 }
-nav ul{
-  list-style-type: none;
-  text-decoration: none;
-}
-nav li{
-  display: inline-block;
-  padding-left: 30px;
-}
-#productsCart{
-  text-decoration: none;
-  list-style: none;
-}
 form.anadir-producto label, form.anadir-producto input, form.anadir-producto textarea, form.anadir-producto select{
   border: solid;
   border-width: 1px;
@@ -543,35 +437,5 @@ table td{
 }
 table, table td, table th{
   border: solid;
-}
-section{
-  /* display: flex; */
-  /* flex-direction: row; */
-}
- header {
-  line-height: 1.5;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
 }
 </style>

@@ -8,7 +8,7 @@
       <p class="text-lg mb-4">© 2024 <span class="font-semibold">Jesús Garcimartín Berbel</span>. Todos los derechos reservados.</p>
       
       <!-- Enlaces o información adicional -->
-      <div class="flex justify-center gap-6 mb-6">
+      <div class="flex justify-center content-center gap-6 mb-6">
         <a href="#" class="hover:underline">Política de privacidad</a>
         <a href="#" class="hover:underline">Términos de servicio</a>
         <a href="#" class="hover:underline">Contacto</a>
