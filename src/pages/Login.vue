@@ -43,6 +43,10 @@ function togglePasswordVisibility() {
 
 function handleSubmit(e){
   e.preventDefault();
+  console.log(e.target.checkValidity())
+  if (!e.target.checkValidity()) {
+    return e.preventDefault(); // Prevenir el envío del formulario si no es válido
+  }
   const userTryingToLog = Object.fromEntries(new FormData(e.target).entries());
   getUserLogin(userTryingToLog)
 }
@@ -57,7 +61,9 @@ function handleSubmit(e){
         <!-- <form action="http://localhost:3000/login/" method="post"> -->
         <form @submit="handleSubmit" class="border border-gray-500 rounded-md p-6">
           <label for="usuario" class="block mb-1 text-md font-medium text-gray-900 dark:text-white">Usuario: </label>
-          <input type="text" name="username" v-model="username" class="bg-gray-50 border border-gray-500 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 my-4 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required/>
+          <input type="text" name="username" v-model="username" class="bg-gray-50 border border-gray-500 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 my-4 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" pattern="^[a-zA-Z0-9][a-zA-Z0-9_]{1,18}[a-zA-Z0-9]$" 
+          title="El nombre de usuario debe tener entre 3 y 20 caracteres y solo puede contener letras, números o guiones bajos. Debe comenzar y terminar con una letra o número, y no puede empezar ni terminar con un guion bajo." 
+          required/>
           <label for="contrasena" class="block mb-1 text-md font-medium text-gray-900 dark:text-white">Contraseña: </label>
           <!-- <input type="password" name="password" v-model="password" class="bg-gray-50 border border-gray-500 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 my-4 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required/> -->
           <div class="relative">

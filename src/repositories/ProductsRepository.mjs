@@ -1,10 +1,10 @@
 import { getCookie } from "@/functions.mjs";
 class ProductsRepository{
   async getProductsAPI(){
-    // var url = 'http://localhost:3000/products'
+    // var url = import.meta.env.VITE_HOST + '/products'
     // const response = await fetch(url);
     // return await response.json();
-    var url = 'http://localhost:3000/products'
+    var url = import.meta.env.VITE_HOST + '/products'
     const response = await fetch(url, {
       method: 'GET',
       headers: {
@@ -17,7 +17,7 @@ class ProductsRepository{
   }
 
   async searchProductsAPI(searchKeyWord){
-    var url = `http://localhost:3000/products?q=${searchKeyWord}`
+    var url = import.meta.env.VITE_HOST + `/products?q=${searchKeyWord}`
     const response = await fetch(url, {
       method: 'GET',
       headers: {
@@ -30,7 +30,7 @@ class ProductsRepository{
   }
 
   async searchProductsByCategoryAPI(searchCategoryId){
-    var url = `http://localhost:3000/products?cat=${searchCategoryId}`
+    var url = import.meta.env.VITE_HOST + `/products?cat=${searchCategoryId}`
     const response = await fetch(url, {
       method: 'GET',
       headers: {
@@ -43,7 +43,7 @@ class ProductsRepository{
   }
   
   async postProductAPI(newProduct){
-    var url = 'http://localhost:3000/products'
+    var url = import.meta.env.VITE_HOST + '/products'
     const response = await fetch(url, {
       method: 'POST',
       headers: {
@@ -64,7 +64,7 @@ class ProductsRepository{
   }
   
   async putProductAPI(modifiedProduct){
-    var url = `http://localhost:3000/products/${modifiedProduct.id}`
+    var url = import.meta.env.VITE_HOST + `/products/${modifiedProduct.id}`
     const response = await fetch(url, {
       method: 'PUT',
       headers: {
@@ -85,7 +85,7 @@ class ProductsRepository{
   }
   
   async deleteProductAPI(productId){
-    var url = `http://localhost:3000/products/${productId}`
+    var url = import.meta.env.VITE_HOST + `/products/${productId}`
     const response = await fetch(url, {
       method: 'DELETE',
       headers: {
@@ -95,7 +95,7 @@ class ProductsRepository{
       }
     });
     if(response.status == 403) alert('Acción no permitida')
-    return await response.json();
+      return await response.json();
   }
 }
 

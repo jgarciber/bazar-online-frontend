@@ -126,19 +126,23 @@ function handleModify(user){
     document.getElementById("idUserAdminForm").value = user.id;
     resetPasswordAdminForm.value = false;
     newUsernameAdminForm.value = user.username;
-    newFirstNameAdminForm = user.firstName;
-    newLastNameAdminForm = user.lastName;
-    newEmailAdminForm = user.email;
+    newFirstNameAdminForm.value = user.firstName;
+    newLastNameAdminForm.value = user.lastName;
+    newEmailAdminForm.value = user.email;
     newUserPasswordAdminForm.value = '';
     newUserPassword2AdminForm.value = '';
-    newAdminUser.checked = user.isAdmin ? true : false;
+    newAdminUser.value = user.isAdmin ? true : false;
     newActiveUser.value = user.isActive ? true : false;
     smoothScrollJS('userAdminForm')
   }else{
     isEditingUser.value = true;
     document.getElementById("idUserClientForm").value = user.id;
     newUsernameClientForm.value = user.username;
+    newFirstNameClientForm.value = user.firstName;
+    newLastNameClientForm.value = user.lastName;
+    newEmailClientForm.value = user.email;
     newUserPasswordClientForm.value = '';
+    newUserPassword2ClientForm.value = '';
     smoothScrollJS('userClientForm')
   }
 }
@@ -164,6 +168,7 @@ function cancelarFormularioUsuario(){
   if(isAdmin.value){
     // Para resetear los valores de los campos del formulario hay que establecerlos a vacío manualmente ya que si no Vue los vuelve a recuperar de los valores que tiene almacenados en las variables reactivas ref. Por eso el método reset() no funciona correctamente.
     // userAdminForm.reset();
+    document.getElementById("idUserAdminForm").value = '';
     newUsernameAdminForm.value = '';
     newFirstNameAdminForm = '';
     newLastNameAdminForm = '';
@@ -179,13 +184,14 @@ function cancelarFormularioUsuario(){
     isEditingUser.value = false;
   }else{
     // userClientForm.reset();
+    document.getElementById("idUserClientForm").value = '';
     newUsernameClientForm.value = '';
     newFirstNameClientForm.value = '';
     newLastNameClientForm.value = '';
     newEmailClientForm.value = '';
-    resetPasswordClientForm.value = false;
     newUserPasswordClientForm.value = '';
     newUserPassword2ClientForm.value = '';
+    resetPasswordClientForm.value = false;
   }
 }
 
@@ -255,7 +261,7 @@ onMounted(init);
     <div class="my-6">
 
       <form v-if="isAdmin" class="max-w-md mx-auto mb-6" @submit="handleSearchUser" @keydown="testEmptySearch">   
-        <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
+        <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Buscar</label>
         <div class="relative">
           <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
             <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
@@ -263,7 +269,7 @@ onMounted(init);
             </svg>
           </div>
           <input type="search" id="default-search" v-model="searchKeyWord" class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Usuarios..." required />
-          <button type="submit" class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Search</button>
+          <button type="submit" class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Buscar</button>
         </div>
       </form>
 
@@ -322,7 +328,7 @@ onMounted(init);
           </div>
           <div v-if="resetFirstNameAdminForm" class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
             <label for="newFirstNameAdminForm" class="text-left border border-solid border-black">Nombre</label>
-            <input v-model="newFirstNameAdminForm" type="text" name="firstName" id="newFirstNameAdminForm" pattern="^[a-zA-Zª]+(?: [a-zA-Zª]+)*$" title="El nombre puede estar formado por varias palabras, sin números o caracteres especiales, salvo el carácter ª" required>
+            <input v-model="newFirstNameAdminForm" type="text" name="firstName" id="newFirstNameAdminForm" pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑª]+(?: [a-zA-ZáéíóúÁÉÍÓÚñÑª]+)*$" title="El nombre puede contener varias palabras, solo con letras, tildes, ñ y el carácter ª, sin números ni caracteres especiales." required>
           </div>
           <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
             <label for="resetLastNameAdminForm">{{ (isEditingUser == false) ? 'Establecer Apellidos' : 'Restablecer Apellidos' }}</label>
@@ -332,7 +338,7 @@ onMounted(init);
           </div>
           <div v-if="resetLastNameAdminForm" class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
             <label for="newLastNameAdminForm" class="text-left border border-solid border-black">Apellidos</label>
-            <input v-model="newLastNameAdminForm" type="text" name="lastName" id="newLastNameAdminForm" pattern="^[a-zA-Zª]+(?: [a-zA-Zª]+)*$" title="El nombre puede estar formado por varias palabras, sin números o caracteres especiales, salvo el carácter ª" required>
+            <input v-model="newLastNameAdminForm" type="text" name="lastName" id="newLastNameAdminForm" pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑª]+(?: [a-zA-ZáéíóúÁÉÍÓÚñÑª]+)*$" title="Los apellidos pueden contener varias palabras, solo con letras, tildes, ñ y el carácter ª, sin números ni caracteres especiales." required>
           </div>
           <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
             <label for="resetEmailAdminForm">{{ (isEditingUser == false) ? 'Establecer Correo' : 'Restablecer Correo' }}</label>
@@ -396,15 +402,15 @@ onMounted(init);
           </div>
           <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
             <label for="newFirstNameClientForm" class="text-left border border-solid border-black">Nombre</label>
-            <input v-model="newFirstNameClientForm" type="text" name="firstName" id="newFirstNameClientForm" placeholder="Seleccione 'modificar'" pattern="^[a-zA-Zª]+(?: [a-zA-Zª]+)*$" title="El nombre puede estar formado por varias palabras, sin números o caracteres especiales, salvo el carácter ª" required>
+            <input v-model="newFirstNameClientForm" type="text" name="firstName" id="newFirstNameClientForm" pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑª]+(?: [a-zA-ZáéíóúÁÉÍÓÚñÑª]+)*$" title="El nombre puede estar formado por varias palabras, sin números o caracteres especiales, salvo el carácter ª" required>
           </div>
           <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
             <label for="newLastNameClientForm" class="text-left border border-solid border-black">Apellidos</label>
-            <input v-model="newLastNameClientForm" type="text" name="lastName" id="newLastNameClientForm" placeholder="Seleccione 'modificar'" pattern="^[a-zA-Zª]+(?: [a-zA-Zª]+)*$" title="El nombre puede estar formado por varias palabras, sin números o caracteres especiales, salvo el carácter ª" required>
+            <input v-model="newLastNameClientForm" type="text" name="lastName" id="newLastNameClientForm" pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑª]+(?: [a-zA-ZáéíóúÁÉÍÓÚñÑª]+)*$" title="El nombre puede estar formado por varias palabras, sin números o caracteres especiales, salvo el carácter ª" required>
           </div>
           <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
             <label for="newEmailClientForm" class="text-left border border-solid border-black">Correo</label>
-            <input v-model="newEmailClientForm" type="email" name="email" id="newEmailClientForm" placeholder="Seleccione 'modificar'" title="Seleccione \'modificar\' un usuario para rellenar el formulario" required>
+            <input v-model="newEmailClientForm" type="email" name="email" id="newEmailClientForm" title="Seleccione \'modificar\' un usuario para rellenar el formulario" required>
           </div>
           <!-- <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
             <label for="newUserPasswordClientForm" class="text-left">Nueva Contraseña</label>

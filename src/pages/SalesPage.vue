@@ -96,6 +96,10 @@ function formatDate(date) {
   return `${yyyy}-${mm}-${dd}`;
 }
 
+function handleModifyDate(){
+  selectedRange.value = 'customized';
+}
+
 function init(){
   if(getCookie('token') == undefined){
     window.location.href = '/login';
@@ -186,6 +190,10 @@ onMounted(init);
               <input type="radio" name="dateRange" value="year" v-model="selectedRange" @change="updateDates" class="form-radio" />
               <span class="ml-2">Un año</span>
             </label>
+            <label class="inline-flex items-center mr-4">
+              <input type="radio" name="dateRange" value="customized" v-model="selectedRange" @change="updateDates" class="form-radio" />
+              <span class="ml-2">Personalizado</span>
+            </label>
           </div>
         </div>
 
@@ -193,13 +201,13 @@ onMounted(init);
           <!-- Fecha de inicio -->
           <div class="flex flex-col w-full">
             <label for="startDate" class="text-left">Fecha de inicio</label>
-            <input type="date" id="startDate" v-model="startDate" class="p-2.5 w-full text-sm border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-500" required />
+            <input type="date" id="startDate" v-model="startDate" @change="handleModifyDate" class="p-2.5 w-full text-sm border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-500" required />
           </div>
 
           <!-- Fecha de fin -->
           <div class="flex flex-col w-full">
             <label for="endDate" class="text-left">Fecha de fin</label>
-            <input type="date" id="endDate" v-model="endDate" class="p-2.5 w-full text-sm border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-500" required />
+            <input type="date" id="endDate" v-model="endDate" @change="handleModifyDate" class="p-2.5 w-full text-sm border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-500" required />
           </div>
         </div>
         <div class="flex justify-center mt-4">
@@ -230,12 +238,14 @@ onMounted(init);
             <td>{{venta.name}}</td>
             <td>{{venta.category}}</td>
             <td>{{venta.quantity}}</td>
-            <td>{{venta.price}}</td>
-            <td>{{venta.total}}</td>
+            <td v-if="venta.price != undefined">{{venta.price}} &euro;</td>
+            <td v-else>{{(venta.total/venta.quantity).toFixed(2)}} &euro;</td>
+            <td>{{venta.total}} &euro;</td>
             <td>{{new Date(venta.sale_date).toLocaleString()}}</td>
           </tr>
         </tbody>
     </table>
+    <h3 v-else class="mx-auto my-auto text-center">No hay ningún resultado</h3>
   </section>
 </template>
 
@@ -248,8 +258,7 @@ table tr:hover{
   background-color: lightblue;
 }
 label{
-  /* width: 100px; */
-  /* display: inline-block; */
+  background-color: transparent;
 }
 nav ul{
   list-style-type: none;

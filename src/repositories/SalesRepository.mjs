@@ -1,7 +1,7 @@
 import { getCookie } from "@/functions.mjs";
 class SalesRepository{
   async getSalesAPI(){
-    var url = 'http://localhost:3000/sales'
+    var url = import.meta.env.VITE_HOST + '/sales'
     const response = await fetch(url, {
       method: 'GET',
       headers: {
@@ -14,7 +14,7 @@ class SalesRepository{
   }
 
   async searchSalesAPI(searchKeyWord, searchBy, startDate, endDate){
-    var url = `http://localhost:3000/sales?q=${searchKeyWord}&type=${searchBy}&startDate=${startDate}&endDate=${endDate}`
+    var url = import.meta.env.VITE_HOST + `/sales?q=${searchKeyWord}&type=${searchBy}&startDate=${startDate}&endDate=${endDate}`
     const response = await fetch(url, {
       method: 'GET',
       headers: {
@@ -27,7 +27,7 @@ class SalesRepository{
   }
 
   async postSaleAPI (user_id, newProduct, quantity, orderId){
-    var url = 'http://localhost:3000/sales'
+    var url = import.meta.env.VITE_HOST + '/sales'
     const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -41,7 +41,7 @@ class SalesRepository{
             name: newProduct.name,
             price: newProduct.price,
             stock: newProduct.stock,
-            quantity: quantity,
+            quantity: quantity
           },
           order:{
             user_id,

@@ -43,6 +43,7 @@ function deleteCategory(id){
   .then(res => {
     if(res.message != '') alert(res.message);
     getCategories();
+    cancelarFormularioCategoria();
   })
 }
 

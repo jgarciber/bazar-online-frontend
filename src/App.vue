@@ -2,6 +2,7 @@
 import {onMounted} from 'vue';
 import { RouterView, useRoute } from 'vue-router';
 import CustomHeader from './components/CustomHeader.vue';
+import CustomFooter from './components/CustomFooter.vue';
 const route = useRoute();
 
 function init(){
@@ -18,6 +19,7 @@ function init(){
   <main class="flex flex-1">
     <RouterView/>
   </main>
+  <CustomFooter v-if="route.path !== '/login' && route.path !== '/signup'"/>
 </template>
 
 <!-- <style scoped>

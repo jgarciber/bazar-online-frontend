@@ -15,6 +15,16 @@ DROP CONSTRAINT constraintname;
 
 ALTER TABLE sales AUTO_INCREMENT = 1
 
+
+ALTER TABLE sales DROP FOREIGN KEY fk_order_id;
+
+-- Ahora agregamos la nueva clave foránea con ON DELETE NO ACTION y ON UPDATE CASCADE
+ALTER TABLE sales
+ADD CONSTRAINT fk_order_id
+FOREIGN KEY (order_id) REFERENCES orders(id)
+ON DELETE NO ACTION
+ON UPDATE CASCADE;
+
 CREATE TABLE orders (
     id INT PRIMARY KEY AUTO_INCREMENT,          -- id como clave primaria con autoincremento
     client_id INT NOT NULL,                     -- client_id como clave foránea de la tabla users

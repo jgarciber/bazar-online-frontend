@@ -1,7 +1,7 @@
 import { getCookie } from "@/functions.mjs";
 class CategoriesRepository{
   async getCategoriesAPI(){
-    var url = 'http://localhost:3000/categories'
+    var url = import.meta.env.VITE_HOST + '/categories'
     const response = await fetch(url, {
       method: 'GET',
       headers: {
@@ -14,7 +14,7 @@ class CategoriesRepository{
   }
   
   async postCategoryAPI(newCategory){
-    var url = 'http://localhost:3000/categories'
+    var url = import.meta.env.VITE_HOST + '/categories'
     const response = await fetch(url, {
       method: 'POST',
       headers: {
@@ -34,7 +34,7 @@ class CategoriesRepository{
   }
   
   async putCategoryAPI(modifiedCategory){
-    var url = `http://localhost:3000/categories/${modifiedCategory.id}`
+    var url = import.meta.env.VITE_HOST + `/categories/${modifiedCategory.id}`
     const response = await fetch(url, {
       method: 'PUT',
       headers: {
@@ -53,7 +53,7 @@ class CategoriesRepository{
   }
   
   async deleteCategoryAPI(categoryId){
-    var url = `http://localhost:3000/categories/${categoryId}`
+    var url = import.meta.env.VITE_HOST + `/categories/${categoryId}`
     const response = await fetch(url, {
       method: 'DELETE',
       headers: {

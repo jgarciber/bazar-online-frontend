@@ -33,3 +33,6 @@
 html {
     scroll-behavior: smooth;
 }
+label{
+    background-color: white;
+}

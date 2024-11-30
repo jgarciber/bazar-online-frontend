@@ -1,7 +1,7 @@
 import { getCookie } from "@/functions.mjs";
 class OrdersRepository{
   async getOrdersAPI(){
-    var url = 'http://localhost:3000/orders'
+    var url = import.meta.env.VITE_HOST + '/orders'
     const response = await fetch(url, {
       method: 'GET',
       headers: {
@@ -13,8 +13,25 @@ class OrdersRepository{
     return await response.json();
   }
 
+  async getOrderBillPDFAPI(){
+    var url = import.meta.env.VITE_HOST + '/orders/factura-pdf'
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization' : `${sessionStorage.getItem('user')} ${getCookie('token')}`
+      }
+    });
+
+    // Procesamos la respuesta como un blob (binario)
+    const pdfBlob = await response.blob();
+    const pdfUrl = URL.createObjectURL(pdfBlob);
+    window.open(pdfUrl);  // Abrir el PDF en una nueva ventana o pestaña
+  }
+
   async searchOrdersAPI(searchKeyWord){
-    var url = `http://localhost:3000/orders?q=${searchKeyWord}`
+    var url = import.meta.env.VITE_HOST + `/orders?q=${searchKeyWord}`
     const response = await fetch(url, {
       method: 'GET',
       headers: {
@@ -27,7 +44,7 @@ class OrdersRepository{
   }
 
   async postOrderAPI (user_id, total_articulos, subtotal, descuento, descuentoTotal, subtotalConDescuento, impuesto, impuestos, totalFinal){
-    var url = 'http://localhost:3000/orders'
+    var url = import.meta.env.VITE_HOST + '/orders'
     const response = await fetch(url, {
         method: 'POST',
         headers: {

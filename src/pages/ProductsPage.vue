@@ -9,6 +9,8 @@ import { categoriesRepository } from '@/repositories/CategoriesRepository.mjs';
 import { salesRepository } from '../repositories/SalesRepository.mjs';
 import { ordersRepository } from '@/repositories/OrdersRepository.mjs';
 import { getCookie, mostrarMensajeEnCursor, smoothScrollJS } from '@/functions.mjs';
+import PlusSimbol from '@/icons/PlusSimbol.vue';
+import MinusSimbol from '@/icons/MinusSimbol.vue';
 
 // const message = ref('Hello vue!');
 const products = ref([]);
@@ -25,7 +27,6 @@ let searchKeyWord = ref();
  // Descuento e impuestos
 const descuento = ref(0.1); // Ejemplo de descuento (10%)
 const impuesto = ref(0.21);  // Impuesto al (21%)
-
 
 function getProducts(){
   productsRepository.getProductsAPI()
@@ -82,8 +83,12 @@ function postOrder(user_id, total_articulos, subtotal, descuento, descuentoTotal
   .then(res => {
     ordersRepository.getOrdersAPI(sessionStorage.getItem('user_id')).then(orders => {
       //le paso a postSale el id del último pedido del usuario, el cual se acaba de crear en la BD.
-      postSale(productsCart.value, orders[orders.length - 1].id);
+      // postSale(productsCart.value, orders[orders.length - 1].id);
+      postSale(productsCart.value, orders[0].id);
       alert('Se ha realizado la compra correctamente')
+      // if (confirm('¿Quiere ver la factura en PDF en el navegador?')) ordersRepository.getOrderBillPDFAPI().then(res => {
+      //   console.log('Se ha imprimido la factura en PDF en el navegador')
+      // })
       getProducts();
       isEditingProduct.value = false;
     })
@@ -122,9 +127,8 @@ function handleSubmit(e){
 }
 
 function handleModify(product){
-  formProducto.reset();
+  // formProducto.reset();
   isEditingProduct.value = true;
-  // const form = document.getElementById("formProducto");
   document.getElementById("idProduct").value = product.id;
   newProductName.value = product.name;
   newProductPrice.value = product.price;
@@ -146,20 +150,42 @@ function handleAddProduct(product){
   // const newProduct = {...product}
   let newProduct = Object.assign({}, product)
   newProduct.quantity = Number.parseFloat(document.getElementById(btnId).value);
-  let productoExistenteCarrito = null;
-  productoExistenteCarrito = productsCart.value.find(p => p.id == product.id);
-  if (productoExistenteCarrito != null) {
-    productoExistenteCarrito.quantity += newProduct.quantity;
+  let indiceProductoExistenteCarrito = null;
+  // productoExistenteCarrito = productsCart.value.find(p => p.id == product.id);
+  indiceProductoExistenteCarrito = productsCart.value.findIndex(p => p.id == product.id);
+  if (indiceProductoExistenteCarrito != -1) {
+    // productoExistenteCarrito.quantity += newProduct.quantity;
+    increaseProduct(indiceProductoExistenteCarrito, newProduct.quantity)
   }else{
     productsCart.value.push(newProduct);
+    mostrarMensajeEnCursor(`"${product.name}" añadido al carrito`);
   }
-  mostrarMensajeEnCursor(`"${product.name}" añadido al carrito`);
+}
+
+function decreaseProduct(index){
+  let product = productsCart.value[index]
+  if(product.quantity > 1){
+    product.quantity -= 1
+  }else{
+    mostrarMensajeEnCursor(`"${product.name}" retirado del carrito`);
+    handleDeleteProductCart(index)
+  }
+}
+
+function increaseProduct(index, newQuantity){
+  let product = productsCart.value[index]
+  if(product.quantity + newQuantity <= product.stock){
+    product.quantity += newQuantity
+  }else{
+    mostrarMensajeEnCursor(`No puede añadir más "${product.name}", stock insuficiente`)
+  }
 }
 
 function handleDeleteProductCart(index){
   // let indexProduct = productsCart.value.indexOf(product);
   // productsCart.splice(indexProduct,1);
   // productsCart.value = productsCart.value.filter((prod) => prod.id !== product.id)
+  mostrarMensajeEnCursor(`"${productsCart.value[index].name}" borrado del carrito`);
   productsCart.value.splice(index, 1)
 }
 
@@ -231,7 +257,7 @@ const totalFinal = computed(() => {
 });
 
 function handleVaciarCarrito(){
-  productsCart.value = [];
+  if(confirm("¿Quiere vaciar el carrito de la comprar?")) productsCart.value = [];
 }
 
 function cancelarFormularioProducto(){
@@ -247,6 +273,7 @@ function handleSearchProduct(e){
   e.preventDefault();
   productsRepository.searchProductsAPI(searchKeyWord.value)
     .then(res => {
+      Array.from(document.getElementById("category-list").children).map(li => li.classList.remove("bg-blue-200"));
       products.value = res;
     })
 }
@@ -314,13 +341,13 @@ onMounted(init);
             </svg>
           </div>
           <input type="search" id="default-search" v-model="searchKeyWord" class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Productos..." required />
-          <button type="submit" class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Search</button>
+          <button type="submit" class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Buscar</button>
         </div>
       </form>
       <br>
 
       <div class="flex flex-row flex-wrap justify-center">
-        <ul class="mx-3 mb-3">
+        <ul class="mx-3 mb-3" id="category-list">
           <h3 class="font-semibold">CATEGORÍAS:</h3>
           <li class="mx-2 hover:bg-blue-200 list-none hover:list-disc" @click="handleSearchCategory($event, 'todas')">TODAS</li>
           <li v-for="category in categories" @click="handleSearchCategory($event, category)" class="mx-2 hover:bg-blue-200 list-none hover:list-disc">{{ category.name }}</li>
@@ -399,7 +426,7 @@ onMounted(init);
         <tbody>
           <tr v-for="(product, index) in productsCart">
             <td>{{product.name}}</td>
-            <td>{{product.quantity}}</td>
+            <td><span class="flex justify-around content-center my-1 !border-none"><MinusSimbol class="w-5 h-5 my-1 hover:cursor-pointer" @click="decreaseProduct(index, 1)"></MinusSimbol>{{product.quantity}}<PlusSimbol class="w-5 h-5 my-1 hover:cursor-pointer" @click="increaseProduct(index, 1)"></PlusSimbol></span></td>
             <td>{{product.price}} &euro;</td>
             <td>{{product.price * product.quantity}} &euro;</td>
             <td>

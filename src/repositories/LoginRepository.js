@@ -1,7 +1,7 @@
 class LoginRepository{
     async getUserLoginAPI(userTryingToLog){
-        // const url = `http://localhost:3000/login?username=${userTryingToLog.username}&password=${userTryingToLog.password}`
-        const url = 'http://localhost:3000/login'
+        // const url = import.meta.env.VITE_HOST + `/login?username=${userTryingToLog.username}&password=${userTryingToLog.password}`
+        const url = import.meta.env.VITE_HOST + '/login'
         const response = await fetch((url), {
             method: 'POST',
             headers: {
@@ -18,7 +18,7 @@ class LoginRepository{
     }
 
     async postUserLoginAPI(userTryingtoRegister){
-        var url = 'http://localhost:3000/signup'
+        var url = import.meta.env.VITE_HOST + '/signup'
         const response = await fetch(url, {
         method: 'POST',
         headers: {
