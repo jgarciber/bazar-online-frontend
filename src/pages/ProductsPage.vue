@@ -285,7 +285,7 @@ onMounted(init);
           <li v-for="category in categories" @click="handleSearchCategory($event, category)" class="mx-2 hover:bg-blue-200 list-none hover:list-disc">{{ category.name }}</li>
         </ul>
 
-        <div v-if="products.length != 0" class="relative overflow-x-auto sm:rounded-md shadow-lg shadow-[10px_10px_5px_rgba(0,0,0,0.25)]">
+        <div v-if="products.length != 0" class="relative overflow-x-auto sm:rounded-md shadow-lg shadow-[10px_10px_5px_rgba(0,0,0,0.5)]">
           <table class="w-full text-md text-center rtl:text-right text-gray-800 dark:text-gray-400">
             <thead class="text-sm text-gray-900 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
               <tr>
@@ -376,7 +376,7 @@ onMounted(init);
     </div>
     <div class="my-6" v-if="isAdmin">
       <form @submit="handleSubmit" id="formProducto" class="mx-auto w-3/4 py-4 anadir-producto">
-        <fieldset class="flex flex-col items-center gap-1 border-2 border-solid border-black p-3 rounded-lg bg-gradient-to-b from-orange-400 to-amber-300 shadow-lg shadow-[15px_15px_5px_rgba(0,0,0,0.25)]">
+        <fieldset class="flex flex-col items-center gap-1 border-2 border-solid border-black p-3 rounded-lg bg-gradient-to-b from-orange-400 to-amber-300 shadow-lg shadow-[15px_15px_5px_rgba(0,0,0,0.5)]">
           <legend v-if="isEditingProduct == false" class="text-left text-lg font-semibold">Añadir producto</legend>
           <legend v-else class="text-lg font-semibold">Modificar producto</legend>
           <input type="text" name="id" id="idProduct" hidden>

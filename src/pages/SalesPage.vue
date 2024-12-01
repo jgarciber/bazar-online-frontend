@@ -200,7 +200,7 @@ onMounted(init);
         </div>
       </fieldset>
     </form>
-    <div class="overflow-x-auto shadow-lg shadow-[10px_10px_5px_rgba(0,0,0,0.25)]">
+    <div class="overflow-x-auto shadow-lg shadow-[10px_10px_5px_rgba(0,0,0,0.5)]">
       <table v-if="sales.length != 0" class="w-full text-md text-center rtl:text-right text-gray-800 dark:text-gray-400">
           <thead class="text-sm text-gray-900 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
