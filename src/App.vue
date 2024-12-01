@@ -16,9 +16,9 @@ function init() {
 </script>
 
 <template>
-  <CustomHeader v-if="route.path !== '/login' && route.path !== '/signup'"/>
+  <CustomHeader v-if="route.path !== '/welcome' && route.path !== '/login' && route.path !== '/signup'"/>
   <main class="flex flex-1">
     <RouterView/>
   </main>
-  <CustomFooter v-if="route.path !== '/login' && route.path !== '/signup'"/>
+  <CustomFooter v-if="route.path !== '/welcome' && route.path !== '/login' && route.path !== '/signup'"/>
 </template>

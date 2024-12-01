@@ -41,7 +41,7 @@ onMounted(init);
 </script>
 
 <template>
-  <section class="mx-auto my-6 w-5/6 overflow-auto">
+  <section class="mx-auto my-6 w-5/6">
     <div>
       <form v-if="isAdmin" class="max-w-sm mx-auto" @submit="handleSearchOrder">   
         <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
@@ -57,8 +57,8 @@ onMounted(init);
       </form>
       <br>
 
-        <div v-if="orders.length != 0" class="relative overflow-x-auto sm:rounded-md">
-          <table class="w-full text-md text-center rtl:text-right shadow-lg text-gray-800 dark:text-gray-400">
+        <div v-if="orders.length != 0" class="relative sm:rounded-md overflow-auto shadow-lg shadow-[10px_10px_5px_rgba(0,0,0,0.25)]">
+          <table class="w-full text-md text-center rtl:text-right text-gray-800 dark:text-gray-400">
             <thead class="text-sm text-gray-900 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
               <tr>
                 <th>NºPedido</th>

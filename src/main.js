@@ -3,6 +3,7 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import { createRouter } from 'vue-router'
 import { createWebHistory } from 'vue-router'
+import WelcomePage from './pages/WelcomePage.vue'
 import ProductsPage from './pages/ProductsPage.vue'
 import CategoriesPage from './pages/CategoriesPage.vue' 
 import SalesPage from './pages/SalesPage.vue'
@@ -13,6 +14,10 @@ import Logout from './pages/Logout.vue'
 import SignUp from './pages/SignUp.vue'
 
 const routes = [
+    {
+        path: '/welcome',
+        component : WelcomePage
+    },
     {
         path: '/products',
         component : ProductsPage

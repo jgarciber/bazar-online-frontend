@@ -17,9 +17,9 @@ let resetLastNameAdminForm = ref(false);
 let resetEmailAdminForm = ref(false);
 
 let newUsernameAdminForm = ref('');
-let newFirstNameAdminForm = ref('')
-let newLastNameAdminForm = ref('')
-let newEmailAdminForm = ref('')
+let newFirstNameAdminForm = ref('');
+let newLastNameAdminForm = ref('');
+let newEmailAdminForm = ref('');
 let newUserPasswordAdminForm = ref('');
 let newUserPassword2AdminForm = ref('');
 let newAdminUser = ref(false);
@@ -139,9 +139,9 @@ function cancelarFormularioUsuario(){
     resetPasswordAdminForm.value = false;
 
     newUsernameAdminForm.value = '';
-    newFirstNameAdminForm = '';
-    newLastNameAdminForm = '';
-    newEmailAdminForm = '';
+    newFirstNameAdminForm.value = '';
+    newLastNameAdminForm.value = '';
+    newEmailAdminForm.value = '';
     newUserPasswordAdminForm.value = '';
     newUserPassword2AdminForm.value = '';
 
@@ -217,7 +217,7 @@ onMounted(init);
 </script>
 
 <template>
-  <section class="mx-auto w-5/6 overflow-auto">
+  <section class="mx-auto w-5/6">
     <div class="my-6">
 
       <form v-if="isAdmin" class="max-w-md mx-auto mb-6" @submit="handleSearchUser" @keydown="testEmptySearch">   
@@ -235,8 +235,8 @@ onMounted(init);
 
       <div class="flex flex-row flex-wrap justify-center my-6">
       
-        <div v-if="users.length != 0" class="relative overflow-x-auto sm:rounded-md">
-          <table class="w-full text-md text-center rtl:text-right shadow-lg text-gray-800 dark:text-gray-400">
+        <div v-if="users.length != 0" class="relative overflow-x-auto sm:rounded-md shadow-lg shadow-[10px_10px_5px_rgba(0,0,0,0.25)]">
+          <table class="w-full text-md text-center rtl:text-right text-gray-800 dark:text-gray-400">
             <thead class="text-sm text-gray-900 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
               <tr>
                 <th>Usuario</th>
@@ -272,7 +272,7 @@ onMounted(init);
     <div class="my-6">
       <form v-if="isAdmin == true" @submit="handleSubmitAdminForm" @change="autoCheckNewUserAdminForm" id="userAdminForm" class="mx-auto w-full py-6 anadir-usuario">
       <!-- <form @submit="handleSubmit" id="formProducto"> -->
-        <fieldset class="flex flex-col items-center border-2 border-solid border-black p-6 rounded-lg bg-orange-400 gap-1">
+        <fieldset class="flex flex-col items-center border-2 border-solid border-black p-6 rounded-lg bg-gradient-to-b from-orange-400 to-amber-300 shadow-lg shadow-[15px_15px_5px_rgba(0,0,0,0.25)] gap-1">
           <legend class="text-left text-lg font-semibold">{{ (!isEditingUser) ? 'Registrar Usuario' : 'Modificar Usuario' }}</legend>
           <!-- <h3 class="text-lg font-semibold">Modificar producto</h3> -->
           <input type="text" name="id" id="idUserAdminForm" hidden>
@@ -356,7 +356,7 @@ onMounted(init);
       </form>
       
       <form v-else @submit="handleSubmitClientForm" id="userClientForm" class="mx-auto w-full py-6 anadir-usuario">
-        <fieldset class="flex flex-col items-center border-2 border-solid border-black p-6 rounded-lg bg-orange-400 gap-1">
+        <fieldset class="flex flex-col items-center border-2 border-solid border-black p-6 rounded-lg bg-gradient-to-b from-orange-400 to-amber-300 shadow-lg shadow-[15px_15px_5px_rgba(0,0,0,0.25)] gap-1">
           <legend class="text-left text-lg font-semibold">Modificar usuario</legend>
           <input type="text" name="id" id="idUserClientForm" hidden>
 

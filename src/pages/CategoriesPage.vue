@@ -90,9 +90,9 @@ onMounted(init);
 </script>
 
 <template>
-  <section class="mx-auto w-5/6 overflow-auto">
-    <div class="my-6 relative overflow-x-auto sm:rounded-md">
-      <table class="w-full text-md text-center rtl:text-right shadow-lg text-gray-800 dark:text-gray-400">
+  <section class="mx-auto w-5/6">
+    <div class="my-6 relative overflow-x-auto sm:rounded-md shadow-lg shadow-[10px_10px_5px_rgba(0,0,0,0.25)]">
+      <table class="w-full text-md text-center rtl:text-right text-gray-800 dark:text-gray-400">
         <thead class="text-sm text-gray-900 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
             <th>Nombre</th>
@@ -117,7 +117,7 @@ onMounted(init);
   
     <div class="my-6" v-if="isAdmin">
       <form @submit="handleSubmit" id="formCategory">
-        <fieldset class="flex flex-col items-center border-2 border-solid border-black p-3 rounded-lg bg-orange-400 gap-1">
+        <fieldset class="flex flex-col items-center gap-1 border-2 border-solid border-black p-3 rounded-lg bg-gradient-to-b from-orange-400 to-amber-300 shadow-lg shadow-[15px_15px_5px_rgba(0,0,0,0.25)]">
           <legend v-if="isEditingCategory==false" class="text-lg font-semibold">Añadir categoría</legend>
           <legend v-else class="text-lg font-semibold">Modificar categoría</legend>
 

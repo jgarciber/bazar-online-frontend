@@ -125,8 +125,8 @@ onMounted(init);
 <!-- <script src="./node_modules/flowbite/dist/flowbite.min.js" defer></script> -->
 
 <template>
-  <section class="mx-auto my-6 w-5/6 relative overflow-x-auto sm:rounded-md">
-    <form v-if="isAdmin" class="max-w-lg mx-auto mb-6" @submit="handleSearch">
+  <section class="mx-auto my-6 w-5/6 relative sm:rounded-md">
+    <form v-if="isAdmin" class="max-w-lg mx-auto mb-6 overflow-auto" @submit="handleSearch">
       <fieldset class="border-2 border-solid border-gray-300 p-4 rounded-lg bg-gray-50">
         <legend class="text-left text-lg font-semibold">Búsqueda avanzada</legend>
         <div class="flex">
@@ -200,35 +200,36 @@ onMounted(init);
         </div>
       </fieldset>
     </form>
-        
-    <table v-if="sales.length != 0" class="w-full text-md text-center rtl:text-right shadow-lg text-gray-800 dark:text-gray-400">
-        <thead class="text-sm text-gray-900 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-          <tr>
-            <th>Usuario</th>
-            <th>Pedido</th>
-            <th>Nombre</th>
-            <th>Categoría</th>
-            <th>Cantidad</th>
-            <th>Precio</th>
-            <th>Total</th>
-            <th>Fecha venta</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="venta in sales" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-            <td>{{venta.username}}</td>
-            <td>{{venta.order_id}}</td>
-            <td>{{venta.name}}</td>
-            <td>{{venta.category}}</td>
-            <td>{{venta.quantity}}</td>
-            <td v-if="venta.price != undefined">{{venta.price}} &euro;</td>
-            <td v-else>{{(venta.total/venta.quantity).toFixed(2)}} &euro;</td>
-            <td>{{venta.total}} &euro;</td>
-            <td>{{new Date(venta.sale_date).toLocaleString()}}</td>
-          </tr>
-        </tbody>
-    </table>
-    <h3 v-else class="mx-auto my-auto text-center">No hay ningún resultado</h3>
+    <div class="overflow-x-auto shadow-lg shadow-[10px_10px_5px_rgba(0,0,0,0.25)]">
+      <table v-if="sales.length != 0" class="w-full text-md text-center rtl:text-right text-gray-800 dark:text-gray-400">
+          <thead class="text-sm text-gray-900 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+              <th>Usuario</th>
+              <th>Pedido</th>
+              <th>Nombre</th>
+              <th>Categoría</th>
+              <th>Cantidad</th>
+              <th>Precio</th>
+              <th>Total</th>
+              <th>Fecha venta</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="venta in sales" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+              <td>{{venta.username}}</td>
+              <td>{{venta.order_id}}</td>
+              <td>{{venta.name}}</td>
+              <td>{{venta.category}}</td>
+              <td>{{venta.quantity}}</td>
+              <td v-if="venta.price != undefined">{{venta.price}} &euro;</td>
+              <td v-else>{{(venta.total/venta.quantity).toFixed(2)}} &euro;</td>
+              <td>{{venta.total}} &euro;</td>
+              <td>{{new Date(venta.sale_date).toLocaleString()}}</td>
+            </tr>
+          </tbody>
+      </table>
+      <h3 v-else class="mx-auto my-auto text-center">No hay ningún resultado</h3>
+    </div>
   </section>
 </template>
 
