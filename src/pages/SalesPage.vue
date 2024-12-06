@@ -11,16 +11,24 @@ let startDate = ref ("");
 let endDate = ref ("");
 const isAdmin = ref();
 
+// Variable para controlar el estado de carga
+const isLoading = ref(false); // El spinner será visible al inicio  
+
 function getSales(){
+  isLoading.value = true;
   salesRepository.getSalesAPI()
   .then(res => {
     sales.value = res;
+  }).catch(error => {
+    console.error("Error al obtener las ventas:", error);
   })
+  .finally(() => {
+    isLoading.value = false; // Desactivar el spinner
+  });
 }
 
 function handleSearch(e){
   e.preventDefault();
-  console.log(searchKeyWord.value, searchBy.value, startDate.value, endDate.value)
   let query = searchKeyWord.value.trim() || undefined;
   salesRepository.searchSalesAPI(query, searchBy.value, startDate.value, endDate.value)
     .then(res => {
@@ -200,8 +208,11 @@ onMounted(init);
         </div>
       </fieldset>
     </form>
-    <div class="overflow-x-auto shadow-lg shadow-[10px_10px_5px_rgba(0,0,0,0.5)]">
-      <table v-if="sales.length != 0" class="w-full text-md text-center rtl:text-right text-gray-800 dark:text-gray-400">
+
+    <div class="flex flex-1 justify-center items-center">
+      <div v-if="isLoading" class="spinner"></div>
+      <div v-else-if="sales.length != 0" class="overflow-x-auto shadow-lg shadow-[10px_10px_5px_rgba(0,0,0,0.5)]">
+        <table class="w-full text-md text-center rtl:text-right text-gray-800 dark:text-gray-400">
           <thead class="text-sm text-gray-900 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
               <th>Usuario</th>
@@ -227,8 +238,9 @@ onMounted(init);
               <td>{{new Date(venta.sale_date).toLocaleString()}}</td>
             </tr>
           </tbody>
-      </table>
-      <h3 v-else class="mx-auto my-auto text-center">No hay ningún resultado</h3>
+        </table>
+      </div>
+      <h3 v-else class="mx-auto my-16 text-center">No hay ningún resultado</h3>
     </div>
   </section>
 </template>

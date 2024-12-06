@@ -34,11 +34,20 @@ let newEmailClientForm = ref('');
 let newUserPasswordClientForm = ref('');
 let newUserPassword2ClientForm = ref('');
 
+// Variable para controlar el estado de carga
+const isLoading = ref(false); // El spinner será visible al inicio  
+
 function getUsers(){
+  isLoading.value = true;
   usersRepository.getUsersAPI()
   .then(res => {
     users.value = res;
+  }).catch(error => {
+    console.error("Error al obtener los usuarios:", error);
   })
+  .finally(() => {
+    isLoading.value = false; // Desactivar el spinner
+  });
 }
 
 function postUser(newUser){
@@ -253,8 +262,8 @@ onMounted(init);
       </form>
 
       <div class="flex flex-row flex-wrap justify-center my-6">
-      
-        <div v-if="users.length != 0" class="relative overflow-x-auto sm:rounded-md shadow-lg shadow-[10px_10px_5px_rgba(0,0,0,0.5)]">
+        <div v-if="isLoading" class="spinner"></div>
+        <div v-else-if="users.length != 0" class="relative overflow-x-auto sm:rounded-md shadow-lg shadow-[10px_10px_5px_rgba(0,0,0,0.5)]">
           <table class="w-full text-md text-center rtl:text-right text-gray-800 dark:text-gray-400">
             <thead class="text-sm text-gray-900 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
               <tr>
@@ -283,7 +292,7 @@ onMounted(init);
             </tbody>
           </table>
         </div>
-        <h3 v-else class="mx-auto my-auto">No hay ningún resultado</h3>
+        <h3 v-else class="mx-auto my-16">No hay ningún resultado</h3>
       </div>
 
     </div>

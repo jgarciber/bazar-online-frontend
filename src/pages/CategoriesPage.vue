@@ -11,11 +11,20 @@ const isAdmin = ref();
 let newCategoryName = ref('');
 let newCategoryDescription = ref('');
 
+// Variable para controlar el estado de carga
+const isLoading = ref(false); // El spinner será visible al inicio
+
 function getCategories(){
+  isLoading.value = true;
   categoriesRepository.getCategoriesAPI()
   .then(res => {
     categories.value = res;
+  }).catch(error => {
+    console.error("Error al obtener las categorías:", error);
   })
+  .finally(() => {
+    isLoading.value = false; // Desactivar el spinner
+  });
 }
 
 function postCategory(category){
@@ -110,26 +119,30 @@ onMounted(init);
 
 <template>
   <section class="mx-auto w-5/6">
-    <div class="my-6 relative overflow-x-auto sm:rounded-md shadow-lg shadow-[10px_10px_5px_rgba(0,0,0,0.5)]">
-      <table class="w-full text-md text-center rtl:text-right text-gray-800 dark:text-gray-400">
-        <thead class="text-sm text-gray-900 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-          <tr>
-            <th>Nombre</th>
-            <th>Descripción</th>
-            <th v-if="isAdmin">Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="category in categories" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-            <td>{{category.name}}</td>
-            <td>{{category.description}}</td>
-            <td v-if="isAdmin">
-              <GenericBlueButton class="m-0.5" @click="handleModify(category)">Modificar</GenericBlueButton>
-              <GenericRedButton class="m-0.5" @click="handleDelete(category)">Borrar</GenericRedButton>
-            </td>
-          </tr> 
-        </tbody>
-      </table>
+    <div class="flex flex-1 justify-center items-center">
+      <div v-if="isLoading" class="spinner"></div>
+      <div v-else-if="categories.length != 0" class="my-6 relative overflow-x-auto sm:rounded-md shadow-lg shadow-[10px_10px_5px_rgba(0,0,0,0.5)]">
+        <table class="w-full text-md text-center rtl:text-right text-gray-800 dark:text-gray-400">
+          <thead class="text-sm text-gray-900 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+              <th>Nombre</th>
+              <th>Descripción</th>
+              <th v-if="isAdmin">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="category in categories" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+              <td>{{category.name}}</td>
+              <td>{{category.description}}</td>
+              <td v-if="isAdmin">
+                <GenericBlueButton class="m-0.5" @click="handleModify(category)">Modificar</GenericBlueButton>
+                <GenericRedButton class="m-0.5" @click="handleDelete(category)">Borrar</GenericRedButton>
+              </td>
+            </tr> 
+          </tbody>
+        </table>
+      </div>
+      <h3 v-else class="mx-auto my-16">No hay ninguna categoría</h3>
     </div>
 
     <hr>

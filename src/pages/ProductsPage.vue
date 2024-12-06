@@ -30,11 +30,24 @@ let searchKeyWord = ref();
 const descuento = ref(0.1); // Ejemplo de descuento (10%)
 const impuesto = ref(0.21);  // Impuesto al (21%)
 
-function getProducts(){
+// Variable para controlar el estado de carga
+const isLoading = ref(false); // El spinner será visible al inicio
+
+function pause(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function getProducts(){
+  isLoading.value = true;
   productsRepository.getProductsAPI()
   .then(res => {
     products.value = res;
+  }).catch(error => {
+    console.error("Error al obtener los productos:", error);
   })
+  .finally(() => {
+    isLoading.value = false; // Desactivar el spinner
+  });
 }
 
 function getCategories(){
@@ -306,35 +319,38 @@ onMounted(init);
           <li v-for="category in categories" @click="handleSearchCategory($event, category)" class="mx-2 hover:bg-blue-200 list-none hover:list-disc">{{ category.name }}</li>
         </ul>
 
-        <div v-if="products.length != 0" class="relative overflow-x-auto sm:rounded-md shadow-lg shadow-[10px_10px_5px_rgba(0,0,0,0.5)]">
-          <table class="w-full text-md text-center rtl:text-right text-gray-800 dark:text-gray-400">
-            <thead class="text-sm text-gray-900 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-              <tr>
-                <th>Nombre</th>
-                <th>Precio</th>
-                <th>Stock</th>
-                <th>Categoria</th>
-                <th v-if="isAdmin">Acciones</th>
-                <th>Encargar</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="product in products" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                <td>{{product.name}}</td>
-                <td>{{product.price}} &euro;</td>
-                
-                <td>{{product.stock}}</td>
-                <td>{{product.categoryName}}</td>
-                <td v-if="isAdmin">
-                  <GenericBlueButton class="m-0.5" @click="handleModify(product)">Modificar</GenericBlueButton>
-                  <GenericRedButton class="m-0.5" @click="handleDelete(product)">Borrar</GenericRedButton>
-                </td>
-                <td><input type="number" class="p-1 w-12 m-0.5" name="cantidadAnadir" :id="'cantidadAnadir-'+product.id" min="1" :max="product.stock" value="1"><GenericGreenButton class="m-0.5" @click="handleAddProduct(product)">Añadir</GenericGreenButton></td>
-              </tr> 
-            </tbody>
-          </table>
+        <div class="flex flex-1 justify-center items-center">
+          <div v-if="isLoading" class="spinner"></div>
+          <div v-else-if="products.length != 0" class="relative overflow-x-auto sm:rounded-md shadow-lg shadow-[10px_10px_5px_rgba(0,0,0,0.5)]">
+            <table class="w-full text-md text-center rtl:text-right text-gray-800 dark:text-gray-400">
+              <thead class="text-sm text-gray-900 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                  <th>Nombre</th>
+                  <th>Precio</th>
+                  <th>Stock</th>
+                  <th>Categoria</th>
+                  <th v-if="isAdmin">Acciones</th>
+                  <th>Encargar</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="product in products" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                  <td>{{product.name}}</td>
+                  <td>{{product.price}} &euro;</td>
+                  
+                  <td>{{product.stock}}</td>
+                  <td>{{product.categoryName}}</td>
+                  <td v-if="isAdmin">
+                    <GenericBlueButton class="m-0.5" @click="handleModify(product)">Modificar</GenericBlueButton>
+                    <GenericRedButton class="m-0.5" @click="handleDelete(product)">Borrar</GenericRedButton>
+                  </td>
+                  <td><input type="number" class="p-1 w-12 m-0.5" name="cantidadAnadir" :id="'cantidadAnadir-'+product.id" min="1" :max="product.stock" value="1"><GenericGreenButton class="m-0.5" @click="handleAddProduct(product)">Añadir</GenericGreenButton></td>
+                </tr> 
+              </tbody>
+            </table>
+          </div>
+          <h3 v-else class="mx-auto my-auto">No hay ningún resultado</h3>
         </div>
-        <h3 v-else class="mx-auto my-auto">No hay ningún resultado</h3>
       </div>
     </div>
 
