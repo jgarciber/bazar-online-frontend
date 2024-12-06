@@ -44,26 +44,47 @@ function getUsers(){
 function postUser(newUser){
   usersRepository.postUserAPI(newUser)
   .then(res => {
-    if(res.message != '') alert(res.message);
-    getUsers();
-    isEditingUser.value = false;
+    if (res.message) alert(res.message);
+    if (res.errors && res.errors.length > 0) {
+      // Concatenamos todos los mensajes de error en una sola cadena
+      const allErrors = res.errors.map(error => error.message).join('\n');
+      alert(allErrors);  // Mostrar todos los errores en una sola ventana alert
+    }else{
+      cancelarFormularioUsuario();
+      getUsers();
+      isEditingUser.value = false;
+    }
   })
 }
 
 function putUser(newUser){
   usersRepository.putUserAPI(newUser)
   .then(res => {
-    if(res.message != '') alert(res.message);
-    getUsers();
-    isEditingUser.value = false;
+    if (res.message) alert(res.message);
+    if (res.errors && res.errors.length > 0) {
+      // Concatenamos todos los mensajes de error en una sola cadena
+      const allErrors = res.errors.map(error => error.message).join('\n');
+      alert(allErrors);  // Mostrar todos los errores en una sola ventana alert
+    }else{
+      cancelarFormularioUsuario();
+      getUsers();
+      isEditingUser.value = false;
+    }
   })
 } 
 
 function deleteUser(id){
   usersRepository.deleteUserAPI(id)
   .then(res => {
-    if(res.message != '') alert(res.message);
-    getUsers();
+    if (res.message) alert(res.message);
+    if (res.errors && res.errors.length > 0) {
+      // Concatenamos todos los mensajes de error en una sola cadena
+      const allErrors = res.errors.map(error => error.message).join('\n');
+      alert(allErrors);  // Mostrar todos los errores en una sola ventana alert
+    }else{
+      cancelarFormularioUsuario();
+      getUsers();
+    }
   })
 }
 
@@ -77,7 +98,6 @@ function handleSubmitAdminForm(e){
   }else{
     isEditingUser.value ? putUser(newUser) : postUser(newUser);
   }
-  cancelarFormularioUsuario();
 }
 
 function handleSubmitClientForm(e){
@@ -92,7 +112,6 @@ function handleSubmitClientForm(e){
   }else{
     putUser(newUser);
   }
-  cancelarFormularioUsuario();
 }
 
 function handleModify(user){

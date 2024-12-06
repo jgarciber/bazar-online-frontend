@@ -21,27 +21,47 @@ function getCategories(){
 function postCategory(category){
   categoriesRepository.postCategoryAPI(category)
   .then(res => {
-    if(res.message != '') alert(res.message);
-    getCategories();
-    isEditingCategory.value = false;
+    if (res.message) alert(res.message);
+    if (res.errors && res.errors.length > 0) {
+      // Concatenamos todos los mensajes de error en una sola cadena
+      const allErrors = res.errors.map(error => error.message).join('\n');
+      alert(allErrors);  // Mostrar todos los errores en una sola ventana alert
+    }else{
+      getCategories();
+      isEditingCategory.value = false;
+      cancelarFormularioCategoria();
+    }
   })
 }
 
 function putCategory(modifiedCategory){
   categoriesRepository.putCategoryAPI(modifiedCategory)
   .then(res => {
-    if(res.message != '') alert(res.message);
-    getCategories();
-    isEditingCategory.value = false;
+    if (res.message) alert(res.message);
+    if (res.errors && res.errors.length > 0) {
+      // Concatenamos todos los mensajes de error en una sola cadena
+      const allErrors = res.errors.map(error => error.message).join('\n');
+      alert(allErrors);  // Mostrar todos los errores en una sola ventana alert
+    }else{
+      getCategories();
+      isEditingCategory.value = false;
+      cancelarFormularioCategoria();
+    }
   })
 } 
 
 function deleteCategory(id){
   categoriesRepository.deleteCategoryAPI(id)
   .then(res => {
-    if(res.message != '') alert(res.message);
-    getCategories();
-    cancelarFormularioCategoria();
+    if (res.message) alert(res.message);
+    if (res.errors && res.errors.length > 0) {
+      // Concatenamos todos los mensajes de error en una sola cadena
+      const allErrors = res.errors.map(error => error.message).join('\n');
+      alert(allErrors);  // Mostrar todos los errores en una sola ventana alert
+    }else{
+      getCategories();
+      cancelarFormularioCategoria();
+    }
   })
 }
 
@@ -49,7 +69,6 @@ function handleSubmit(e){
   e.preventDefault();
   const newCategory = Object.fromEntries(new FormData(e.target).entries());
   isEditingCategory.value ? putCategory(newCategory) : postCategory(newCategory);
-  e.target.reset();
 }
 
 function handleModify(category){
@@ -125,12 +144,12 @@ onMounted(init);
 
           <div class="flex sm:flex-row flex-col flex-wrap gap-1">
             <label for="name" class="border border-solid border-black">Nombre</label>
-            <input type="text" v-model="newCategoryName" name="name" id="newCategoryName" required>
+            <input type="text" v-model="newCategoryName" name="name" id="newCategoryName" title="El nombre de la categoría debe tener al menos 3 caracteres" required>
           </div>
 
           <div class="flex sm:flex-row flex-col flex-wrap gap-1">
             <label for="description" class="border border-solid border-black">Descripción</label>
-            <textarea v-model="newCategoryDescription" name="description" id="newCategoryDescription" rows="5" required></textarea>
+            <textarea v-model="newCategoryDescription" name="description" id="newCategoryDescription" rows="5" title="La descripción debe tener al menos 10 caracteres" required></textarea>
           </div>
           
           <br><br>

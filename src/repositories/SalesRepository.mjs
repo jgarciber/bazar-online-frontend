@@ -37,15 +37,15 @@ class SalesRepository{
         },
         body: JSON.stringify({
           product:{
-            id: newProduct.id,
-            name: newProduct.name,
-            price: newProduct.price,
-            stock: newProduct.stock,
-            quantity: quantity
+            id: String(newProduct.id),
+            name: String(newProduct.name),
+            price: String(newProduct.price),
+            stock: String(newProduct.stock),
+            quantity: String(quantity)
           },
           order:{
-            user_id,
-            order_id: orderId
+            user_id: String(user_id),
+            order_id: String(orderId)
           }
         })
     });

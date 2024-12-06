@@ -53,15 +53,15 @@ class OrdersRepository{
         'Authorization' : `${sessionStorage.getItem('user')} ${getCookie('token')}`
         },
         body: JSON.stringify({
-          user_id,
-          total_articulos,
-          subtotal,
-          descuento,
-          descuentoTotal,
-          subtotalConDescuento,
-          impuesto,
-          impuestos,
-          totalFinal
+          user_id: String(user_id),
+          total_articulos: String(total_articulos),
+          subtotal: String(subtotal),
+          descuento: String(descuento),
+          descuentoTotal: String(descuentoTotal),
+          subtotalConDescuento: String(subtotalConDescuento),
+          impuesto: String(impuesto),
+          impuestos: String(impuestos),
+          totalFinal: String(totalFinal)
         })
     });
     if (response.ok) console.log("Se ha añadido el pedido correctamente")

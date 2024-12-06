@@ -16,7 +16,7 @@ class LoginRepository{
     }
 
     async postUserLoginAPI(userTryingtoRegister){
-        var url = import.meta.env.VITE_HOST + '/signup'
+        var url = import.meta.env.VITE_HOST + '/users'
         const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -29,6 +29,8 @@ class LoginRepository{
             lastName: userTryingtoRegister.lastName,
             email: userTryingtoRegister.email,
             password: userTryingtoRegister.password,
+            isAdmin: String(false),
+            isActive: String(true)
         })
         });
         return await response.json();

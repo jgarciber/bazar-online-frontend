@@ -47,9 +47,16 @@ function getCategories(){
 function postProduct(product){
   productsRepository.postProductAPI(product)
   .then(res => {
-    if(res.message != '') alert(res.message);
-    getProducts();
-    isEditingProduct.value = false;
+    if (res.message) alert(res.message);
+    if (res.errors && res.errors.length > 0) {
+      // Concatenamos todos los mensajes de error en una sola cadena
+      const allErrors = res.errors.map(error => error.message).join('\n');
+      alert(allErrors);  // Mostrar todos los errores en una sola ventana alert
+    }else{
+      getProducts();
+      isEditingProduct.value = false;
+      cancelarFormularioProducto();
+    }
   })
 }
 
@@ -89,17 +96,30 @@ function postOrder(user_id, total_articulos, subtotal, descuento, descuentoTotal
 function putProduct(modifiedProduct){
   productsRepository.putProductAPI(modifiedProduct)
   .then(res => {
-    if(res.message != '') alert(res.message);
-    getProducts();
-    isEditingProduct.value = false;
+    if (res.message) alert(res.message);
+    if (res.errors && res.errors.length > 0) {
+      // Concatenamos todos los mensajes de error en una sola cadena
+      const allErrors = res.errors.map(error => error.message).join('\n');
+      alert(allErrors);  // Mostrar todos los errores en una sola ventana alert
+    }else{
+      getProducts();
+      isEditingProduct.value = false;
+      cancelarFormularioProducto();
+    }
   })
 } 
 
 function deleteProducts(id){
   productsRepository.deleteProductAPI(id)
   .then(res => {
-    if(res.message != '') alert(res.message);
-    getProducts();
+    if (res.message) alert(res.message);
+    if (res.errors && res.errors.length > 0) {
+      // Concatenamos todos los mensajes de error en una sola cadena
+      const allErrors = res.errors.map(error => error.message).join('\n');
+      alert(allErrors);  // Mostrar todos los errores en una sola ventana alert
+    }else{
+      getProducts();
+    }
   })
 }
 
@@ -210,6 +230,7 @@ function handleVaciarCarrito(){
 }
 
 function cancelarFormularioProducto(){
+  document.getElementById("idProduct").value = '';
   newProductName.value = '';
   newProductPrice.value = '';
   newProductStock.value = '';

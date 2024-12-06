@@ -41,8 +41,8 @@ class UsersRepository{
         lastName: newUser.lastName,
         email: newUser.email,
         password: newUser.password1,
-        isAdmin: newUser.isAdmin,
-        isActive: newUser.isActive
+        isAdmin: String(newUser.isAdmin),
+        isActive: String(newUser.isActive)
       })
     });
     if(response.status == 403) alert('Acción no permitida')
@@ -64,8 +64,8 @@ class UsersRepository{
         lastName: newUser.lastName,
         email: newUser.email,
         password: newUser.password1,
-        isAdmin: newUser.isAdmin,
-        isActive: newUser.isActive
+        isAdmin: String(newUser.isAdmin),
+        isActive: String(newUser.isActive)
       })
     });
     if(response.status == 403) alert('Acción no permitida')

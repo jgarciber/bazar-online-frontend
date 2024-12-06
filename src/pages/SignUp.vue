@@ -14,8 +14,14 @@ let passwordVisible = ref(false);
 
 function postUserLogin(userTryingToRegister){
   loginRepository.postUserLoginAPI(userTryingToRegister).then(res => {
-    if(res.message != '') alert(res.message);
-    window.location.href = '/login';
+    if (res.message) alert(res.message);
+    if (res.errors && res.errors.length > 0) {
+      // Concatenamos todos los mensajes de error en una sola cadena
+      const allErrors = res.errors.map(error => error.message).join('\n');
+      alert(allErrors);  // Mostrar todos los errores en una sola ventana alert
+    }else{
+      window.location.href = '/login';
+    }
   })
 }
 
