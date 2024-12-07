@@ -163,6 +163,11 @@ function handleDelete(product){
 }
 
 function handleAddProduct(product){
+   // Comprobamos si el producto tiene stock disponible
+   if (product.stock <= 0) {
+    mostrarMensajeEnCursor(`El producto "${product.name}" está agotado y no se puede añadir al carrito.`);
+    return;  // No continúa con la ejecución de la función si el stock es 0
+  }
 
   let btnId = "cantidadAnadir-" + product.id
   // Copio el objeto
@@ -204,7 +209,7 @@ function handleDeleteProductCart(index){
   productsCart.value.splice(index, 1)
 }
 
-function handleComprar(){
+async function handleComprar(){
   for (let product of productsCart.value){
     if (product.quantity > product.stock){
       alert ("Tiene más productos en el carrito que disponibles en stock. Por favor borre algunos artículos del carrito para continuar");
@@ -213,7 +218,38 @@ function handleComprar(){
   }
 
   if (confirm('¿Quiere finalizar la comprar?')){
-    postOrder(sessionStorage.getItem('user_id'), productsCart.value.length, subtotal.value, descuento.value*100, descuentoTotal.value, subtotalConDescuento.value, impuesto.value*100, impuestos.value, totalFinal.value);
+    // postOrder(sessionStorage.getItem('user_id'), productsCart.value.length, subtotal.value, descuento.value*100, descuentoTotal.value, subtotalConDescuento.value, impuesto.value*100, impuestos.value, totalFinal.value);
+    // Llamada a la API de checkout
+      try {
+      // Llamada a la API de checkout
+      const res = await productsRepository.checkoutAPI(productsCart.value);
+      
+      // Si la respuesta es exitosa (código 200)
+      if (res.message) {
+        alert(res.message); // Mostrar el mensaje de éxito
+        getProducts();
+        productsCart.value = []; 
+      }
+
+      // Si la respuesta contiene errores adicionales, los mostramos
+      if (res.errors && res.errors.length > 0) {
+        const allErrors = res.errors.map(error => error.message).join('\n');
+        alert(allErrors);  // Mostrar todos los errores en una ventana alert
+      }
+    } catch (error) {
+      // Manejo de errores cuando el código de estado es 400 o 500, o cualquier otro tipo de fallo     
+      if (error.response && error.response.status === 400) {
+        // Aquí puedes manejar errores con el código 400 (por ejemplo, error de validación)
+        console.log('Error del servidor:', error.response.data.error);
+        alert('Hubo un error al procesar la compra: ' + error.response.data.error);
+      } else if (error.response && error.response.status === 403) {
+        alert('Control de acceso: no tienes permisos para realizar esta compra')
+      }else{
+        // Si el error es diferente (por ejemplo, un error de red o un problema con la API)
+        console.log('Error general:', error);
+        alert('Hubo un error al procesar la compra. Por favor, inténtelo de nuevo.');
+      }
+    }
   }
 }
 
