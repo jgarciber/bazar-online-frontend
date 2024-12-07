@@ -7,8 +7,6 @@ import MinusSimbol from '@/icons/MinusSimbol.vue';
 import {ref, onMounted, nextTick, watch, computed} from 'vue';
 import { productsRepository } from '../repositories/ProductsRepository.mjs';
 import { categoriesRepository } from '@/repositories/CategoriesRepository.mjs';
-import { salesRepository } from '../repositories/SalesRepository.mjs';
-import { ordersRepository } from '@/repositories/OrdersRepository.mjs';
 import { getCookie, mostrarMensajeEnCursor, smoothScrollJS } from '@/functions.mjs';
 
 //Variables que almacenan la información recibida del servidor
@@ -32,10 +30,6 @@ const impuesto = ref(0.21);  // Impuesto al (21%)
 
 // Variable para controlar el estado de carga
 const isLoading = ref(false); // El spinner será visible al inicio
-
-function pause(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
 
 async function getProducts(){
   isLoading.value = true;
@@ -70,39 +64,6 @@ function postProduct(product){
       isEditingProduct.value = false;
       cancelarFormularioProducto();
     }
-  })
-}
-
-function postSale(carrito, orderId){
-  let arrayPromesas = [];
-  for (let product of carrito){
-    arrayPromesas.push(salesRepository.postSaleAPI(sessionStorage.getItem('user_id'), product, product.quantity, orderId));
-  }
-
-  Promise.all(arrayPromesas).then(() => {
-    productsCart.value = []
-    //Actualizo la tabla de productos visualizados, volviendo a filtrar por la categoría actual
-    productsRepository.searchProductsByCategoryAPI(carrito[0].categoryId)
-    .then(res => {
-      products.value = res;
-    })
-    isEditingProduct.value = false;
-  })
-}
-
-function postOrder(user_id, total_articulos, subtotal, descuento, descuentoTotal, subtotalConDescuento, impuesto, impuestos, totalFinal){
-  ordersRepository.postOrderAPI(user_id, total_articulos, subtotal, descuento, descuentoTotal, subtotalConDescuento, impuesto, impuestos, totalFinal)
-  .then(res => {
-    ordersRepository.getOrdersAPI(sessionStorage.getItem('user_id')).then(orders => {
-      //Le paso a postSale el id del último pedido del usuario, el cual se acaba de crear en la BD. Como se obtienen los pedidos en orden descendente, el último pedido realizado es el primer registro de la consulta de pedidos
-      postSale(productsCart.value, orders[0].id);
-      alert('Se ha realizado la compra correctamente')
-      // if (confirm('¿Quiere ver la factura en PDF en el navegador?')) ordersRepository.getOrderBillPDFAPI().then(res => {
-      //   console.log('Se ha imprimido la factura en PDF en el navegador')
-      // })
-      getProducts();
-      isEditingProduct.value = false;
-    })
   })
 }
 
@@ -218,9 +179,7 @@ async function handleComprar(){
   }
 
   if (confirm('¿Quiere finalizar la comprar?')){
-    // postOrder(sessionStorage.getItem('user_id'), productsCart.value.length, subtotal.value, descuento.value*100, descuentoTotal.value, subtotalConDescuento.value, impuesto.value*100, impuestos.value, totalFinal.value);
-    // Llamada a la API de checkout
-      try {
+    try {
       // Llamada a la API de checkout
       const res = await productsRepository.checkoutAPI(productsCart.value);
       
