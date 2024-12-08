@@ -1,6 +1,8 @@
 .env
 /node_modules
 /src/ConsultasBD
+/dist
+dist.zip
 # Logs
 logs
 *.log
