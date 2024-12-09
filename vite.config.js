@@ -18,7 +18,7 @@ export default defineConfig({
     //
     'import.meta.env.VITE_HOST': JSON.stringify(
     //   process.env.VITE_HOST || 'http://localhost:3000'
-      process.env.VITE_HOST || 'http://bazar-online-back-dvdrcjg5ckffamdh.spaincentral-01.azurewebsites.net'
+      process.env.VITE_HOST || 'https://bazar-online-back-2-g9hfc8bbhxepetes.spaincentral-01.azurewebsites.net'
     )
   }
 })
