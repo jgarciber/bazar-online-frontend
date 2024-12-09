@@ -1,14 +1,18 @@
 {
   "routes": [
     {
+      "route": "/",
+      "redirect": "/welcome",
+      "statusCode": 301
+    },
+    {
+      "route": "/{*any}.html",
+      "serve": "/index.html",
+      "statusCode": 200
+    },
+    {
       "route": "/{*any}",
-      "methods": [
-        "get",
-        "post",
-        "put",
-        "delete"
-      ],
-      "redirect": "/index.html",
+      "serve": "/index.html",
       "statusCode": 200
     }
   ]
