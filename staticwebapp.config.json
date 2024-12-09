@@ -1,19 +1,5 @@
 {
-  "routes": [
-    {
-      "route": "/",
-      "redirect": "/welcome",
-      "statusCode": 301
-    },
-    {
-      "route": "/{*any}.html",
-      "serve": "/index.html",
-      "statusCode": 200
-    },
-    {
-      "route": "/{*any}",
-      "serve": "/index.html",
-      "statusCode": 200
-    }
-  ]
+  "navigationFallback": {
+    "rewrite": "/index.html"
+  }
 }
