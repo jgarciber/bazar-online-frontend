@@ -17,8 +17,8 @@ export default defineConfig({
     // Si no está definida, tomará el valor por defecto 'http://localhost:3000'
     //
     'import.meta.env.VITE_HOST': JSON.stringify(
-      // process.env.VITE_HOST || 'http://localhost:3000'
-      process.env.VITE_HOST || 'http://bazar-online-back-dvdrcjg5ckffamdh.spaincentral-01.azurewebsites.net:80'
+    //   process.env.VITE_HOST || 'http://localhost:3000'
+      process.env.VITE_HOST || 'http://bazar-online-back-dvdrcjg5ckffamdh.spaincentral-01.azurewebsites.net'
     )
   }
 })
