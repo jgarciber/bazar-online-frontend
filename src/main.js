@@ -15,6 +15,10 @@ import SignUp from './pages/SignUp.vue'
 
 const routes = [
     {
+        path: '/',
+        redirect: '/welcome'
+    },
+    {
         path: '/welcome',
         component : WelcomePage
     },

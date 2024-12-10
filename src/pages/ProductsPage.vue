@@ -408,7 +408,7 @@ onMounted(init);
     </div>
     <div class="my-6" v-if="isAdmin">
       <form @submit="handleSubmit" id="formProducto" class="mx-auto w-3/4 py-4 anadir-producto">
-        <fieldset class="flex flex-col items-center gap-1 border-2 border-solid border-black p-3 rounded-lg bg-gradient-to-b from-orange-400 to-amber-300 shadow-lg shadow-[15px_15px_5px_rgba(0,0,0,0.5)]">
+        <fieldset class="flex flex-col items-center gap-1 border-2 border-solid border-black p-3 rounded-lg bg-gradient-to-b from-orange-400 to-amber-300 shadow-lg shadow-[15px_15px_5px_rgba(0,0,0,0.6)]">
           <legend v-if="isEditingProduct == false" class="text-left text-lg font-semibold">Añadir producto</legend>
           <legend v-else class="text-lg font-semibold">Modificar producto</legend>
           <input type="text" name="id" id="idProduct" hidden>
