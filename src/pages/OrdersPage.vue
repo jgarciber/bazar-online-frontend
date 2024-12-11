@@ -68,7 +68,7 @@ onMounted(init);
 
       <div class="flex flex-1 justify-center items-center">
         <div v-if="isLoading" class="spinner"></div>
-        <div v-else-if="orders.length != 0" class="relative sm:rounded-md overflow-auto shadow-lg shadow-[10px_10px_5px_rgba(0,0,0,0.5)]">
+        <div v-else-if="orders.length != 0" class="relative sm:rounded-md overflow-auto shadow-[10px_10px_5px_rgba(0,0,0,0.5)]">
           <table class="w-full text-md text-center rtl:text-right text-gray-800 dark:text-gray-400">
             <thead class="text-sm text-gray-900 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
               <tr>

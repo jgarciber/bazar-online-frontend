@@ -17,9 +17,9 @@ export default defineConfig({
     // Si no está definida, tomará el valor por defecto 'http://localhost:3000'
     //
 
-    // Descomentar para hacer el build (npm run build) aa
+    // Descomentar para hacer el build (npm run build)
     'import.meta.env.VITE_HOST': JSON.stringify(
-    //   process.env.VITE_HOST || 'http://localhost:3000'
+      //process.env.VITE_HOST || 'http://localhost:3000'
       process.env.VITE_HOST || 'https://bazar-online-back-2-g9hfc8bbhxepetes.spaincentral-01.azurewebsites.net'
     )
   }
