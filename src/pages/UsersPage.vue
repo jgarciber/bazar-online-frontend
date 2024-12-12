@@ -298,7 +298,7 @@ onMounted(init);
     </div>
     <hr>
     <div class="my-6">
-      <form v-if="isAdmin == true" @submit="handleSubmitAdminForm" @change="autoCheckNewUserAdminForm" id="userAdminForm" class="mx-auto w-2/5 py-6 anadir-usuario">
+      <form v-if="isAdmin == true" @submit="handleSubmitAdminForm" @change="autoCheckNewUserAdminForm" id="userAdminForm" class="mx-auto w-4/5 sm:w-2/5 py-6 anadir-usuario">
       <!-- <form @submit="handleSubmit" id="formProducto"> -->
         <fieldset class="flex flex-col items-center border-2 border-solid border-black p-6 rounded-lg bg-gradient-to-b from-orange-400 to-amber-300 shadow-[10px_10px_5px_rgba(0,0,0,0.5)] gap-1">
           <legend class="text-left text-lg font-semibold">{{ (!isEditingUser) ? 'Registrar Usuario' : 'Modificar Usuario' }}</legend>
