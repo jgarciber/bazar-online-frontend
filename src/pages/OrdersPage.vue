@@ -87,11 +87,11 @@ onMounted(init);
                 <td>{{order.id}}</td>
                 <td>{{order.username}}</td>
                 <td>{{order.total_articles}}</td>
-                <td>{{order.subtotal}} &euro;</td>
-                <td>({{order.discount}}%) {{order.calculated_discount}}&euro;</td>
-                <td>{{order.subtotal_with_discount}} &euro;</td>
-                <td>({{order.taxes}}%) {{order.calculated_taxes}}&euro;</td>
-                <td>{{order.total}} &euro;</td>
+                <td class="whitespace-nowrap">{{order.subtotal}} &euro;</td>
+                <td class="whitespace-nowrap">({{order.discount}}%) {{order.calculated_discount}}&euro;</td>
+                <td class="whitespace-nowrap">{{order.subtotal_with_discount}} &euro;</td>
+                <td class="whitespace-nowrap">({{order.taxes}}%) {{order.calculated_taxes}}&euro;</td>
+                <td class="whitespace-nowrap">{{order.total}} &euro;</td>
               </tr> 
             </tbody>
           </table>
@@ -106,6 +106,9 @@ onMounted(init);
 thead{
   border: solid;
   background-color: lightgreen
+}
+th,td{
+  padding: 6px;
 }
 table tr:hover{
   background-color: lightblue;

@@ -476,7 +476,10 @@ onMounted(init);
 <style scoped>
 thead{
   border: solid;
-  background-color: lightgreen
+  background-color: lightgreen;
+}
+th,td{
+  padding: 6px;
 }
 table tr:hover{
   background-color: lightblue;
@@ -484,6 +487,7 @@ table tr:hover{
 label{
   width: 100px;
   display: inline-block;
+  background-color: rgb(253 230 138);
 }
 form.anadir-producto label, form.anadir-producto input, form.anadir-producto textarea, form.anadir-producto select{
   border: solid;

@@ -232,8 +232,8 @@ onMounted(init);
               <td>{{venta.name}}</td>
               <td>{{venta.category}}</td>
               <td>{{venta.quantity}}</td>
-              <td v-if="venta.price != undefined">{{venta.price}} &euro;</td>
-              <td v-else>{{(venta.total/venta.quantity).toFixed(2)}} &euro;</td>
+              <td v-if="venta.price != undefined" class="whitespace-nowrap">{{venta.price}} &euro;</td>
+              <td v-else class="whitespace-nowrap">{{(venta.total/venta.quantity).toFixed(2)}} &euro;</td>
               <td>{{venta.total}} &euro;</td>
               <td>{{new Date(venta.sale_date).toLocaleString()}}</td>
             </tr>
@@ -249,6 +249,9 @@ onMounted(init);
 thead{
   border: solid;
   background-color: lightgreen
+}
+th,td{
+  padding: 6px;
 }
 table tr:hover{
   background-color: lightblue;

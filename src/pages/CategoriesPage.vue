@@ -183,11 +183,16 @@ thead{
 table tr:hover{
   background-color: lightblue;
 }
-label{
-  width: 100px;
-  display: inline-block;
+th,td{
+  padding: 6px;
 }
-form label, form input, form textarea{
+label{
+  width: 200px;
+  display: inline-block;
+  padding: 0;
+  background-color: rgb(253 230 138);
+}
+form input, form textarea{
   border: solid;
   border-width: 1px;
   width: 200px;

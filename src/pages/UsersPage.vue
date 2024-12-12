@@ -298,78 +298,78 @@ onMounted(init);
     </div>
     <hr>
     <div class="my-6">
-      <form v-if="isAdmin == true" @submit="handleSubmitAdminForm" @change="autoCheckNewUserAdminForm" id="userAdminForm" class="mx-auto w-full py-6 anadir-usuario">
+      <form v-if="isAdmin == true" @submit="handleSubmitAdminForm" @change="autoCheckNewUserAdminForm" id="userAdminForm" class="mx-auto w-2/5 py-6 anadir-usuario">
       <!-- <form @submit="handleSubmit" id="formProducto"> -->
         <fieldset class="flex flex-col items-center border-2 border-solid border-black p-6 rounded-lg bg-gradient-to-b from-orange-400 to-amber-300 shadow-[10px_10px_5px_rgba(0,0,0,0.5)] gap-1">
           <legend class="text-left text-lg font-semibold">{{ (!isEditingUser) ? 'Registrar Usuario' : 'Modificar Usuario' }}</legend>
           <!-- <h3 class="text-lg font-semibold">Modificar producto</h3> -->
           <input type="text" name="id" id="idUserAdminForm" hidden>
 
-          <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
-            <label for="newUsernameAdminForm" class="text-left border border-solid border-black">Usuario</label>
+          <div class="mb-0.5">
+            <label for="newUsernameAdminForm" class="text-left border border-solid border-black !block mb-1">Usuario</label>
             <input v-model="newUsernameAdminForm" type="text" name="username" id="newUsernameAdminForm" @input="isEditingUser = false;" required :readonly="isEditingUser">
           </div>
 
-          <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
+          <div class="form-line">
             <label for="resetFirstNameAdminForm">{{ (isEditingUser == false) ? 'Establecer Nombre' : 'Restablecer Nombre' }}</label>
-            <span style="width: 200px;">
+            <span>
               <input v-model="resetFirstNameAdminForm" id="resetFirstNameAdminForm" type="checkbox" name="resetFirstNameAdminForm" class="!w-4 h-4 ml-2 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" :required="!isEditingUser">
             </span>
           </div>
-          <div v-if="resetFirstNameAdminForm" class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
-            <label for="newFirstNameAdminForm" class="text-left border border-solid border-black">Nombre</label>
+          <div v-if="resetFirstNameAdminForm" class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1 mb-3">
+            <label for="newFirstNameAdminForm" class="sr-only">Nombre</label>
             <input v-model="newFirstNameAdminForm" type="text" name="firstName" id="newFirstNameAdminForm" pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑª]+(?: [a-zA-ZáéíóúÁÉÍÓÚñÑª]+)*$" title="El nombre puede contener varias palabras, solo con letras, tildes, ñ y el carácter ª, sin números ni caracteres especiales." required>
           </div>
 
-          <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
+          <div class="form-line">
             <label for="resetLastNameAdminForm">{{ (isEditingUser == false) ? 'Establecer Apellidos' : 'Restablecer Apellidos' }}</label>
-            <span style="width: 200px;">
+            <span>
               <input v-model="resetLastNameAdminForm" id="resetLastNameAdminForm" type="checkbox" name="resetLastNameAdminForm" class="!w-4 h-4 ml-2 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" :required="!isEditingUser">
             </span>
           </div>
-          <div v-if="resetLastNameAdminForm" class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
-            <label for="newLastNameAdminForm" class="text-left border border-solid border-black">Apellidos</label>
+          <div v-if="resetLastNameAdminForm" class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1 mb-3">
+            <label for="newLastNameAdminForm" class="sr-only">Apellidos</label>
             <input v-model="newLastNameAdminForm" type="text" name="lastName" id="newLastNameAdminForm" pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑª]+(?: [a-zA-ZáéíóúÁÉÍÓÚñÑª]+)*$" title="Los apellidos pueden contener varias palabras, solo con letras, tildes, ñ y el carácter ª, sin números ni caracteres especiales." required>
           </div>
 
-          <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
+          <div class="form-line">
             <label for="resetEmailAdminForm">{{ (isEditingUser == false) ? 'Establecer Correo' : 'Restablecer Correo' }}</label>
-            <span style="width: 200px;">
+            <span>
               <input v-model="resetEmailAdminForm" id="resetEmailAdminForm" type="checkbox" name="resetEmailAdminForm" class="!w-4 h-4 ml-2 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" :required="!isEditingUser">
             </span>
           </div>
-          <div v-if="resetEmailAdminForm" class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
-            <label for="newEmailAdminForm" class="text-left border border-solid border-black">Correo</label>
+          <div v-if="resetEmailAdminForm" class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1 mb-3">
+            <label for="newEmailAdminForm" class="sr-only">Correo</label>
             <input v-model="newEmailAdminForm" type="email" name="email" id="newEmailAdminForm" required>
           </div>
 
-          <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
+          <div class="form-line">
             <label for="resetPasswordAdminForm">{{ (isEditingUser == false) ? 'Establecer Contraseña' : 'Restablecer Contraseña' }}</label>
-            <span style="width: 200px;">
+            <span>
               <input v-model="resetPasswordAdminForm" id="resetPasswordAdminForm" type="checkbox" name="resetPasswordAdminForm" class="!w-4 h-4 ml-2 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" :required="!isEditingUser">
             </span>
           </div>
           <div v-if="resetPasswordAdminForm" class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
-            <label for="newUserPasswordAdminForm" class="text-left">Nueva contraseña</label>
+            <label for="newUserPasswordAdminForm" class="sr-only">Nueva contraseña</label>
             <input v-model="newUserPasswordAdminForm" type="password" name="password1" id="newUserPasswordAdminForm" :class="{'!border-green-500': passwordsMatchAdminForm, '!border-red-500': !passwordsMatchAdminForm, '!border-2':true}" pattern="^.{8,}$" 
             title="La contraseña debe tener al menos 8 caracteres" :required="resetPasswordAdminForm">
           </div>
-          <div v-if="resetPasswordAdminForm" class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
-            <label for="newUserPassword2AdminForm" class="text-left">Repetir Contraseña</label>
+          <div v-if="resetPasswordAdminForm" class="mb-3">
+            <label for="newUserPassword2AdminForm" class="text-left !block mb-1">Repetir Contraseña</label>
             <input v-model="newUserPassword2AdminForm" type="password" name="password2" id="newUserPassword2AdminForm" :class="{'!border-green-500': passwordsMatchAdminForm, '!border-red-500': !passwordsMatchAdminForm, '!border-2':true}" pattern="^.{8,}$" 
             title="La contraseña debe tener al menos 8 caracteres" :required="resetPasswordAdminForm">
           </div>
           
-          <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
+          <div class="form-line">
             <label for="newAdminUser">Es usuario administrador</label>
-            <span style="width: 200px;">
+            <span>
               <input v-model="newAdminUser" id="newAdminUser" type="checkbox" name="isAdmin" class="!w-4 h-4 ml-2 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
             </span>
           </div>
 
-          <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
+          <div class="form-line">
             <label for="newActiveUser">Está activo</label>
-            <span style="width: 200px;">
+            <span>
               <input v-model="newActiveUser" id="newActiveUser" type="checkbox" name="isActive" class="!w-4 h-4 ml-2 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
             </span>
           </div>
@@ -383,7 +383,7 @@ onMounted(init);
         </fieldset>
       </form>
       
-      <form v-else @submit="handleSubmitClientForm" id="userClientForm" class="mx-auto w-full py-6 anadir-usuario">
+      <form v-else @submit="handleSubmitClientForm" id="userClientForm" class="mx-auto w-2/5 py-6 anadir-usuario">
         <fieldset class="flex flex-col items-center border-2 border-solid border-black p-6 rounded-lg bg-gradient-to-b from-orange-400 to-amber-300 shadow-[10px_10px_5px_rgba(0,0,0,0.5)] gap-1">
           <legend class="text-left text-lg font-semibold">Modificar usuario</legend>
           <input type="text" name="id" id="idUserClientForm" hidden>
@@ -408,14 +408,14 @@ onMounted(init);
             <input v-model="newEmailClientForm" type="email" name="email" id="newEmailClientForm" title="Seleccione \'modificar\' un usuario para rellenar el formulario" required>
           </div>
 
-          <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
+          <div class="form-line">
             <label for="resetPasswordClientForm">Restablecer Contraseña</label>
-            <span style="width: 200px;">
+            <span>
               <input v-model="resetPasswordClientForm" id="resetPasswordClientForm" type="checkbox" name="resetPasswordClientForm" class="!w-4 h-4 ml-2 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
             </span>
           </div>
           <div v-if="resetPasswordClientForm" class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1">
-            <label for="newUserPasswordClientForm" class="text-left">Nueva contraseña</label>
+            <label for="newUserPasswordClientForm" class="sr-only">Nueva contraseña</label>
             <input v-model="newUserPasswordClientForm" type="password" name="password1" id="newUserPasswordClientForm" :class="{'!border-green-500': passwordsMatchClientForm, '!border-red-500': !passwordsMatchClientForm, '!border-2':true}" pattern="^.{8,}$" 
             title="La contraseña debe tener al menos 8 caracteres" required>
           </div>
@@ -441,15 +441,29 @@ thead{
   border: solid;
   background-color: lightgreen
 }
+th,td{
+  padding: 6px;
+}
 table tr:hover{
   background-color: lightblue;
 }
 label{
-  width: 100px;
+  width: 200px;
   display: inline-block;
+  background-color: rgb(253 230 138);
+  border: solid;
+  border-width: 1px;
 }
 
-form.anadir-usuario label, form.anadir-usuario input{
+.form-line label{
+  width: 170px;
+}
+
+.form-line{
+  width: 200px;
+}
+
+form.anadir-usuario input{
   border: solid;
   border-width: 1px;
   width: 200px;
