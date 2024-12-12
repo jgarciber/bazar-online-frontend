@@ -359,8 +359,7 @@ onMounted(init);
               <tbody>
                 <tr v-for="product in products" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                   <td>{{product.name}}</td>
-                  <td>{{product.price}} &euro;</td>
-                  
+                  <td class="whitespace-nowrap">{{product.price}} &euro;</td>
                   <td>{{product.stock}}</td>
                   <td>{{product.categoryName}}</td>
                   <td v-if="isAdmin">
@@ -392,8 +391,8 @@ onMounted(init);
           <tr v-for="(product, index) in productsCart">
             <td>{{product.name}}</td>
             <td><span class="flex justify-around content-center items-center !border-none"><MinusSimbol class="w-5 h-5 my-1 hover:cursor-pointer" @click="decreaseProduct(index, 1)"></MinusSimbol>{{product.quantity}}<PlusSimbol class="w-5 h-5 my-1 hover:cursor-pointer" @click="increaseProduct(index, 1)"></PlusSimbol></span></td>
-            <td>{{product.price}} &euro;</td>
-            <td>{{product.price * product.quantity}} &euro;</td>
+            <td class="whitespace-nowrap">{{product.price}} &euro;</td>
+            <td class="whitespace-nowrap">{{product.price * product.quantity}} &euro;</td>
             <td>
               <GenericRedButton @click="handleDeleteProductCart(index)">Borrar</GenericRedButton>
             </td>
