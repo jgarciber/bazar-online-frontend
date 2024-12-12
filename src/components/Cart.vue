@@ -148,7 +148,7 @@ function handleVaciarCarrito(){
 </script>
 
 <template>
-    <table class="mx-auto">
+    <table v-if="productsCartNav.length != 0" class="mx-auto">
         <thead>
             <tr>
             <th>Nombre</th>
@@ -203,6 +203,9 @@ function handleVaciarCarrito(){
         </tr>
         </tfoot>
     </table>
+    <div v-else>
+        <p>Carrito vacío</p>
+    </div>
 </template>
 
 <style scoped>
