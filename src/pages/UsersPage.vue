@@ -316,7 +316,7 @@ onMounted(init);
               <input v-model="resetFirstNameAdminForm" id="resetFirstNameAdminForm" type="checkbox" name="resetFirstNameAdminForm" class="!w-4 h-4 ml-2 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" :required="!isEditingUser">
             </span>
           </div>
-          <div v-if="resetFirstNameAdminForm" class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1 mb-3">
+          <div v-if="resetFirstNameAdminForm" class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1 mb-1">
             <label for="newFirstNameAdminForm" class="sr-only">Nombre</label>
             <input v-model="newFirstNameAdminForm" type="text" name="firstName" id="newFirstNameAdminForm" pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑª]+(?: [a-zA-ZáéíóúÁÉÍÓÚñÑª]+)*$" title="El nombre puede contener varias palabras, solo con letras, tildes, ñ y el carácter ª, sin números ni caracteres especiales." required>
           </div>
@@ -327,7 +327,7 @@ onMounted(init);
               <input v-model="resetLastNameAdminForm" id="resetLastNameAdminForm" type="checkbox" name="resetLastNameAdminForm" class="!w-4 h-4 ml-2 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" :required="!isEditingUser">
             </span>
           </div>
-          <div v-if="resetLastNameAdminForm" class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1 mb-3">
+          <div v-if="resetLastNameAdminForm" class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1 mb-1">
             <label for="newLastNameAdminForm" class="sr-only">Apellidos</label>
             <input v-model="newLastNameAdminForm" type="text" name="lastName" id="newLastNameAdminForm" pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑª]+(?: [a-zA-ZáéíóúÁÉÍÓÚñÑª]+)*$" title="Los apellidos pueden contener varias palabras, solo con letras, tildes, ñ y el carácter ª, sin números ni caracteres especiales." required>
           </div>
@@ -338,7 +338,7 @@ onMounted(init);
               <input v-model="resetEmailAdminForm" id="resetEmailAdminForm" type="checkbox" name="resetEmailAdminForm" class="!w-4 h-4 ml-2 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" :required="!isEditingUser">
             </span>
           </div>
-          <div v-if="resetEmailAdminForm" class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1 mb-3">
+          <div v-if="resetEmailAdminForm" class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1 mb-1">
             <label for="newEmailAdminForm" class="sr-only">Correo</label>
             <input v-model="newEmailAdminForm" type="email" name="email" id="newEmailAdminForm" required>
           </div>
@@ -354,7 +354,7 @@ onMounted(init);
             <input v-model="newUserPasswordAdminForm" type="password" name="password1" id="newUserPasswordAdminForm" :class="{'!border-green-500': passwordsMatchAdminForm, '!border-red-500': !passwordsMatchAdminForm, '!border-2':true}" pattern="^.{8,}$" 
             title="La contraseña debe tener al menos 8 caracteres" :required="resetPasswordAdminForm">
           </div>
-          <div v-if="resetPasswordAdminForm" class="mb-3">
+          <div v-if="resetPasswordAdminForm" class="mb-1">
             <label for="newUserPassword2AdminForm" class="text-left !block mb-1">Repetir Contraseña</label>
             <input v-model="newUserPassword2AdminForm" type="password" name="password2" id="newUserPassword2AdminForm" :class="{'!border-green-500': passwordsMatchAdminForm, '!border-red-500': !passwordsMatchAdminForm, '!border-2':true}" pattern="^.{8,}$" 
             title="La contraseña debe tener al menos 8 caracteres" :required="resetPasswordAdminForm">
