@@ -24,12 +24,35 @@ let newProductStock = ref('');
 let newProductCategory = ref(0);
 let searchKeyWord = ref();
 
- // Descuento e impuestos
-const descuento = ref(0.1); // Ejemplo de descuento (10%)
-const impuesto = ref(0.21);  // Impuesto al (21%)
+// Descuento e impuestos
+const descuento = ref(parseFloat(import.meta.env.VITE_DISCOUNT));
+const impuesto = ref(parseFloat(import.meta.env.VITE_IVA));  
 
 // Variable para controlar el estado de carga
 const isLoading = ref(false); // El spinner será visible al inicio
+
+// Cargar el carrito desde sessionStorage cuando el componente se monta
+const loadCartFromSession = () => {
+  let userIdCart = 'cart-' + sessionStorage.getItem('user_id')
+  const savedCart = sessionStorage.getItem(userIdCart);
+  if (savedCart) {
+    productsCart.value = JSON.parse(savedCart);
+  }
+};
+
+// Guardar en sessionStorage cada vez que el carrito cambie
+const saveCartToSession = () => {
+  let userIdCart = 'cart-' + sessionStorage.getItem('user_id')
+  sessionStorage.setItem(userIdCart, JSON.stringify(productsCart.value));
+};
+
+// Uso de watch para sincronizar el carrito con sessionStorage
+watch(productsCart, saveCartToSession, { deep: true });
+
+const updateCartFromEvent = () => {
+  // Recargar el carrito desde sessionStorage cuando el evento se dispara
+  loadCartFromSession();
+};
 
 async function getProducts(){
   isLoading.value = true;
@@ -140,9 +163,12 @@ function handleAddProduct(product){
   if (indiceProductoExistenteCarrito != -1) {
     // productoExistenteCarrito.quantity += newProduct.quantity;
     increaseProduct(indiceProductoExistenteCarrito, newProduct.quantity)
-  }else{
+    mostrarMensajeEnCursor(`"${product.name}" x ${newProduct.quantity} unidades añadido al carrito`);
+  }else if (Number.parseInt(newProduct.quantity) <= Number.parseInt(product.stock)){
     productsCart.value.push(newProduct);
-    mostrarMensajeEnCursor(`"${product.name}" añadido al carrito`);
+    mostrarMensajeEnCursor(`"${product.name}" x ${newProduct.quantity} unidades añadido al carrito`);
+  }else{
+    mostrarMensajeEnCursor(`No puede añadir ${newProduct.quantity} unidades del producto '${product.name}' al carrito, stock insuficiente. Reduzca la cantidad hasta ${product.stock} unidades como máximo.`);
   }
 }
 
@@ -275,6 +301,8 @@ function init(){
   if(getCookie('token') == undefined){
     window.location.href = '/login';
   }else{
+    loadCartFromSession();
+    window.addEventListener("cartUpdated", updateCartFromEvent);
     getProducts();
     getCategories();
     isAdmin.value = sessionStorage.getItem('is_admin') == true ? true : false;
@@ -349,7 +377,7 @@ onMounted(init);
       </div>
     </div>
 
-    <div>
+    <div class="overflow-auto">
       <table v-if="productsCart.length != 0" class="mx-auto">
         <thead>
           <tr>
@@ -363,7 +391,7 @@ onMounted(init);
         <tbody>
           <tr v-for="(product, index) in productsCart">
             <td>{{product.name}}</td>
-            <td><span class="flex justify-around content-center my-1 !border-none"><MinusSimbol class="w-5 h-5 my-1 hover:cursor-pointer" @click="decreaseProduct(index, 1)"></MinusSimbol>{{product.quantity}}<PlusSimbol class="w-5 h-5 my-1 hover:cursor-pointer" @click="increaseProduct(index, 1)"></PlusSimbol></span></td>
+            <td><span class="flex justify-around content-center items-center !border-none"><MinusSimbol class="w-5 h-5 my-1 hover:cursor-pointer" @click="decreaseProduct(index, 1)"></MinusSimbol>{{product.quantity}}<PlusSimbol class="w-5 h-5 my-1 hover:cursor-pointer" @click="increaseProduct(index, 1)"></PlusSimbol></span></td>
             <td>{{product.price}} &euro;</td>
             <td>{{product.price * product.quantity}} &euro;</td>
             <td>
@@ -373,27 +401,27 @@ onMounted(init);
           <!-- Subtotal -->
           <tr class="text-right">
             <td colspan="4">Subtotal: </td>
-            <td>{{ subtotal.toFixed(2) }} &euro;</td>
+            <td class="whitespace-nowrap">{{ subtotal.toFixed(2) }} &euro;</td>
           </tr>
           <!-- Descuento -->
           <tr class="text-right">
             <td colspan="4"> {{ 'Descuento (' + descuento*100 + '%):' }} </td>
-            <td>{{ descuentoTotal.toFixed(2) }} &euro;</td>
+            <td class="whitespace-nowrap">{{ descuentoTotal.toFixed(2) }} &euro;</td>
           </tr>
           <!-- Subtotal con descuento -->
           <tr class="text-right">
             <td colspan="4">Subtotal con descuento: </td>
-            <td>{{ subtotalConDescuento.toFixed(2) }} &euro;</td>
+            <td class="whitespace-nowrap">{{ subtotalConDescuento.toFixed(2) }} &euro;</td>
           </tr>
           <!-- Impuestos -->
           <tr class="text-right">
             <td colspan="4">{{ 'Impuestos (' + impuesto*100 + '%):' }}</td>
-            <td>{{ impuestos.toFixed(2) }} &euro;</td>
+            <td class="whitespace-nowrap">{{ impuestos.toFixed(2) }} &euro;</td>
           </tr>
           <!-- Total final -->
           <tr class="text-right font-bold uppercase">
             <td colspan="4" >Total: </td>
-            <td>{{ totalFinal.toFixed(2) }} &euro;</td>
+            <td class="whitespace-nowrap">{{ totalFinal.toFixed(2) }} &euro;</td>
           </tr>
         </tbody>
         <tfoot>
@@ -406,7 +434,7 @@ onMounted(init);
         </tfoot>
       </table>
     </div>
-    <div class="my-6" v-if="isAdmin">
+    <div class="my-6 overflow-auto" v-if="isAdmin">
       <form @submit="handleSubmit" id="formProducto" class="mx-auto w-3/4 py-4 anadir-producto">
         <fieldset class="flex flex-col items-center gap-1 border-2 border-solid border-black p-3 rounded-lg bg-gradient-to-b from-orange-400 to-amber-300 shadow-[10px_10px_5px_rgba(0,0,0,0.5)]">
           <legend v-if="isEditingProduct == false" class="text-left text-lg font-semibold">Añadir producto</legend>
@@ -461,7 +489,12 @@ form.anadir-producto label, form.anadir-producto input, form.anadir-producto tex
   border: solid;
   border-width: 1px;
   width: 200px;
+  /* width: 100%; Por defecto, ocupan el 100% del ancho disponible */
+  /* max-width: 200px; El ancho máximo será 200px */
+  /* min-width: 120px; El ancho mínimo será 120px */
   padding: 0;
+  /* box-sizing: border-box; Asegura que el padding no afecte el tamaño total */
+  /* transition: width 0.3s ease; Suaviza el cambio de tamaño */
 }
 table td{
   padding: 5px;

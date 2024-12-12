@@ -62,7 +62,8 @@ export function mostrarMensajeEnCursor(mensajeAMostrar){
   var divMensajes = $(myDiv)
      .css({
         "left": mousePosX + 'px',
-        "top": mousePosY + 'px'
+        "top": mousePosY + 'px',
+        "z-index": '20'
      })
      .append(mensajeAMostrar)
      .appendTo(document.body);

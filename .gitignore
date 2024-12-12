@@ -3,6 +3,8 @@
 /src/ConsultasBD
 /dist
 dist.zip
+/stores/cartStore.js
+
 # Logs
 logs
 *.log

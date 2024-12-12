@@ -13,7 +13,7 @@ function init(){
   }else{
     //Para borrar un cookie se establece su fecha de expiración a una fecha ya pasada.
     document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    sessionStorage.clear();
+    // sessionStorage.clear();
     const myTimeout = setTimeout(redireccionLogin, 3000);
   }
 }
