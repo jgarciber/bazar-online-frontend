@@ -434,7 +434,7 @@ onMounted(init);
       </table>
     </div>
     <div class="my-6 overflow-auto" v-if="isAdmin">
-      <form @submit="handleSubmit" id="formProducto" class="mx-auto w-3/4 py-4 anadir-producto">
+      <form @submit="handleSubmit" id="formProducto" class="mx-auto max-w-xs sm:max-w-lg py-4 anadir-producto">
         <fieldset class="flex flex-col items-center gap-1 border-2 border-solid border-black p-3 rounded-lg bg-gradient-to-b from-orange-400 to-amber-300 shadow-[10px_10px_5px_rgba(0,0,0,0.5)]">
           <legend v-if="isEditingProduct == false" class="text-left text-lg font-semibold">Añadir producto</legend>
           <legend v-else class="text-lg font-semibold">Modificar producto</legend>
