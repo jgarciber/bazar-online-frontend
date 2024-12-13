@@ -462,9 +462,8 @@ onMounted(init);
             </select>
           </div>
 
-          <br>
-          <input v-if="isEditingProduct == false" type="submit" value="Añadir producto" class="border border-solid border-black p-1 rounded-md hover:bg-green-400">
-          <input v-else type="submit" value="Modificar producto" class="border border-solid border-black p-1 rounded-md hover:bg-green-400">
+          <input v-if="isEditingProduct == false" type="submit" value="Añadir producto" class="my-2 border border-solid border-black p-1 rounded-md hover:bg-green-400">
+          <input v-else type="submit" value="Modificar producto" class="my-2 border border-solid border-black p-1 rounded-md hover:bg-green-400">
           <GenericRedButton v-if="newProductName != '' || newProductPrice != 0 || newProductStock != 0 || newProductCategory != 0" type="button" @click="cancelarFormularioProducto" id="btnCancelarFormProducto" class="p-1">Cancelar</GenericRedButton>
         </fieldset>
       </form>
@@ -487,6 +486,7 @@ label{
   width: 100px;
   display: inline-block;
   background-color: rgb(253 230 138);
+  padding: 2px;
 }
 form.anadir-producto label, form.anadir-producto input, form.anadir-producto textarea, form.anadir-producto select{
   border: solid;
@@ -495,7 +495,7 @@ form.anadir-producto label, form.anadir-producto input, form.anadir-producto tex
   /* width: 100%; Por defecto, ocupan el 100% del ancho disponible */
   /* max-width: 200px; El ancho máximo será 200px */
   /* min-width: 120px; El ancho mínimo será 120px */
-  padding: 0;
+  padding: 2px;
   /* box-sizing: border-box; Asegura que el padding no afecte el tamaño total */
   /* transition: width 0.3s ease; Suaviza el cambio de tamaño */
 }

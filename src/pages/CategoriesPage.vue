@@ -165,9 +165,8 @@ onMounted(init);
             <textarea v-model="newCategoryDescription" name="description" id="newCategoryDescription" rows="5" title="La descripción debe tener al menos 10 caracteres" required></textarea>
           </div>
           
-          <br><br>
-          <input v-if="isEditingCategory==false" type="submit" value="Añadir categoría" class="border border-solid border-black p-1 rounded-md hover:bg-green-400">
-          <input v-else type="submit" value="Modificar categoría" class="border border-solid border-black p-1 rounded-md hover:bg-green-400">
+          <input v-if="isEditingCategory==false" type="submit" value="Añadir categoría" class="my-2 border border-solid border-black p-1 rounded-md hover:bg-green-400">
+          <input v-else type="submit" value="Modificar categoría" class="my-2 border border-solid border-black p-1 rounded-md hover:bg-green-400">
           <GenericRedButton v-if="newCategoryName != '' || newCategoryDescription != ''" type="button" @click="cancelarFormularioCategoria" id="btnCancelarAdminForm">Cancelar</GenericRedButton>
         </fieldset>
       </form>
@@ -191,12 +190,14 @@ label{
   display: inline-block;
   padding: 0;
   background-color: rgb(253 230 138);
+  padding: 2px;
 }
 form input, form textarea{
   border: solid;
   border-width: 1px;
   width: 200px;
   padding: 0;
+  padding: 2px;
 }
 table td{
   padding: 5px;

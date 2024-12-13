@@ -374,16 +374,15 @@ onMounted(init);
             </span>
           </div>
 
-          <br>
           <div class="flex flex-wrap justify-center gap-1">
-            <input type="submit" :value="(!isEditingUser) ? 'Registrar Usuario' : 'Modificar Usuario'" id="btnSubmitAdminForm" class="border border-solid border-black p-1 rounded-md hover:bg-green-400">
+            <input type="submit" :value="(!isEditingUser) ? 'Registrar Usuario' : 'Modificar Usuario'" id="btnSubmitAdminForm" class="my-2 border border-solid border-black p-1 rounded-md hover:bg-green-400">
             <GenericRedButton v-if="newUsernameAdminForm != '' || resetFirstNameAdminForm != false || newFirstNameAdminForm != '' || resetLastNameAdminForm != false || newLastNameAdminForm != '' || resetEmailAdminForm != false || newEmailAdminForm != '' || resetPasswordAdminForm != false || newUserPasswordAdminForm != '' || newAdminUser != false || newActiveUser != false" type="button" @click="cancelarFormularioUsuario" id="btnCancelarAdminForm">Cancelar</GenericRedButton>
 
           </div>
         </fieldset>
       </form>
       
-      <form v-else @submit="handleSubmitClientForm" id="userClientForm" class="mx-auto w-2/5 py-6 anadir-usuario">
+      <form v-else @submit="handleSubmitClientForm" id="userClientForm" class="mx-auto max-w-xs py-6 anadir-usuario">
         <fieldset class="flex flex-col items-center border-2 border-solid border-black p-6 rounded-lg bg-gradient-to-b from-orange-400 to-amber-300 shadow-[10px_10px_5px_rgba(0,0,0,0.5)] gap-1">
           <legend class="text-left text-lg font-semibold">Modificar usuario</legend>
           <input type="text" name="id" id="idUserClientForm" hidden>
@@ -408,7 +407,7 @@ onMounted(init);
             <input v-model="newEmailClientForm" type="email" name="email" id="newEmailClientForm" title="Seleccione \'modificar\' un usuario para rellenar el formulario" required>
           </div>
 
-          <div class="form-line">
+          <div class="form-line flex flex-row items-center justify-center gap-1" id="clientChk">
             <label for="resetPasswordClientForm">Restablecer Contraseña</label>
             <span>
               <input v-model="resetPasswordClientForm" id="resetPasswordClientForm" type="checkbox" name="resetPasswordClientForm" class="!w-4 h-4 ml-2 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
@@ -425,10 +424,9 @@ onMounted(init);
             title="La contraseña debe tener al menos 8 caracteres" required>
           </div>
 
-          <br>
           <div class="flex flex-wrap justify-center gap-1">
-            <input type="submit" id="btnSubmitClientForm" value="Modificar usuario" class="border border-solid border-black p-1 rounded-md hover:bg-green-400">
-            <GenericRedButton v-if="newUsernameClientForm != '' || newUserPasswordClientForm != ''" type="button" @click="cancelarFormularioUsuario" id="btnCancelarClientForm">Cancelar</GenericRedButton>
+            <input type="submit" id="btnSubmitClientForm" value="Modificar usuario" class="my-2 border border-solid border-black p-1 rounded-md hover:bg-green-400">
+            <GenericRedButton v-if="newUsernameClientForm != '' || newFirstNameClientForm != '' || newLastNameClientForm != '' || newEmailClientForm != '' || newUserPasswordClientForm != '' || newUserPassword2ClientForm != ''" type="button" @click="cancelarFormularioUsuario" id="btnCancelarClientForm">Cancelar</GenericRedButton>
           </div>
         </fieldset>
       </form>
@@ -453,6 +451,7 @@ label{
   background-color: rgb(253 230 138);
   border: solid;
   border-width: 1px;
+  padding: 2px;
 }
 
 .form-line label{
@@ -467,7 +466,11 @@ form.anadir-usuario input{
   border: solid;
   border-width: 1px;
   width: 200px;
-  padding: 0;
+  padding: 2px;
+}
+
+#clientChk{
+  /* width: 400px; */
 }
 
 input .border-green-500, input .border-red-500{
